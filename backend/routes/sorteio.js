@@ -238,6 +238,9 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
         let { sorteio_id, quantidade, user_id } = req.body;
 
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id }, transaction: t });
+        const sorteioRegras = await SorteioRegras.findOne({
+            where: { id: sorteio.sorteio_regras_id },
+        });
 
         let valorUnitarioCota = Number(sorteio?.valor_por_bilhete);
 
@@ -252,7 +255,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
         });
 
         let jaReservados = bilhetesCompradosOuIndisponiveis.map(b => b.numero);
-        let numeros = Utils.sortearBilhetes(0, 100, quantidade, jaReservados);
+        let numeros = Utils.sortearBilhetes(0, Number(sorteioRegras?.valor), quantidade, jaReservados);
         let id_remessa = Utils.makeid(50);
 
         const agora = Utils.getDateNow();
@@ -292,7 +295,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
             quantidade: numeros.length,
             valor: numeros.length * valorUnitarioCota,
             id_remessa: id_remessa,
-            numeros: numeros,
+            //numeros: numeros,
         });
 
     } catch (err) {
@@ -372,7 +375,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             quantidade: numeros.length,
             valor: numeros.length * valorUnitarioCota,
             id_remessa: id_remessa,
-            numeros: numeros
+            //numeros: numeros
         });
 
     } catch (err) {
