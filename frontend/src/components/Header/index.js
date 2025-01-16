@@ -48,7 +48,7 @@ export default ({ headerMode, headerPaymentStep }) => {
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='logo.png' width={"100px"} />
+                        <img src='../Logo.png' width={"100px"} />
                         <div className='button-group'>
                             <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
                                 <ion-icon name="person-outline"></ion-icon>
