@@ -114,7 +114,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, transactio
             customer = await createCustomer(user?.name, user?.cpf, user?.email);
         }
 
-        const novaFatura = await Fatura.create({
+        let faturaObject = {
             user_id,
             sorteio_id,
             id_remessa,
@@ -125,13 +125,15 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, transactio
             status: "AGUARDANDO_PAGAMENTO",
             createdAt: agora,
             updatedAt: agora,
-        }, { transaction });
+        }
+
+        const novaFatura = await Fatura.create(faturaObject, { transaction });
 
         let pay = null;
 
         pay = await payPix({
             customer: customer,
-            fatura: novaFatura
+            fatura: faturaObject
         })
 
         console.log(pay)
