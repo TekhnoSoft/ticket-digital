@@ -44,7 +44,7 @@ export default () => {
     const navigate = useNavigate();
     const { keybind } = useParams();
 
-    const {user} = useContext(MainContext);
+    const { user } = useContext(MainContext);
 
     const [phone, setPhone] = useState("");
 
@@ -199,7 +199,9 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"info-card"} style={{ padding: '16px' }}>
-                    <b className='b-text' style={{ fontWeight: 'bold' }}>{loaded ? campanha?.name.toLocaleUpperCase() : `...`}</b>
+                    <b className='b-text' style={{ fontWeight: 'bold' }}>
+                        {loaded ? campanha?.name?.toLocaleUpperCase() || '...' : '...'}
+                    </b>
                     <SpaceBox space={8} />
                     <div className='info-oferta' style={{ display: 'flex', alignItems: 'center' }}>
                         <label className='text-opacity'>Por apenas</label>&nbsp;&nbsp;
