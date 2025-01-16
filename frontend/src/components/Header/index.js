@@ -26,7 +26,7 @@ export default ({ headerMode, headerPaymentStep }) => {
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../logo.png' width={"100px"} />
+                        <img src='../Logo.png' width={"100px"} />
                         <div className='button-group'>
                             <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>

@@ -51,7 +51,7 @@ export default function Footer() {
                 <div className="footer-bottom">
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                         <span>&copy; {new Date().getFullYear()} Todos os direitos reservados</span>&nbsp;&nbsp;
-                        <img src="../logo.png" alt="Logo" />
+                        <img src="../Logo.png" alt="Logo" />
                     </div>
                     <button className="scroll-to-top" onClick={scrollToTop} style={{ marginTop: '10px' }}>
                         <ion-icon name="chevron-up-outline"></ion-icon>
