@@ -1,0 +1,89 @@
+.buttons-select-cotas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 colunas para telas pequenas */
+    gap: 5px;
+    /* Espaçamento uniforme entre as colunas e linhas */
+    justify-items: center;
+    /* Centraliza os itens horizontalmente */
+    align-items: center;
+    /* Centraliza os itens verticalmente */
+    margin: 0 auto;
+    /* Garante que o container ficará centralizado na tela */
+    width: 80%;
+    /* Ajuste de largura para centralizar o conteúdo */
+    justify-content: center;
+}
+
+/* Smartphones, iPhone, portrait 480x320 phones */
+@media (min-width: 320px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 colunas */
+    }
+}
+
+/* Portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide */
+@media (min-width: 481px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(5, 1fr);
+        /* 5 colunas */
+    }
+}
+
+/* Portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+@media (min-width: 641px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(6, 1fr);
+        /* 6 colunas */
+    }
+}
+
+/* Tablet, landscape iPad, low-res laptops and desktops */
+@media (min-width: 961px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(8, 1fr);
+        /* 8 colunas */
+    }
+}
+
+/* Big landscape tablets, laptops, and desktops */
+@media (min-width: 1025px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(10, 1fr);
+        /* 10 colunas */
+    }
+}
+
+/* Hi-res laptops and desktops */
+@media (min-width: 1281px) {
+    .buttons-select-cotas {
+        grid-template-columns: repeat(10, 1fr);
+        /* 10 colunas */
+    }
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+}
+
+.pagination span {
+    font-size: 16px;
+}
