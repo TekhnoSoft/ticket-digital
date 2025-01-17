@@ -139,7 +139,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, transactio
         console.log(pay)
 
         if(pay != null){
-            await database.query(`UPDATE tb_faturas SET id_payment_response=?, qr_code_payment_image=?, qr_code_payment_barcode=? WHERE id_remessa=?`, { replacements: [pay?.id, pay?.encodedImage, pay?.payload, id_remessa], type: Sequelize.QueryTypes.UPDATE });
+            await database.query(`UPDATE tb_faturas SET id_payment_response=?, qr_code_payment_image=?, qr_code_payment_barcode=? WHERE id_remessa=?`, { replacements: [pay?.id, "teste", pay?.payload, id_remessa], type: Sequelize.QueryTypes.UPDATE });
         }
 
         return novaFatura;
