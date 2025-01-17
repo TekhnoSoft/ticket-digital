@@ -102,7 +102,7 @@ const payPix = async ({ customer, fatura }) => {
     }
 }
 
-const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, transaction }) => {
+const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
     try {
         const agora = Utils.getDateNow();
 
@@ -139,7 +139,18 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, transactio
         console.log(pay)
 
         if(pay != null){
-            await database.query(`UPDATE tb_faturas SET id_payment_response=?, qr_code_payment_image=?, qr_code_payment_barcode=? WHERE id_remessa=?`, { replacements: [pay?.id, "teste", pay?.payload, id_remessa], type: Sequelize.QueryTypes.UPDATE });
+
+            await Fatura.update(
+                {
+                    id_payment_response: pay?.id,
+                    qr_code_payment_image: pay?.encodedImage,
+                    qr_code_payment_barcode: pay?.payload
+                },
+                {
+                    where: { id: novaFatura?.id }
+                },
+            );
+
         }
 
         return novaFatura;
@@ -224,7 +235,6 @@ router.get('/imagem/:id', async (req, res) => {
 });
 
 router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => {
-    const t = await database.transaction();
     try {
         let { sorteio_id, quantidade, user_id } = req.body;
 
@@ -277,10 +287,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
             sorteio_id: sorteio_id,
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
-            transaction: t,
         });
-
-        await t.commit();
 
         return res.status(201).json({
             quantidade: numeros.length,
@@ -291,13 +298,11 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
 
     } catch (err) {
         console.log(err);
-        await t.rollback();
         return res.status(500).json(err);
     }
 });
 
 router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) => {
-    const t = await database.transaction();
     try {
         let { sorteio_id, numeros, user_id } = req.body;
 
@@ -357,10 +362,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             sorteio_id: sorteio_id,
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
-            transaction: t,
         });
-
-        await t.commit();
 
         return res.status(201).json({
             quantidade: numeros.length,
@@ -371,7 +373,6 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
 
     } catch (err) {
         console.log(err);
-        await t.rollback();
         return res.status(500).json(err);
     }
 });
