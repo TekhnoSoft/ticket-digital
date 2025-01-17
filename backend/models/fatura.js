@@ -46,11 +46,15 @@ const Fatura = database.define('tb_faturas', {
         type: Sequelize.INTEGER,
         allowNull: true,
     },
-    api_payment_response: {
+    id_payment_response: {
         type: Sequelize.TEXT,
         allowNull: true,
     },
-    id_payment_response: {
+    qr_code_payment_image: {
+        type: Sequelize.TEXT('long'),
+        allowNull: true,
+    },
+    qr_code_payment_barcode: {
         type: Sequelize.TEXT('long'),
         allowNull: true,
     }
