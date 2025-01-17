@@ -127,7 +127,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             updatedAt: agora,
         }
 
-        const novaFatura = await Fatura.create(faturaObject, { transaction });
+        const novaFatura = await Fatura.create(faturaObject);
 
         let pay = null;
 
@@ -238,7 +238,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
     try {
         let { sorteio_id, quantidade, user_id } = req.body;
 
-        const sorteio = await Sorteio.findOne({ where: { id: sorteio_id }, transaction: t });
+        const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } });
         const sorteioRegras = await SorteioRegras.findOne({
             where: { id: sorteio.sorteio_regras_id },
         });
@@ -252,7 +252,6 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
                     [Op.in]: ["PAGO", "INDISPONIVEL"],
                 },
             },
-            transaction: t
         });
 
         let jaReservados = bilhetesCompradosOuIndisponiveis.map(b => b.numero);
@@ -279,7 +278,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
                 createdAt: agora,
                 updatedAt: agora,
             }));
-            await Bilhete.bulkCreate(bilhetes, { validate: true, transaction: t });
+            await Bilhete.bulkCreate(bilhetes, { validate: true });
         }
 
         await createFatura({
@@ -315,8 +314,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
                 sorteio_id: sorteio_id,
                 numero: { [Op.in]: numeros },
                 status: { [Op.in]: ["PAGO", "INDISPONIVEL"] }
-            },
-            transaction: t
+            }
         });
 
         if (bilhetesCompradosOuIndisponiveis.length > 0) {
@@ -327,7 +325,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             });
         }
 
-        const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } }, { transaction: t });
+        const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } });
 
         let valorUnitarioCota = Number(sorteio?.valor_por_bilhete);
 
@@ -355,7 +353,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             updatedAt: agora,
         }));
 
-        await Bilhete.bulkCreate(bilhetes, { validate: true, transaction: t });
+        await Bilhete.bulkCreate(bilhetes, { validate: true });
 
         await createFatura({
             user_id: user_id,
