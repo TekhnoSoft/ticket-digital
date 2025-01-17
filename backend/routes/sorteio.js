@@ -136,8 +136,6 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             fatura: faturaObject
         })
 
-        console.log(pay)
-
         if(pay != null){
 
             await Fatura.update(
