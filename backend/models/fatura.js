@@ -51,7 +51,7 @@ const Fatura = database.define('tb_faturas', {
         allowNull: true,
     },
     id_payment_response: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT('long'),
         allowNull: true,
     }
 });
