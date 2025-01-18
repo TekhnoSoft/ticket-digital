@@ -97,7 +97,7 @@ class Utils {
         }
 
         let numeros = Array.from(numerosSorteados).map(numero => ({
-            numero_texto: this.formatNumberToTicket(numero, max),
+            numero_texto: numero,
             numero_valor: numero
         }));
 

@@ -261,7 +261,8 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
                 b.status AS bilhete_status
             FROM tb_faturas f
             LEFT JOIN tb_bilhetes b ON f.id_remessa = b.id_remessa
-            WHERE f.user_id = :user_id;
+            WHERE f.user_id = :user_id
+            ORDER BY f.data_compra DESC;
         `;
 
         const resultados = await sequelize.query(query, {

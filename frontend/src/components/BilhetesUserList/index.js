@@ -175,6 +175,13 @@ export default ({ user, setUser }) => {
                                     <SpaceBox space={10}/>
                                 </>
                             ) : (null)}
+                            {loaded && faturas?.length <= 0 ? (
+                                <>
+                                    <SpaceBox space={10}/>
+                                    <center><b>Não há faturas.</b></center>
+                                    <SpaceBox space={10}/>
+                                </>
+                            ) : (null)}
                             {faturas?.map(fatura => (
                                 <Card style={{ marginBottom: '8px', border: 'solid 1px #ddd' }}>
                                     {fatura?.fatura_status == "AGUARDANDO_PAGAMENTO" ? (
