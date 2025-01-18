@@ -536,7 +536,7 @@ export default () => {
                                 <ion-icon name="person-outline"></ion-icon>
                             </div>
                             <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>Abdiel Pires Ribeiro &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                                <p>Marcos Teste &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
                             </div>
                         </div>
                         <SpaceBox space={10} />
@@ -560,7 +560,7 @@ export default () => {
                                 <ion-icon name="person-outline"></ion-icon>
                             </div>
                             <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>Abdiel Pires Ribeiro &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                                <p>Marcos Teste &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
                             </div>
                         </div>
                         <SpaceBox space={10} />
@@ -584,7 +584,7 @@ export default () => {
                                 <ion-icon name="person-outline"></ion-icon>
                             </div>
                             <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>Abdiel Pires Ribeiro &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                                <p>Marcos Teste &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
                             </div>
                         </div>
                         <SpaceBox space={10} />
@@ -608,7 +608,7 @@ export default () => {
                                 <ion-icon name="person-outline"></ion-icon>
                             </div>
                             <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>Abdiel Pires Ribeiro &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                                <p>Marcos Teste &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
                             </div>
                         </div>
                         <SpaceBox space={10} />
@@ -632,7 +632,7 @@ export default () => {
                                 <ion-icon name="person-outline"></ion-icon>
                             </div>
                             <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>Abdiel Pires Ribeiro &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                                <p>Marcos Teste &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
                             </div>
                         </div>
                     </div>
