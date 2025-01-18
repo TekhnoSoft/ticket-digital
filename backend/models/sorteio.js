@@ -12,6 +12,10 @@ const Sorteio = database.define('tb_sorteios', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    description: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
     keybind: {
         type: Sequelize.STRING,
         allowNull: false

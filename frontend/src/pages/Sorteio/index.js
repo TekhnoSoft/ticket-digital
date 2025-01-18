@@ -60,6 +60,8 @@ export default () => {
 
     const [bilhetesPagos, setBilhetesPagos] = useState([]);
     const [bilhetesReservados, setBilhetesReservados] = useState([]);
+    const [rankBuyers, setRankBuyers] = useState([]);
+    const [rankWinners, setRankWinners] = useState([]);
 
     const [btnsQtd, setBtnsQtd] = useState([]);
 
@@ -75,11 +77,17 @@ export default () => {
     useEffect(() => {
         const loadBilhetesStatusInfo = async () => {
             setLoadedBilheteStatus(false);
-            if (campanha?.id != undefined && campanha?.tipo == "USUARIO_ESCOLHE") {
-                const { success: reservadosSuccess, data: reservadosData } = await Utils.processRequest(Api.geral.getBilhetesReservados, { sorteio_id: campanha?.id });
-                const { success: pagosSuccess, data: pagosData } = await Utils.processRequest(Api.geral.getBilhetesPagos, { sorteio_id: campanha?.id });
-                setBilhetesReservados(reservadosData);
-                setBilhetesPagos(pagosData);
+            if (campanha?.id != undefined) {
+                if (campanha?.tipo == "USUARIO_ESCOLHE") {
+                    const { success: reservadosSuccess, data: reservadosData } = await Utils.processRequest(Api.geral.getBilhetesReservados, { sorteio_id: campanha?.id });
+                    const { success: pagosSuccess, data: pagosData } = await Utils.processRequest(Api.geral.getBilhetesPagos, { sorteio_id: campanha?.id });
+                    setBilhetesReservados(reservadosData);
+                    setBilhetesPagos(pagosData);
+                }
+                const { success: rankBuyersSuccess, data: rankBuyersData } = await Utils.processRequest(Api.geral.getRankBuyers, { sorteio_id: campanha?.id });
+                const { success: rankWinnersSuccess, data: rankWinnersData } = await Utils.processRequest(Api.geral.getRankWinners, { sorteio_id: campanha?.id });
+                setRankBuyers(rankBuyersData);
+                setRankWinners(rankWinnersData);
             }
             setLoadedBilheteStatus(true);
         }
@@ -96,6 +104,19 @@ export default () => {
         setNumeros(numeros.filter(n => n !== numero));
         setQtd(qtd - 1);
     };
+
+    const getMedalhas = (colocacao) => {
+        switch(colocacao){
+            case 1: 
+                return "🥇";
+            case 2: 
+                return "🥈";
+            case 3:
+                return "🥉";
+            default:
+                return "🥉";
+        }
+    }
 
     const load = async () => {
         setLoaded(false);
@@ -467,45 +488,25 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"responsive-margin"}>
-                    <div className='winner-content'>
-                        <b className='winner-position'>1º</b>
-                        <div className='winner-info'>
-                            <div>🏆<b>Marcos Paulo</b></div>
-                            <div className='text-opacity'>Bilhetes: <b>289485</b></div>
-                        </div>
-                    </div>
-                    <Hr elevation={1} />
-                    <div className='winner-content'>
-                        <b className='winner-position'>2º</b>
-                        <div className='winner-info'>
-                            <div>🏆<b>Marcos Paulo</b></div>
-                            <div className='text-opacity'>Bilhetes: <b>289485</b></div>
-                        </div>
-                    </div>
-                    <Hr elevation={1} />
-                    <div className='winner-content'>
-                        <b className='winner-position'>3º</b>
-                        <div className='winner-info'>
-                            <div>🏆<b>Marcos Paulo</b></div>
-                            <div className='text-opacity'>Bilhetes: <b>289485</b></div>
-                        </div>
-                    </div>
-                    <Hr elevation={1} />
-                    <div className='winner-content'>
-                        <b className='winner-position'>4º</b>
-                        <div className='winner-info'>
-                            <div>🏆<b>Marcos Paulo</b></div>
-                            <div className='text-opacity'>Bilhetes: <b>289485</b></div>
-                        </div>
-                    </div>
-                    <Hr elevation={1} />
-                    <div className='winner-content'>
-                        <b className='winner-position'>5º</b>
-                        <div className='winner-info'>
-                            <div>🏆<b>Marcos Paulo</b></div>
-                            <div className='text-opacity'>Bilhetes: <b>289485</b></div>
-                        </div>
-                    </div>
+                    {rankBuyers?.length <= 0 ? (
+                        <>
+                            <SpaceBox space={10} />
+                            <center><b>Não há compradores, pode ser você ;)</b></center>
+                            <SpaceBox space={10} />
+                        </>
+                    ) : (null)}
+                    {rankBuyers?.map((r, index) => (
+                        <>
+                            {index != 0 ? (<Hr elevation={1} />) : (null)}
+                            <div className='winner-content'>
+                                <b className='winner-position'>{(index + 1)}º</b>
+                                <div className='winner-info'>
+                                    <div>🏆<b>{r?.name}</b></div>
+                                    <div className='text-opacity'>Bilhetes: <b>{r?.qtd}</b></div>
+                                </div>
+                            </div>
+                        </>
+                    ))}
                 </Card>
                 <SpaceBox space={30} />
                 <div className='title-bilhetes'>
@@ -647,60 +648,40 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"responsive-margin"} style={{ padding: '16px' }}>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <label>🥇</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>1º ganhador(a):</label>&nbsp;&nbsp;
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                    {rankWinners?.length <= 0 ? (
+                        <>
+                            <SpaceBox space={10} />
+                            <center><b>Não há ganhadores, pode ser você ;)</b></center>
+                            <SpaceBox space={10} />
+                        </>
+                    ) : (null)}
+                    {rankWinners?.map((r, index) => (
+                        <>
+                            {index != 0 ? (
+                                <>
+                                    <SpaceBox space={10} />
+                                    <Hr elevation={1} />
+                                    <SpaceBox space={15} />
+                                </>
+                            ) : (null)}
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
+                                        <label>{getMedalhas(r?.colocacao)}</label>
+                                    </label>
+                                    <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
+                                        <label>{r?.colocacao}º ganhador(a):</label>&nbsp;&nbsp;
+                                    </label>
+                                </div>
+                                <SpaceBox space={10} />
+                                <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
+                                    <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                        <p>{r.ganhador_nome || "(nenhum ganhador)"}&nbsp;·&nbsp;{r?.premio}</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <SpaceBox space={10} />
-                    <Hr elevation={1} />
-                    <SpaceBox space={15} />
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <label>🥈</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>2º ganhador(a):</label>&nbsp;&nbsp;
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                    </div>
-                    <SpaceBox space={10} />
-                    <Hr elevation={1} />
-                    <SpaceBox space={15} />
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <label>🥉</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>3º ganhador(a):</label>&nbsp;&nbsp;
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    ))}
                 </Card>
                 <SpaceBox space={30} />
                 <div className='title-bilhetes'>
@@ -713,8 +694,7 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"responsive-margin"} style={{ padding: '16px' }}>
-                    Especificações: BATERIA PEARL MASTERS MCT VERMILLION SPARKLE. BUMBO 22, SURDO 16, TONS 12,10,8 SEMI NOVOS, CAIXA GRETSCH 14X5,5, HATS 14 DOMENE SEED, CRASH 18 BFC VERSALIKO E RIDE CRASH 20 DOMENE SEED. KIT DE FERRAGENS COM BANCO, MÁQUINA DE CHIMBAL COM AJUSTE DE PESO, ESTANTE DE CAIXA, EXTERSOR DE PRATO TORELI, CLAMP TORELLI COM 3 ENGATES, CLAMP PEARL COM 3 ENGATES , ESTANTE GIRAFA, PEDAL DE BUMBO, BASE DE ENTANTE GIRAFA.
-                    A BATERIA ESTÁ TODA ORIGINAL COM AROS PEARL SUPER HOOP ll, SISTEMA PEARL OPTIMOUT NOS TONS E O MELHOR AJUSTE DE ÂNGULO PARA OS SEUS TONS COM O SISTEMA PEARL GYRO LOCK COM AJUSTE INFINITO.
+                    <p>{campanha?.description || "Sem descrição."}</p>
                 </Card>
                 <SpaceBox space={40} />
                 {numeros?.length > 0 ? (

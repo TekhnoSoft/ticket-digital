@@ -81,6 +81,20 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getRankBuyers: async ({sorteio_id}) => {
+            return await axios.get(`${API_BASE}/sorteios/rank-buyers/${sorteio_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getRankWinners: async ({sorteio_id}) => {
+            return await axios.get(`${API_BASE}/sorteios/rank-winners/${sorteio_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

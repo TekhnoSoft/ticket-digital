@@ -11,6 +11,7 @@ const { Op, Sequelize, where } = require('sequelize');
 const router = express.Router();
 const database = require('../database');
 const SorteioInformacoes = require('../models/sorteio_informacoes');
+const SorteioPremio = require('../models/sorteio_premio');
 var axios = require("axios");
 require('dotenv').config();
 
@@ -106,13 +107,13 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
     try {
         const agora = Utils.getDateNow();
 
-        const user = await User.findOne({ where: {id : user_id} })
-        const sorteio = await Sorteio.findOne({ where: {id: sorteio_id} })
+        const user = await User.findOne({ where: { id: user_id } })
+        const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
         const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
 
         let customer = await getCustomer(user?.cpf);
 
-        if(customer == null){
+        if (customer == null) {
             customer = await createCustomer(user?.name, user?.cpf, user?.email);
         }
 
@@ -139,7 +140,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`
         })
 
-        if(pay != null){
+        if (pay != null) {
 
             await Fatura.update(
                 {
@@ -162,16 +163,16 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
 };
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
-    const {id_remessa} = req.params;
-    try{
-        const fatura = await Fatura.findOne({ where: {id_remessa: id_remessa}});
+    const { id_remessa } = req.params;
+    try {
+        const fatura = await Fatura.findOne({ where: { id_remessa: id_remessa } });
 
         if (!fatura) {
             return res.status(404).json(null);
         }
 
         return res.status(200).json(fatura);
-    }catch (err) {
+    } catch (err) {
         return res.status(500).json(err);
     }
 })
@@ -390,8 +391,8 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
 });
 
 router.get('/bilhetes-pagos/:sorteio_id', validateOrigin, async (req, res) => {
-    const {sorteio_id} = req.params;
-    try{
+    const { sorteio_id } = req.params;
+    try {
         const bilhetes = await Bilhete.findAll({
             where: {
                 sorteio_id: sorteio_id,
@@ -399,14 +400,14 @@ router.get('/bilhetes-pagos/:sorteio_id', validateOrigin, async (req, res) => {
             }
         });
         return res.status(200).json(bilhetes.map(b => Number(b.numero)));
-    }catch (err) {
+    } catch (err) {
         return res.status(500).json(err);
     }
 })
 
 router.get('/bilhetes-reservados/:sorteio_id', validateOrigin, async (req, res) => {
-    const {sorteio_id} = req.params;
-    try{
+    const { sorteio_id } = req.params;
+    try {
         const bilhetes = await Bilhete.findAll({
             where: {
                 sorteio_id: sorteio_id,
@@ -414,6 +415,70 @@ router.get('/bilhetes-reservados/:sorteio_id', validateOrigin, async (req, res) 
             }
         });
         return res.status(200).json(bilhetes.map(b => Number(b.numero)));
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/rank-buyers/:sorteio_id', validateOrigin, async (req, res) => {
+    const { sorteio_id } = req.params;
+    try {
+        
+        const query = `
+            SELECT 
+                B.name AS name, 
+                COUNT(A.id) AS qtd 
+            FROM tb_bilhetes AS A
+            INNER JOIN tb_users AS B ON A.user_id = B.id
+            WHERE A.sorteio_id = :sorteio_id
+            GROUP BY B.name
+            ORDER BY qtd DESC;
+        `;
+
+        const resultados = await database.query(query, {
+            replacements: { sorteio_id },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const rank = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                name: row.name,
+                qtd: row.qtd,
+            }
+            rank.push(obj);
+        })
+
+        return res.status(200).json(rank);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/rank-winners/:sorteio_id', validateOrigin, async (req, res) => {
+    const {sorteio_id} = req.params;
+    try{
+
+        const query = `SELECT A.*, B.name AS ganhador_nome FROM ticketdigital.tb_sorteio_premios A LEFT JOIN tb_users AS B ON A.ganhador_id=B.id WHERE A.sorteio_id='1' ORDER BY A.colocacao ASC;`;
+
+        const resultados = await database.query(query, {
+            replacements: { sorteio_id },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const rank = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                ganhador_nome: row.ganhador_nome,
+                premio: row.name,
+                colocacao: row.colocacao
+            }
+            rank.push(obj);
+        })
+
+        return res.status(200).json(rank);
     }catch (err) {
         return res.status(500).json(err);
     }
