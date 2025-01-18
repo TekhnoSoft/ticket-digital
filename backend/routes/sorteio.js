@@ -135,7 +135,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
         pay = await payPix({
             customer: customer,
             fatura: faturaObject,
-            description: sorteio?.name
+            description: "Bilhetes " + sorteio?.name
         })
 
         if(pay != null){
