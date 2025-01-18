@@ -188,7 +188,7 @@ export default ({ user, setUser }) => {
                             {faturas?.map(fatura => (
                                 <Card style={{ marginBottom: '8px', border: 'solid 1px #ddd' }}>
                                     {fatura?.fatura_status == "AGUARDANDO_PAGAMENTO" ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => {navigate(`/fatura/${fatura?.id_remessa}`)}}>
+                                        <div style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => {navigate(`/fatura/${fatura?.id_remessa}`)}}>
                                             <div style={{ width: '15px', height: '15px', borderRadius: '8px', background: 'gray', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '6px' }}>
                                                 <ion-icon name="time-outline"></ion-icon>
                                             </div>

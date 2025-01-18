@@ -71,7 +71,7 @@ export default () => {
     };
 
     return (
-        <FragmentView headerMode={"PAYMENT"} headerPaymentStep={step}>
+        <FragmentView headerMode={"PAYMENT"} headerPaymentStep={3}>
             {loaded ? (
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>
                     <div className='checkout-all'>
