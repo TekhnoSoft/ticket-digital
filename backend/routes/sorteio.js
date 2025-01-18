@@ -76,14 +76,14 @@ const getQrCodePix = async (id) => {
     }
 }
 
-const payPix = async ({ customer, fatura }) => {
+const payPix = async ({ customer, fatura, description }) => {
     try {
         const response = await axios.post(asaasUri + 'v3/payments/', {
             billingType: 'PIX',
             customer: customer,
             value: Number(fatura?.total),
             dueDate: Utils.getFutureDate(process.env.PIX_FATURA_DIAS_VENCIMENTO),
-            description: "Fatura TicketDigital",
+            description: description,
             externalReference: fatura?.id_remessa,
             split: [],
         }, {
@@ -107,6 +107,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
         const agora = Utils.getDateNow();
 
         const user = await User.findOne({ where: {id : user_id} })
+        const sorteio = await Sorteio.findOne({ where: {id: sorteio_id} })
 
         let customer = await getCustomer(user?.cpf);
 
@@ -133,7 +134,8 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
 
         pay = await payPix({
             customer: customer,
-            fatura: faturaObject
+            fatura: faturaObject,
+            description: sorteio?.name
         })
 
         if(pay != null){
