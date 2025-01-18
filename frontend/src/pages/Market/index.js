@@ -30,7 +30,7 @@ export default () => {
         <FragmentView headerMode={"USER"}>
             <div className='responsive-margin'>
                 <SpaceBox space={20} />
-                <h2 className='text-opacity'>Veículos ({campanhas?.length || 0})</h2>
+                <h2 className='text-opacity'>Campanhas ativas ({campanhas?.length || 0})</h2>
                 <SpaceBox space={20} />
                 {!loaded ? (
                     <>
