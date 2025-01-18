@@ -118,6 +118,8 @@ export default () => {
             setBtnsQtd(_qtdBtns);
 
             setQtd(campanhaData?.info?.minimo_cota_usuario);
+
+            window.document.title = campanhaData?.name;
         } else {
             navigate("/404");
         }
