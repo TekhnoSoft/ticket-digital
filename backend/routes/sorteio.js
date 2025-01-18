@@ -277,10 +277,12 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
         const minutosPrazo = prazoPagamentoEmMinutos[sorteio.prazo_pagamento];
         const prazoTimestamp = agora.clone().add(minutosPrazo, 'minutes');
 
+        console.log(numeros);
+
         if (numeros.length > 0) {
             const bilhetes = Array.from({ length: numeros.length }, (_, i) => ({
                 numero: numeros[i].numero_valor,
-                numero_texto: numeros[i].numero_texto,
+                numero_texto: numeros[i].numero_valor,
                 status: "INDISPONIVEL",
                 id_remessa: id_remessa,
                 flg_premiado: false,

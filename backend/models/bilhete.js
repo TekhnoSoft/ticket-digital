@@ -11,7 +11,7 @@ const Bilhete = database.define('tb_bilhetes', {
         primaryKey: true
     },
     numero: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.STRING,
         allowNull: false
     },
     numero_texto: {

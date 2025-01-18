@@ -190,7 +190,9 @@ const Utils = {
     },
     formatDateSimple: (dateString) => {
         const now = new Date();
-        const date = new Date(dateString);
+        // Ajusta a data para o fuso horário UTC-3
+        const date = new Date(new Date(dateString).toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+    
         const diffInSeconds = Math.floor((now - date) / 1000);
     
         if (diffInSeconds < 60) {
