@@ -29,7 +29,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser }) => {
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => navigate('/')}/>
+                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
                         <div className='button-group'>
                             <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
