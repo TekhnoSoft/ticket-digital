@@ -423,7 +423,7 @@ router.get('/bilhetes-reservados/:sorteio_id', validateOrigin, async (req, res) 
 router.get('/rank-buyers/:sorteio_id', validateOrigin, async (req, res) => {
     const { sorteio_id } = req.params;
     try {
-        
+
         const query = `
             SELECT 
                 B.name AS name, 
@@ -457,8 +457,8 @@ router.get('/rank-buyers/:sorteio_id', validateOrigin, async (req, res) => {
 })
 
 router.get('/rank-winners/:sorteio_id', validateOrigin, async (req, res) => {
-    const {sorteio_id} = req.params;
-    try{
+    const { sorteio_id } = req.params;
+    try {
 
         const query = `SELECT A.*, B.name AS ganhador_nome FROM ticketdigital.tb_sorteio_premios A LEFT JOIN tb_users AS B ON A.ganhador_id=B.id WHERE A.sorteio_id='1' ORDER BY A.colocacao ASC;`;
 
@@ -479,7 +479,43 @@ router.get('/rank-winners/:sorteio_id', validateOrigin, async (req, res) => {
         })
 
         return res.status(200).json(rank);
-    }catch (err) {
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/campanhas', validateOrigin, async (req, res) => {
+    try {
+
+        const query = `
+            SELECT A.*, 
+                (SELECT B.id 
+                    FROM tb_sorteio_imagens AS B 
+                    WHERE B.sorteio_id = A.id 
+                    LIMIT 1) AS id_imagem
+            FROM ticketdigital.tb_sorteios AS A
+            WHERE A.status = 'ATIVO';
+        `;
+
+        const resultados = await database.query(query, {
+            replacements: { },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const campanhas = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                id_imagem: row.id_imagem,
+                name: row.name,
+                valor_por_bilhete: row.valor_por_bilhete,
+                keybind: row.keybind
+            }
+            campanhas.push(obj);
+        })
+
+        return res.status(200).json(campanhas);
+    } catch (err) {
         return res.status(500).json(err);
     }
 })

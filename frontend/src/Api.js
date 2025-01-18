@@ -95,6 +95,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getCampanhas: async ({}) => {
+            return await axios.get(`${API_BASE}/sorteios/campanhas`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

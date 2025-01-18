@@ -1,0 +1,53 @@
+/* Grid container */
+/* Grid container */
+.grid-container {
+    display: grid;
+    gap: 16px;
+    justify-items: center;
+}
+
+.card-img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.card-title {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.card-price {
+    font-size: 16px;
+    color: green;
+    font-weight: bold;
+}
+
+/* Responsividade */
+@media (min-width: 320px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 colunas em celulares */
+    }
+}
+
+@media (min-width: 641px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 colunas em tablets */
+    }
+}
+
+@media (min-width: 961px) {
+    .grid-container {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 colunas em desktops */
+    }
+}
+
+@media (min-width: 1281px) {
+    .grid-container {
+        grid-template-columns: repeat(5, 1fr);
+        /* 5 colunas em telas grandes */
+    }
+}
