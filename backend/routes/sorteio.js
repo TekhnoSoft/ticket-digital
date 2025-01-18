@@ -207,7 +207,7 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
     }
 });
 
-router.get('/imagem/:id', validateOrigin, async (req, res) => {
+router.get('/imagem/:id', async (req, res) => {
     try {
         const { id } = req.params;
 

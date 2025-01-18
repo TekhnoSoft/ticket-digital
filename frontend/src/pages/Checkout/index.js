@@ -396,7 +396,7 @@ export default () => {
                                                         <QRCode
                                                             size={256}
                                                             style={{ height: "auto", maxWidth: "212px", width: "212px" }}
-                                                            value={"cu"}
+                                                            value={qrCode}
                                                             viewBox={`0 0 256 256`}
                                                         />
                                                     ) : (null)}
