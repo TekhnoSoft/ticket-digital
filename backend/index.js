@@ -15,9 +15,11 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 const usersRoute = require('./routes/users');
 const sorteiosRoute = require('./routes/sorteio');
+const paymentRoute = require('./routes/payment');
 
 app.use('/users', usersRoute);
 app.use('/sorteios', sorteiosRoute);
+app.use('/payment', paymentRoute);
 
 const bilheteThread = require("./micro-services/bilhete");
 const faturaThread = require("./micro-services/fatura");
