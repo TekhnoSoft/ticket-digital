@@ -108,6 +108,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
 
         const user = await User.findOne({ where: {id : user_id} })
         const sorteio = await Sorteio.findOne({ where: {id: sorteio_id} })
+        const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
 
         let customer = await getCustomer(user?.cpf);
 
@@ -135,7 +136,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
         pay = await payPix({
             customer: customer,
             fatura: faturaObject,
-            description: "Bilhetes " + sorteio?.name
+            description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`
         })
 
         if(pay != null){
