@@ -2,55 +2,46 @@ import React from 'react';
 import './style.css';
 import Utils from '../../Utils';
 
-const GridItems = ({ campanha, items, numeros, addNumero, removeNumero, reservados, pagos }) => {
+const GridItems = ({ campanha, items, numeros, addNumero, removeNumero, reservados, pagos, filter }) => {
     return (
         <div className="buttons-select-cotas">
             {items.map((item, index) => {
                 const isItemSelected = numeros.includes(item);
+                const isReservado = reservados.includes(item);
+                const isPago = pagos.includes(item);
+                const isDisponivel = !isReservado && !isPago;
+
+                if (
+                    (filter === "pago" && !isPago) ||
+                    (filter === "reservado" && !isReservado) ||
+                    (filter === "disponivel" && !isDisponivel) ||
+                    (filter === "" && false) // Se filter for "", não exibe nada
+                ) {
+                    return null;
+                }
 
                 return (
-                    <>
-                        {reservados.includes(item) ? (
-                            <>
-                                <div
-                                    className={`span-btn-cotas-view`}
-                                    style={{background: 'orange', opacity: '0.4'}}
-                                    key={index}
-                                    onClick={() => {Utils.notify("warning", "Número já reservado por outro usuário.")}}
-                                >
-                                    <b style={{color: 'white'}}>{Utils.formatNumberToTicket(item, campanha?.regra?.valor)}</b>
-                                </div>
-                            </>
-                        ) : pagos.includes(item) ? (
-                            <>
-                                <div
-                                    className={`span-btn-cotas-view`}
-                                    style={{background: 'var(--primary-color)', opacity: '0.4'}}
-                                    key={index}
-                                    onClick={() => {Utils.notify("warning", "Número já pago por outro usuário.")}}
-                                >
-                                    <b style={{color: 'white'}}>{Utils.formatNumberToTicket(item, campanha?.regra?.valor)}</b>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div
-                                    className={`span-btn-cotas-view`}
-                                    style={{background: isItemSelected ? 'gray' : null}}
-                                    key={index}
-                                    onClick={() => {
-                                        if (isItemSelected) {
-                                            removeNumero(item);
-                                        } else {
-                                            addNumero(item);
-                                        }
-                                    }}
-                                >
-                                    <b style={{color: isItemSelected ? 'white' : null}}>{Utils.formatNumberToTicket(item, campanha?.regra?.valor)}</b>
-                                </div>
-                            </>
-                        )}
-                    </>
+                    <div
+                        key={index}
+                        className="span-btn-cotas-view"
+                        style={{
+                            background: isPago ? 'var(--primary-color)' : isReservado ? 'orange' : isItemSelected ? 'gray' : null,
+                            opacity: isPago || isReservado ? '0.4' : '1'
+                        }}
+                        onClick={() => {
+                            if (isPago) {
+                                Utils.notify("warning", "Número já pago por outro usuário.");
+                            } else if (isReservado) {
+                                Utils.notify("warning", "Número já reservado por outro usuário.");
+                            } else {
+                                isItemSelected ? removeNumero(item) : addNumero(item);
+                            }
+                        }}
+                    >
+                        <b style={{ color: isPago || isReservado || isItemSelected ? 'white' : null }}>
+                            {Utils.formatNumberToTicket(item, campanha?.regra?.valor)}
+                        </b>
+                    </div>
                 );
             })}
         </div>

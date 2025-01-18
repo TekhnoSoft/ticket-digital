@@ -353,7 +353,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
 
         const bilhetes = numeros.map(numero => ({
             numero: numero,
-            numero_texto: numero.toString(),
+            numero_texto: Utils.formatNumberToTicket(numero),
             status: "INDISPONIVEL",
             id_remessa: id_remessa,
             flg_premiado: false,

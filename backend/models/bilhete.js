@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 const Sorteio = require('./sorteio');
+const Fatura = require('./fatura');
 
 const Bilhete = database.define('tb_bilhetes', {
     id: {

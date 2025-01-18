@@ -44,7 +44,7 @@ export default () => {
     const navigate = useNavigate();
     const { keybind } = useParams();
 
-    const { user } = useContext(MainContext);
+    const { user, setUser } = useContext(MainContext);
 
     const [phone, setPhone] = useState("");
 
@@ -65,6 +65,8 @@ export default () => {
 
     const [numeros, setNumeros] = useState([]);
     const [qtd, setQtd] = useState(0);
+
+    const [filter, setFilter] = useState("");
 
     useEffect(() => {
         load();
@@ -163,7 +165,7 @@ export default () => {
     return (
         <FragmentView headerMode={"USER"}>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
-                <BilhetesUserList user={user} />
+                <BilhetesUserList user={user} setUser={setUser} />
             </Modal>
             <Modal onCloseCallback={onCloseModalUserCallback} setShow={setShowModalUser} show={showModalUser}>
                 <div>
@@ -277,19 +279,19 @@ export default () => {
                 {viewMode == "USUARIO_ESCOLHE" ? (
                     <div>
                         <div className='filter-buttons responsive-margin'>
-                            <span className='filter-button' style={{ background: '#242429' }}>
+                            <span onClick={() => {setFilter("")}} className='filter-button' style={{ background: '#242429' }}>
                                 <span>Todos</span>
                                 <b style={{ background: '#ffffff', color: '#242429' }}>{campanha?.regra?.valor}</b>
                             </span>
-                            <span className='filter-button' style={{ background: '#eaebed' }}>
+                            <span onClick={() => {setFilter("disponivel")}} className='filter-button' style={{ background: '#eaebed' }}>
                                 <span style={{ color: '#242429' }}>Disponiveis</span>
                                 <b style={{ background: '#242429', color: '#ffffff' }}>{campanha?.regra?.valor - (bilhetesReservados?.length + bilhetesPagos?.length)}</b>
                             </span>
-                            <span className='filter-button' style={{ background: 'orange' }}>
+                            <span onClick={() => {setFilter("reservado")}} className='filter-button' style={{ background: 'orange' }}>
                                 <span>Reservados</span>
                                 <b style={{ background: '#ffffff', color: 'orange' }}>{bilhetesReservados?.length}</b>
                             </span>
-                            <span className='filter-button' style={{ background: 'var(--primary-color)' }}>
+                            <span onClick={() => {setFilter("pago")}} className='filter-button' style={{ background: 'var(--primary-color)' }}>
                                 <span>Pagos</span>
                                 <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>{bilhetesPagos?.length}</b>
                             </span>
@@ -300,7 +302,7 @@ export default () => {
                         </div>
                         <SpaceBox space={15} />
                         {loadedBilheteStatus == true ? (
-                            <Pagination reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
+                            <Pagination filter={filter} reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
                         ) : (null)}
                     </div>
                 ) : (

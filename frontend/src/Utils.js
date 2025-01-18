@@ -187,8 +187,34 @@ const Utils = {
     
         // Retorna sem formatação se o CPF for inválido
         return cpf;
-    }
+    },
+    formatDateSimple: (dateString) => {
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffInSeconds = Math.floor((now - date) / 1000);
     
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} segundo${diffInSeconds === 1 ? '' : 's'}`;
+        }
+    
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        if (diffInMinutes < 60) {
+            return `${diffInMinutes} minuto${diffInMinutes === 1 ? '' : 's'}`;
+        }
+    
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) {
+            return `${diffInHours} hora${diffInHours === 1 ? '' : 's'}`;
+        }
+    
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays < 365) {
+            return `${diffInDays} dia${diffInDays === 1 ? '' : 's'}`;
+        }
+    
+        const diffInYears = Math.floor(diffInDays / 365);
+        return `${diffInYears} ano${diffInYears === 1 ? '' : 's'}`;
+    }
 }
 
 export default Utils;

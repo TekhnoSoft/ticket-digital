@@ -6,7 +6,7 @@ import Modal from '../Modal';
 import BilhetesUserList from '../BilhetesUserList';
 import { useNavigate } from 'react-router-dom';
 
-export default ({ headerMode, headerPaymentStep }) => {
+export default ({ headerMode, headerPaymentStep, user, setUser }) => {
 
     const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default ({ headerMode, headerPaymentStep }) => {
     return (
         <>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
-                <BilhetesUserList />
+                <BilhetesUserList user={user} setUser={setUser} />
             </Modal>
             {headerMode == "USER" ? (
                 <div className='header'>

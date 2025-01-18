@@ -1,9 +1,12 @@
 const express = require('express');
 const User = require('../models/users');
+const Bilhete = require('../models/bilhete');
 const { validateOrigin } = require('../middlewares/CorsMiddleware');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const Utils = require('../utils');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
+const Fatura = require('../models/fatura');
+const sequelize = require('../database');
 const router = express.Router();
 
 router.get('/auth', validateToken, async (req, res) => {
@@ -239,4 +242,68 @@ router.post('/pre-register', validateOrigin, async (req, res) => {
     }
 })
 
+router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
+    const { user_id } = req.params;
+
+    try {
+        // Consulta SQL para obter as faturas e os bilhetes associados
+        const query = `
+            SELECT 
+                f.id AS fatura_id,
+                f.id_remessa,
+                f.status AS fatura_status,
+                f.subtotal,
+                f.total,
+                f.data_compra,
+                b.id AS bilhete_id,
+                b.numero,
+                b.numero_texto,
+                b.status AS bilhete_status
+            FROM tb_faturas f
+            LEFT JOIN tb_bilhetes b ON f.id_remessa = b.id_remessa
+            WHERE f.user_id = :user_id;
+        `;
+
+        const resultados = await sequelize.query(query, {
+            replacements: { user_id },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        // Organizando as faturas e seus bilhetes dentro de um objeto
+        const faturas = [];
+
+        // Mapeia os resultados e agrupa os bilhetes por fatura
+        resultados.forEach((row) => {
+            let fatura = faturas.find(f => f.fatura_id === row.fatura_id);
+
+            if (!fatura) {
+                fatura = {
+                    fatura_id: row.fatura_id,
+                    id_remessa: row.id_remessa,
+                    fatura_status: row.fatura_status,
+                    subtotal: row.subtotal,
+                    total: row.total,
+                    data_compra: row.data_compra,
+                    bilhetes: []
+                };
+                faturas.push(fatura);
+            }
+
+            if (row.bilhete_id) {
+                fatura.bilhetes.push({
+                    bilhete_id: row.bilhete_id,
+                    numero: row.numero,
+                    numero_texto: row.numero_texto,
+                    bilhete_status: row.bilhete_status
+                });
+            }
+        });
+
+        // Retorna as faturas com os bilhetes agrupados
+        return res.status(200).json(faturas);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno.' });
+    }
+});
 module.exports = router;

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
+const Bilhete = require('./bilhete');
 
 const Fatura = database.define('tb_faturas', {
     id: {
