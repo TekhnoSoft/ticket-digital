@@ -6,8 +6,11 @@ import SpaceBox from '../SpaceBox';
 import Card from '../Card';
 import Utils from '../../Utils';
 import Api from '../../Api';
+import { useNavigate } from 'react-router-dom';
 
 export default ({ user, setUser }) => {
+
+    const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
     const [showButtonLoader, setShowButtonLoader] = useState(false);
@@ -185,7 +188,7 @@ export default ({ user, setUser }) => {
                             {faturas?.map(fatura => (
                                 <Card style={{ marginBottom: '8px', border: 'solid 1px #ddd' }}>
                                     {fatura?.fatura_status == "AGUARDANDO_PAGAMENTO" ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => {navigate(`/fatura/${fatura?.id_remessa}`)}}>
                                             <div style={{ width: '15px', height: '15px', borderRadius: '8px', background: 'gray', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '6px' }}>
                                                 <ion-icon name="time-outline"></ion-icon>
                                             </div>
@@ -208,6 +211,8 @@ export default ({ user, setUser }) => {
                                         </div>
                                     ) : (null)}
                                     <SpaceBox space={8} />
+                                    <label><b>{fatura?.nome_sorteio}</b></label>
+                                    <SpaceBox space={8} />
                                     <div style={{ display: 'flex', gap: '2px', width: '100%', overflowX: 'auto', paddingBottom: '5px' }}>
                                         {fatura?.bilhetes?.map(bilhete => (
                                             <label style={{ background: '#ddd', padding: '2px 4px', borderRadius: '4px', fontSize: '12px' }}>{Utils.formatNumberToTicket(bilhete?.numero, 1000000)}</label>
@@ -215,7 +220,7 @@ export default ({ user, setUser }) => {
                                     </div>
                                     <SpaceBox space={8} />
                                     <div>
-                                        <span style={{ color: 'black', fontSize: '14PX' }}>{Utils.convertNumberToBRL(fatura?.total)} · {Utils.formatDateSimple(fatura?.data_compra)}</span>
+                                        <span style={{ color: 'black', fontSize: '14PX' }}><b>{Utils.convertNumberToBRL(fatura?.total)}</b> · {Utils.formatDateSimple(fatura?.data_compra)}</span>
                                     </div>
                                 </Card>
                             ))}

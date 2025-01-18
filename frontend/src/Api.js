@@ -12,6 +12,13 @@ const Api = {
                 return err;
             });
         },
+        getSorteio: async ({id_sorteio}) => {
+            return await axios.get(`${API_BASE}/sorteios/get-by-id/${id_sorteio}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
         getUserByPhone: async ({phone}) => {
             return await axios.get(`${API_BASE}/users/get-by-phone/${phone}`).then(async (response) => {
                 return await response;
@@ -63,6 +70,13 @@ const Api = {
         },
         searchUserTickes: async ({user_id}) => {
             return await axios.get(`${API_BASE}/users/faturas/${user_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getFatura: async ({id_remessa}) => {
+            return await axios.get(`${API_BASE}/users/fatura/${id_remessa}`).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;

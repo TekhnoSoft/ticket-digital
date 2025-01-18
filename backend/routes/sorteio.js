@@ -277,8 +277,6 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
         const minutosPrazo = prazoPagamentoEmMinutos[sorteio.prazo_pagamento];
         const prazoTimestamp = agora.clone().add(minutosPrazo, 'minutes');
 
-        console.log(numeros);
-
         if (numeros.length > 0) {
             const bilhetes = Array.from({ length: numeros.length }, (_, i) => ({
                 numero: numeros[i].numero_valor,
@@ -397,7 +395,7 @@ router.get('/bilhetes-pagos/:sorteio_id', validateOrigin, async (req, res) => {
                 status: { [Op.in]: ["PAGO"] }
             }
         });
-        return res.status(200).json(bilhetes.map(b => b.numero));
+        return res.status(200).json(bilhetes.map(b => Number(b.numero)));
     }catch (err) {
         return res.status(500).json(err);
     }
@@ -412,9 +410,8 @@ router.get('/bilhetes-reservados/:sorteio_id', validateOrigin, async (req, res) 
                 status: { [Op.in]: ["INDISPONIVEL"] }
             }
         });
-        return res.status(200).json(bilhetes.map(b => b.numero));
+        return res.status(200).json(bilhetes.map(b => Number(b.numero)));
     }catch (err) {
-        console.log(err)
         return res.status(500).json(err);
     }
 })

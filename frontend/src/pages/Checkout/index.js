@@ -114,6 +114,7 @@ export default () => {
         if (success) {
             setUser(userData?.data);
             localStorage.setItem("user", JSON.stringify(userData?.data));
+            window.scrollTo(0, 0);
         }
 
         return success;
@@ -128,6 +129,7 @@ export default () => {
         if (success) {
             setUser(userData?.data);
             localStorage.setItem("user", JSON.stringify(userData?.data));
+            window.scrollTo(0, 0);
         }
 
         return success;
@@ -137,22 +139,22 @@ export default () => {
         switch (checkout?.viewMode) {
             case "USUARIO_ESCOLHE":
                 const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id }, true);
-                console.log(successBilheteSelecionado, dataBilheteSelecionado);
                 if (successBilheteSelecionado) {
                     localStorage.setItem("fatura", dataBilheteSelecionado?.id_remessa);
                     checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, null);
                     let interval = setInterval(() => { checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, interval) }, 3000)
                     setStep(4);
+                    window.scrollTo(0, 0);
                 }
                 break;
             case "SISTEMA_ESCOLHE":
                 const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id }, true);
-                console.log(successBilheteQuantidade, dataBilheteQuantidade);
                 if (successBilheteQuantidade) {
                     localStorage.setItem("fatura", dataBilheteQuantidade?.id_remessa);
                     checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, null);
                     let interval = setInterval(() => { checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, interval) }, 3000)
                     setStep(4);
+                    window.scrollTo(0, 0);
                 }
                 break;
         }
@@ -167,6 +169,7 @@ export default () => {
                 case "PAGO":
                     setPaymentStatus("PAGO");
                     setStep(5);
+                    window.scrollTo(0, 0);
                     if(interval){
                         clearInterval(interval);
                     }
@@ -174,6 +177,7 @@ export default () => {
                 case "CANCELADO":
                     setPaymentStatus("CANCELADO");
                     setStep(5);
+                    window.scrollTo(0, 0);
                     if(interval){
                         clearInterval(interval);
                     }
@@ -447,7 +451,7 @@ export default () => {
                                         <SpaceBox space={8} />
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <b>Data:</b>
-                                            <span>15/01/2025 ás 13:31</span>
+                                            <span>{Utils.formatDateTime(new Date())}</span>
                                         </div>
                                         <SpaceBox space={8} />
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

@@ -66,7 +66,7 @@ export default () => {
     const [numeros, setNumeros] = useState([]);
     const [qtd, setQtd] = useState(0);
 
-    const [filter, setFilter] = useState("");
+    const [filter, setFilter] = useState("disponivel");
 
     useEffect(() => {
         load();
@@ -74,7 +74,8 @@ export default () => {
 
     useEffect(() => {
         const loadBilhetesStatusInfo = async () => {
-            if(campanha?.id != undefined && campanha?.tipo == "USUARIO_ESCOLHE"){
+            setLoadedBilheteStatus(false);
+            if (campanha?.id != undefined && campanha?.tipo == "USUARIO_ESCOLHE") {
                 const { success: reservadosSuccess, data: reservadosData } = await Utils.processRequest(Api.geral.getBilhetesReservados, { sorteio_id: campanha?.id });
                 const { success: pagosSuccess, data: pagosData } = await Utils.processRequest(Api.geral.getBilhetesPagos, { sorteio_id: campanha?.id });
                 setBilhetesReservados(reservadosData);
@@ -279,19 +280,19 @@ export default () => {
                 {viewMode == "USUARIO_ESCOLHE" ? (
                     <div>
                         <div className='filter-buttons responsive-margin'>
-                            <span onClick={() => {setFilter("")}} className='filter-button' style={{ background: '#242429' }}>
+                            <span onClick={() => { setFilter("") }} className='filter-button' style={{ background: '#242429' }}>
                                 <span>Todos</span>
                                 <b style={{ background: '#ffffff', color: '#242429' }}>{campanha?.regra?.valor}</b>
                             </span>
-                            <span onClick={() => {setFilter("disponivel")}} className='filter-button' style={{ background: '#eaebed' }}>
+                            <span onClick={() => { setFilter("disponivel") }} className='filter-button' style={{ background: '#eaebed' }}>
                                 <span style={{ color: '#242429' }}>Disponiveis</span>
                                 <b style={{ background: '#242429', color: '#ffffff' }}>{campanha?.regra?.valor - (bilhetesReservados?.length + bilhetesPagos?.length)}</b>
                             </span>
-                            <span onClick={() => {setFilter("reservado")}} className='filter-button' style={{ background: 'orange' }}>
+                            <span onClick={() => { setFilter("reservado") }} className='filter-button' style={{ background: 'orange' }}>
                                 <span>Reservados</span>
                                 <b style={{ background: '#ffffff', color: 'orange' }}>{bilhetesReservados?.length}</b>
                             </span>
-                            <span onClick={() => {setFilter("pago")}} className='filter-button' style={{ background: 'var(--primary-color)' }}>
+                            <span onClick={() => { setFilter("pago") }} className='filter-button' style={{ background: 'var(--primary-color)' }}>
                                 <span>Pagos</span>
                                 <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>{bilhetesPagos?.length}</b>
                             </span>
@@ -303,7 +304,13 @@ export default () => {
                         <SpaceBox space={15} />
                         {loadedBilheteStatus == true ? (
                             <Pagination filter={filter} reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
-                        ) : (null)}
+                        ) : (
+                            <>
+                                <SpaceBox space={10} />
+                                <center><b>Carregando...</b></center>
+                                <SpaceBox space={10} />
+                            </>
+                        )}
                     </div>
                 ) : (
                     <>

@@ -4,9 +4,11 @@ const Bilhete = require('../models/bilhete');
 const { validateOrigin } = require('../middlewares/CorsMiddleware');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const Utils = require('../utils');
-const { Op, Sequelize } = require('sequelize');
+const { Op, Sequelize, where } = require('sequelize');
 const Fatura = require('../models/fatura');
 const sequelize = require('../database');
+const Sorteio = require('../models/sorteio');
+const SorteioImagens = require('../models/sorteio_imagens');
 const router = express.Router();
 
 router.get('/auth', validateToken, async (req, res) => {
@@ -258,8 +260,10 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
                 b.id AS bilhete_id,
                 b.numero,
                 b.numero_texto,
-                b.status AS bilhete_status
+                b.status AS bilhete_status,
+                s.name AS nome_sorteio
             FROM tb_faturas f
+            INNER JOIN tb_sorteios s ON f.sorteio_id = s.id
             LEFT JOIN tb_bilhetes b ON f.id_remessa = b.id_remessa
             WHERE f.user_id = :user_id
             ORDER BY f.data_compra DESC;
@@ -285,6 +289,7 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
                     subtotal: row.subtotal,
                     total: row.total,
                     data_compra: row.data_compra,
+                    nome_sorteio: row.nome_sorteio,
                     bilhetes: []
                 };
                 faturas.push(fatura);
@@ -304,7 +309,39 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
         return res.status(200).json(faturas);
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Erro interno.' });
+        return res.status(500).json({ error: 'Erro interno: ' + err });
     }
 });
+
+router.get('/fatura/:id_remessa', validateOrigin, async (req, res) => {
+    const {id_remessa} = req.params;
+    try{
+
+        const fatura = await Fatura.findOne({ where: { id_remessa }});
+        const sorteio = await Sorteio.findOne({ where: {id: fatura?.sorteio_id}});
+        const imagem = await SorteioImagens.findOne({ 
+            where: { sorteio_id: fatura?.sorteio_id }, 
+            attributes: ['id'] 
+        });
+        const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
+        const user = await User.findOne({ where: { id: fatura?.user_id } });
+
+        return res.status(200).json({
+            fatura: fatura,
+            sorteio: sorteio,
+            qtd: bilhetesCount,
+            imagem: imagem?.id,
+            user: {
+                cpf: user?.cpf,
+                name: user?.name,
+                email: user?.email,
+                phone: user?.phone
+            }
+        });
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
 module.exports = router;

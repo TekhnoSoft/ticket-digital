@@ -20,8 +20,6 @@ const usePageSEO = ({
         setMetaTag("property", 'og:image', ogImage);
         setMetaTag("property", 'og:url', ogUrl || window.location.href);
 
-        console.log(observer)
-
         return () => {
 
         }

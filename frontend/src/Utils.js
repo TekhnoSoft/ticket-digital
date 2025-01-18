@@ -1,4 +1,7 @@
 import { toast } from 'react-toastify';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
+import { ptBR } from 'date-fns/locale';
 
 const Utils = {
     formatNumberToTicket: (num, maxLength = 1000000) => {
@@ -178,44 +181,40 @@ const Utils = {
     },
     formatCpf: (cpf) => {
         // Remove todos os caracteres não numéricos
-        let cpfLimpo = cpf.replace(/\D/g, '');
+        let cpfLimpo = cpf?.replace(/\D/g, '');
     
         // Verifica se tem 11 dígitos (formato válido de CPF)
         if (cpfLimpo.length === 11) {
-            return cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            return cpfLimpo?.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
         }
     
         // Retorna sem formatação se o CPF for inválido
         return cpf;
     },
+    formatDateTime: (dateString) => {
+        const date = new Date(dateString);
+    
+        const pad = (num) => num.toString().padStart(2, '0');
+    
+        const day = pad(date.getDate());
+        const month = pad(date.getMonth() + 1); // Mês é baseado em zero
+        const year = date.getFullYear();
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+    
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    },
     formatDateSimple: (dateString) => {
-        const now = new Date();
-        // Ajusta a data para o fuso horário UTC-3
-        const date = new Date(new Date(dateString).toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+        const timeZone = 'America/Sao_Paulo'; // Ajuste para o seu fuso horário local
+        
+        // Converte a data para o fuso horário correto
+        const zonedDate = toZonedTime(dateString, timeZone);
     
-        const diffInSeconds = Math.floor((now - date) / 1000);
+        // Calcula a diferença, retornando a tradução para português
+        const diff = formatDistanceToNow(zonedDate, { addSuffix: true, locale: ptBR });
     
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds} segundo${diffInSeconds === 1 ? '' : 's'}`;
-        }
-    
-        const diffInMinutes = Math.floor(diffInSeconds / 60);
-        if (diffInMinutes < 60) {
-            return `${diffInMinutes} minuto${diffInMinutes === 1 ? '' : 's'}`;
-        }
-    
-        const diffInHours = Math.floor(diffInMinutes / 60);
-        if (diffInHours < 24) {
-            return `${diffInHours} hora${diffInHours === 1 ? '' : 's'}`;
-        }
-    
-        const diffInDays = Math.floor(diffInHours / 24);
-        if (diffInDays < 365) {
-            return `${diffInDays} dia${diffInDays === 1 ? '' : 's'}`;
-        }
-    
-        const diffInYears = Math.floor(diffInDays / 365);
-        return `${diffInYears} ano${diffInYears === 1 ? '' : 's'}`;
+        return diff;
     }
 }
 

@@ -19,7 +19,6 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, totalItems 
 
     // Função para garantir que a página está dentro dos limites
     const handlePageChange = (newPage) => {
-        console.log(newPage);
         if (newPage >= 1 && newPage <= totalPages) {
             onPageChange(newPage);
         }
