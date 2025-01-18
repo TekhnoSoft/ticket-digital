@@ -49,6 +49,7 @@ export default () => {
     const [phone, setPhone] = useState("");
 
     const [loaded, setLoaded] = useState(false);
+    const [loadedBilheteStatus, setLoadedBilheteStatus] = useState(false);
     const [showModalCampanhas, setShowModalCampanhas] = useState(false);
     const [showModalUser, setShowModalUser] = useState(false);
     const [viewMode, setViewMode] = useState("");
@@ -56,6 +57,9 @@ export default () => {
     const [campanha, setCampanha] = useState({
         imagens: [],
     })
+
+    const [bilhetesPagos, setBilhetesPagos] = useState([]);
+    const [bilhetesReservados, setBilhetesReservados] = useState([]);
 
     const [btnsQtd, setBtnsQtd] = useState([]);
 
@@ -67,8 +71,17 @@ export default () => {
     }, [])
 
     useEffect(() => {
-        console.log(numeros);
-    }, [numeros])
+        const loadBilhetesStatusInfo = async () => {
+            if(campanha?.id != undefined && campanha?.tipo == "USUARIO_ESCOLHE"){
+                const { success: reservadosSuccess, data: reservadosData } = await Utils.processRequest(Api.geral.getBilhetesReservados, { sorteio_id: campanha?.id });
+                const { success: pagosSuccess, data: pagosData } = await Utils.processRequest(Api.geral.getBilhetesPagos, { sorteio_id: campanha?.id });
+                setBilhetesReservados(reservadosData);
+                setBilhetesPagos(pagosData);
+            }
+            setLoadedBilheteStatus(true);
+        }
+        loadBilhetesStatusInfo();
+    }, [campanha])
 
     const addNumero = (numero) => {
         if (numeros?.length < campanha?.info?.maximo_cota_usuario) {
@@ -105,7 +118,6 @@ export default () => {
             setBtnsQtd(_qtdBtns);
 
             setQtd(campanhaData?.info?.minimo_cota_usuario);
-
         } else {
             navigate("/404");
         }
@@ -117,13 +129,13 @@ export default () => {
         switch (viewMode) {
             case "USUARIO_ESCOLHE":
                 if (numeros?.length < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes`);
+                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes.`);
                     return;
                 }
                 break;
             case "SISTEMA_ESCOLHE":
                 if (qtd < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes`);
+                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes.`);
                     return;
                 }
                 break;
@@ -265,19 +277,19 @@ export default () => {
                         <div className='filter-buttons responsive-margin'>
                             <span className='filter-button' style={{ background: '#242429' }}>
                                 <span>Todos</span>
-                                <b style={{ background: '#ffffff', color: '#242429' }}>100</b>
+                                <b style={{ background: '#ffffff', color: '#242429' }}>{campanha?.regra?.valor}</b>
                             </span>
                             <span className='filter-button' style={{ background: '#eaebed' }}>
                                 <span style={{ color: '#242429' }}>Disponiveis</span>
-                                <b style={{ background: '#242429', color: '#ffffff' }}>100</b>
+                                <b style={{ background: '#242429', color: '#ffffff' }}>{campanha?.regra?.valor - (bilhetesReservados?.length + bilhetesPagos?.length)}</b>
                             </span>
                             <span className='filter-button' style={{ background: 'orange' }}>
-                                <span>Pagos</span>
-                                <b style={{ background: '#ffffff', color: 'orange' }}>100</b>
+                                <span>Reservados</span>
+                                <b style={{ background: '#ffffff', color: 'orange' }}>{bilhetesReservados?.length}</b>
                             </span>
                             <span className='filter-button' style={{ background: 'var(--primary-color)' }}>
-                                <span>Reservados</span>
-                                <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>100</b>
+                                <span>Pagos</span>
+                                <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>{bilhetesPagos?.length}</b>
                             </span>
                             <span onClick={() => { setShowModalCampanhas(true) }} className='filter-button' style={{ background: 'var(--primary-color)', alignSelf: 'center' }}>
                                 <ion-icon name="ticket"></ion-icon>&nbsp;
@@ -285,7 +297,9 @@ export default () => {
                             </span>
                         </div>
                         <SpaceBox space={15} />
-                        <Pagination campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
+                        {loadedBilheteStatus == true ? (
+                            <Pagination reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
+                        ) : (null)}
                     </div>
                 ) : (
                     <>

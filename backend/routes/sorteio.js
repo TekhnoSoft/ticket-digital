@@ -7,7 +7,7 @@ const Fatura = require('../models/fatura');
 const SorteioImagens = require("../models/sorteio_imagens");
 const { validateOrigin } = require('../middlewares/CorsMiddleware');
 const Utils = require('../utils');
-const { Op, Sequelize } = require('sequelize');
+const { Op, Sequelize, where } = require('sequelize');
 const router = express.Router();
 const database = require('../database');
 const SorteioInformacoes = require('../models/sorteio_informacoes');
@@ -158,7 +158,22 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
     }
 };
 
-router.get('/get-by-keybind/:keybind', async (req, res) => {
+router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
+    const {id_remessa} = req.params;
+    try{
+        const fatura = await Fatura.findOne({ where: {id_remessa: id_remessa}});
+
+        if (!fatura) {
+            return res.status(404).json(null);
+        }
+
+        return res.status(200).json(fatura);
+    }catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
     const { keybind } = req.params;
 
     try {
@@ -192,7 +207,7 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
     }
 });
 
-router.get('/imagem/:id', async (req, res) => {
+router.get('/imagem/:id', validateOrigin, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -294,7 +309,6 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
         });
 
     } catch (err) {
-        console.log(err);
         return res.status(500).json(err);
     }
 });
@@ -368,9 +382,39 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
         });
 
     } catch (err) {
-        console.log(err);
         return res.status(500).json(err);
     }
 });
+
+router.get('/bilhetes-pagos/:sorteio_id', validateOrigin, async (req, res) => {
+    const {sorteio_id} = req.params;
+    try{
+        const bilhetes = await Bilhete.findAll({
+            where: {
+                sorteio_id: sorteio_id,
+                status: { [Op.in]: ["PAGO"] }
+            }
+        });
+        return res.status(200).json(bilhetes.map(b => b.numero));
+    }catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/bilhetes-reservados/:sorteio_id', validateOrigin, async (req, res) => {
+    const {sorteio_id} = req.params;
+    try{
+        const bilhetes = await Bilhete.findAll({
+            where: {
+                sorteio_id: sorteio_id,
+                status: { [Op.in]: ["INDISPONIVEL"] }
+            }
+        });
+        return res.status(200).json(bilhetes.map(b => b.numero));
+    }catch (err) {
+        console.log(err)
+        return res.status(500).json(err);
+    }
+})
 
 module.exports = router;

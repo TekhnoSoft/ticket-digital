@@ -4,8 +4,11 @@ import Button from '../Button';
 import Hr from '../Hr';
 import Modal from '../Modal';
 import BilhetesUserList from '../BilhetesUserList';
+import { useNavigate } from 'react-router-dom';
 
 export default ({ headerMode, headerPaymentStep }) => {
+
+    const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
     const [showModalCampanhas, setShowModalCampanhas] = useState(false);
@@ -26,7 +29,7 @@ export default ({ headerMode, headerPaymentStep }) => {
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} />
+                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => navigate('/')}/>
                         <div className='button-group'>
                             <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
@@ -48,7 +51,7 @@ export default ({ headerMode, headerPaymentStep }) => {
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} />
+                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => navigate(-1)}/>
                         <div className='button-group'>
                             <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
                                 <ion-icon name="person-outline"></ion-icon>

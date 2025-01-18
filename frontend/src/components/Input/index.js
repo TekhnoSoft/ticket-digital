@@ -22,7 +22,7 @@ function setFocus(on) {
     }
 }
 
-const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hidden, id, accept, capture, maxLegth, hideInputBoxMargin}) => {
+const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hidden, id, accept, capture, maxLegth, hideInputBoxMargin, readOnly}) => {
 
     const handleChange = (event) => {
         const newValue = event.target.value;
@@ -279,6 +279,7 @@ const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hi
                         ref={ref}
                         disabled={disabled}
                         style={style}
+                        readOnly={readOnly ? readOnly : false}
                     />
                 ) : (
                     <input 

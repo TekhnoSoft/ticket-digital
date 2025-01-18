@@ -3,7 +3,7 @@ import './style.css';
 import GridItems from '../GridItems';
 import PaginationControls from '../PaginationControls';
 
-const Pagination = ({campanha, numeros, addNumero, removeNumero}) => {
+const Pagination = ({campanha, numeros, addNumero, removeNumero, reservados, pagos}) => {
     const totalItems = campanha?.regra?.valor;
     const itemsPerPage = 100;
     const totalPages = Math.ceil(totalItems / itemsPerPage); 
@@ -23,7 +23,7 @@ const Pagination = ({campanha, numeros, addNumero, removeNumero}) => {
 
     return (
         <div>
-            <GridItems campanha={campanha} items={currentItems} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero}/>
+            <GridItems reservados={reservados} pagos={pagos} campanha={campanha} items={currentItems} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero}/>
             <PaginationControls
                 currentPage={currentPage} 
                 totalPages={totalPages} 

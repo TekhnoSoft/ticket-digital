@@ -40,6 +40,27 @@ const Api = {
                 return err;
             });
         },
+        checkFaturaIsPayed: async ({id_remessa}) => {
+            return await axios.get(`${API_BASE}/sorteios/get-fatura-by-remessa/${id_remessa}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getBilhetesPagos: async ({sorteio_id}) => {
+            return await axios.get(`${API_BASE}/sorteios/bilhetes-pagos/${sorteio_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getBilhetesReservados: async ({sorteio_id}) => {
+            return await axios.get(`${API_BASE}/sorteios/bilhetes-reservados/${sorteio_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
     }
 }
 

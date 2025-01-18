@@ -12,7 +12,7 @@ export default () => {
 
     const navigate = useNavigate();
 
-    const {user, setUser} = useContext(MainContext);
+    const { user, setUser } = useContext(MainContext);
 
     const [step, setStep] = useState(1);
     const [showButtonLoader, setShowButtonLoader] = useState(false);
@@ -27,12 +27,15 @@ export default () => {
     const [email, setEmail] = useState("");
     const [cpf, setCpf] = useState("");
 
+    const [qrCode, setQrCode] = useState(null);
+    const [barCode, setBarCode] = useState(null);
+
     useEffect(() => {
-        if(!checkout){
+        if (!checkout) {
             navigate("/");
         }
 
-        if(user){
+        if (user) {
             setStep(3);
         }
     }, [user])
@@ -40,9 +43,9 @@ export default () => {
     const handleToContinue = async () => {
         setShowButtonLoader(true);
 
-        switch(step){
+        switch (step) {
             case 1:
-                if(!Utils.validarCelular(phone)){
+                if (!Utils.validarCelular(phone)) {
                     Utils.notify("error", "Celular inválido!");
                     setShowButtonLoader(false);
                     return;
@@ -50,39 +53,39 @@ export default () => {
 
                 let ok = await handleGetUser();
 
-                if(ok){
+                if (ok) {
                     setStep(3);
-                }else{
+                } else {
                     setStep(2);
                 }
                 setShowButtonLoader(false);
                 return;
             case 2:
-                if(name?.trim().length < 3) {
+                if (name?.trim().length < 3) {
                     Utils.notify("error", "Nome inválido!");
                     setShowButtonLoader(false);
                     return;
                 }
 
-                if(!Utils.validarCelular(phone)){
+                if (!Utils.validarCelular(phone)) {
                     Utils.notify("error", "Celular inválido!");
                     setShowButtonLoader(false);
                     return;
                 }
 
-                if(phone != phoneC){
+                if (phone != phoneC) {
                     Utils.notify("error", "Celulares divergentes!");
                     setShowButtonLoader(false);
                     return;
                 }
 
-                if(!Utils.validarEmail(email)){
+                if (!Utils.validarEmail(email)) {
                     Utils.notify("error", "E-mail inválido!");
                     setShowButtonLoader(false);
                     return;
                 }
 
-                if(!Utils.validateCpf(cpf)){
+                if (!Utils.validateCpf(cpf)) {
                     Utils.notify("error", "CPF inválido!");
                     setShowButtonLoader(false);
                     return;
@@ -108,7 +111,7 @@ export default () => {
 
         const { success, data: userData } = await Utils.processRequest(Api.geral.getUserByPhone, { phone: sanitizedPhone });
 
-        if(success){
+        if (success) {
             setUser(userData?.data);
             localStorage.setItem("user", JSON.stringify(userData?.data));
         }
@@ -122,7 +125,7 @@ export default () => {
 
         const { success, data: userData } = await Utils.processRequest(Api.geral.preRegisterUser, { name, phone: sanitizedPhone, email, cpf: sanitizedCPF }, true);
 
-        if(success){
+        if (success) {
             setUser(userData?.data);
             localStorage.setItem("user", JSON.stringify(userData?.data));
         }
@@ -131,25 +134,59 @@ export default () => {
     }
 
     const handleFinish = async () => {
-        switch(checkout?.viewMode){
+        switch (checkout?.viewMode) {
             case "USUARIO_ESCOLHE":
                 const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id }, true);
                 console.log(successBilheteSelecionado, dataBilheteSelecionado);
-                if(successBilheteSelecionado){
+                if (successBilheteSelecionado) {
                     localStorage.setItem("fatura", dataBilheteSelecionado?.id_remessa);
-                    setStep(4); 
+                    checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, null);
+                    let interval = setInterval(() => { checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, interval) }, 3000)
+                    setStep(4);
                 }
                 break;
             case "SISTEMA_ESCOLHE":
                 const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id }, true);
                 console.log(successBilheteQuantidade, dataBilheteQuantidade);
-                if(successBilheteQuantidade){
+                if (successBilheteQuantidade) {
                     localStorage.setItem("fatura", dataBilheteQuantidade?.id_remessa);
+                    checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, null);
+                    let interval = setInterval(() => { checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, interval) }, 3000)
                     setStep(4);
                 }
                 break;
         }
     }
+
+    const checkFaturaIsPayed = async (id_remessa, interval) => {
+        const { success, data } = await Utils.processRequest(Api.geral.checkFaturaIsPayed, { id_remessa: id_remessa }, true);
+        if (success) {
+            setQrCode(data?.qr_code_payment_image);
+            setBarCode(data?.qr_code_payment_barcode);
+            switch (data?.status) {
+                case "PAGO":
+                    setPaymentStatus("PAGO");
+                    setStep(5);
+                    if(interval){
+                        clearInterval(interval);
+                    }
+                    break;
+                case "CANCELADO":
+                    setPaymentStatus("CANCELADO");
+                    setStep(5);
+                    if(interval){
+                        clearInterval(interval);
+                    }
+                    break;
+            }
+        }
+    }
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(barCode)
+            .then(() => Utils.notify("success","Código copiado!"))
+            .catch(err => Utils.notify("error","Erro ao copiar"));
+    };
 
     return (
         <FragmentView headerMode={"PAYMENT"} headerPaymentStep={step}>
@@ -318,10 +355,14 @@ export default () => {
                                     </div>
                                     <SpaceBox space={20} />
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Input style={{ width: '100%', borderRadius: '4px 0px 0px 4px' }} type={"text"} />
-                                        <Button style={{ width: '90px', borderRadius: '0px 4px 4px 0px' }}>
-                                            Copiar
-                                        </Button>
+                                        {barCode ? (
+                                            <>
+                                                <Input style={{ width: '100%', borderRadius: '4px 0px 0px 4px' }} value={barCode} type={"text"} readOnly={true}/>
+                                                <Button onClick={handleCopy} style={{ width: '90px', borderRadius: '0px 4px 4px 0px' }}>
+                                                    Copiar
+                                                </Button>
+                                            </>
+                                        ) : (null)}
                                     </div>
                                     <SpaceBox space={20} />
                                     <Hr elevation={1} />
@@ -351,12 +392,14 @@ export default () => {
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <div>
                                                 <center>
-                                                    <QRCode
-                                                        size={256}
-                                                        style={{ height: "auto", maxWidth: "212px", width: "212px" }}
-                                                        value={"cu"}
-                                                        viewBox={`0 0 256 256`}
-                                                    />
+                                                    {qrCode ? (
+                                                        <QRCode
+                                                            size={256}
+                                                            style={{ height: "auto", maxWidth: "212px", width: "212px" }}
+                                                            value={"cu"}
+                                                            viewBox={`0 0 256 256`}
+                                                        />
+                                                    ) : (null)}
                                                 </center>
                                                 <SpaceBox space={10} />
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
