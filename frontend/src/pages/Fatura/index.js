@@ -2,13 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import './style.css';
 import { Button, Card, FragmentView, Hr, Input, SpaceBox } from '../../components';
 import QRCode from "react-qr-code";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Environment from '../../Environment';
 import Utils from '../../Utils';
 import { MainContext } from '../../helpers/MainContext';
 import Api from '../../Api';
 
 export default () => {
+
+    const navigate = useNavigate();
 
     const { id_remessa } = useParams();
 
@@ -34,6 +36,8 @@ export default () => {
         const { success, data } = await Utils.processRequest(Api.geral.getFatura, { id_remessa }, true);
         if (success) {
             setCampanha(data);
+        }else{
+            navigate(-1);
         }
         setLoaded(true);
     }
