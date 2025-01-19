@@ -81,10 +81,12 @@ const getQrCodePix = async (id) => {
 
 const payPix = async ({ customer, fatura, description }) => {
     try {
+        let total = fatura?.total + fatura?.taxa_cliente;
+
         const response = await axios.post(asaasUri + 'v3/payments/', {
             billingType: 'PIX',
             customer: customer,
-            value: Number(fatura?.total + fatura?.taxa_cliente),
+            value: Number(total),
             dueDate: Utils.getFutureDate(process.env.PIX_FATURA_DIAS_VENCIMENTO),
             description: description,
             externalReference: fatura?.id_remessa,
