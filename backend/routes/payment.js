@@ -21,54 +21,36 @@ router.post('/payment-received', async (req, res) => {
 })
 
 const paymentReceived = async (data) => {
+
     let id = data?.payment?.id;
     let status = data?.payment?.status;
-    let comprovante = data?.payment?.transactionReceiptUrl;
-    let subscription = data?.payment?.subscription;
-    let billingType = data?.payment?.billingType;
 
-    if (subscription == null) {
-        if (billingType == "CREDIT_CARD") {
-            if (status == "PAYMENT_CONFIRMED" || status == "CONFIRMED") {
-                let externalReference = Number(data?.payment?.externalReference);
+    if (status == "RECEIVED") {
 
-                await Fatura.update(
-                    {
-                        status: "PAGO",
-                    },
-                    {
-                        where: { id_remessa: externalReference }
-                    },
-                );
+        await Fatura.update(
+            {
+                status: "PAGO",
+            },
+            {
+                where: { id_payment_response: id }
+            },
+        );
 
-                await Bilhete.update(
-                    {
-                        status: "PAGO",
-                    },
-                    {
-                        where: { id_remessa: externalReference }
-                    },
-                );
+        const fatura = await Fatura.findOnd({ where: { id_payment_response: id }})
 
-                console.log("aqui 1");
-                console.log(externalReference);
-                console.log(id);
-            }
-        } else {
-            if (status == "RECEIVED") {
-                let externalReference = Number(data?.payment?.externalReference);
-                console.log("aqui 2");
-                console.log(externalReference);
-                console.log(id);
-            }
-        }
-    } else {
-        if (status == "RECEIVED") {
-            let externalReference = Number(data?.payment?.externalReference);
-            console.log("aqui 3");
-            console.log(externalReference);
-            console.log(id);
-        }
+        await Bilhete.update(
+            {
+                status: "PAGO",
+            },
+            {
+                where: { id_remessa: fatura?.id_remessa }
+            },
+        );
+
+        console.log("aqui 2");
+        console.log(id);
+        console.log(fatura);
+        console.log(status);
     }
 
 }
