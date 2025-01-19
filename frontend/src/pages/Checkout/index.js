@@ -531,12 +531,16 @@ export default () => {
                                 <b>{Utils.convertNumberToBRL(checkout?.qtd * checkout?.campanha?.valor_por_bilhete)}</b>
                             </div>
                             <div>
+                                <label>Taxa de serviço</label>
+                                <b>{Utils.convertNumberToBRL(checkout?.taxa_cliente)}</b>
+                            </div>
+                            <div>
                                 <label>Desconto</label>
                                 <b>R$ 0,00</b>
                             </div>
                             <div>
                                 <label>Total</label>
-                                <b>{Utils.convertNumberToBRL(checkout?.qtd * checkout?.campanha?.valor_por_bilhete)}</b>
+                                <b>{Utils.convertNumberToBRL((checkout?.qtd * checkout?.campanha?.valor_por_bilhete) + checkout?.taxa_cliente)}</b>
                             </div>
                         </div>
                     </div>

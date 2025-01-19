@@ -70,6 +70,8 @@ export default () => {
 
     const [filter, setFilter] = useState("disponivel");
 
+    const [taxaCliente, setTaxaCliente] = useState(null);
+
     useEffect(() => {
         load();
     }, [])
@@ -122,10 +124,12 @@ export default () => {
         setLoaded(false);
 
         const { success, data: campanhaData } = await Utils.processRequest(Api.geral.getCampanha, { keybind });
+        const { success: successTaxas, data: taxasData } = await Utils.processRequest(Api.geral.getTaxas, { user_id: campanhaData?.user_id });
 
-        if (success) {
+        if (success && successTaxas) {
             setCampanha(campanhaData);
             setViewMode(campanhaData?.tipo);
+            setTaxaCliente(taxasData);
 
             const MAX_BUTTONS_QTD = 6;
             let _qtdBtns = [];
@@ -172,6 +176,7 @@ export default () => {
             viewMode: viewMode,
             numeros: numeros,
             qtd: viewMode == "USUARIO_ESCOLHE" ? numeros?.length : qtd,
+            taxa_cliente: taxaCliente,
         }))
         navigate("/checkout");
     }

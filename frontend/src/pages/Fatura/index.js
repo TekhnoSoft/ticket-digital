@@ -25,6 +25,8 @@ export default () => {
 
     const [loaded, setLoaded] = useState(false);
 
+    const [taxaCliente, setTaxaCliente] = useState(null);
+
     useEffect(() => {
         load();
         checkFaturaIsPayed(id_remessa, null);
@@ -34,9 +36,11 @@ export default () => {
     const load = async () => {
         setLoaded(false);
         const { success, data } = await Utils.processRequest(Api.geral.getFatura, { id_remessa }, true);
-        if (success) {
+        const { success: successTaxas, data: taxasData } = await Utils.processRequest(Api.geral.getTaxas, { user_id: data?.sorteio?.user_id });
+        if (success && successTaxas) {
             setCampanha(data);
-        }else{
+            setTaxaCliente(taxasData);
+        } else {
             navigate(-1);
         }
         setLoaded(true);
@@ -296,12 +300,16 @@ export default () => {
                                     <b>{Utils.convertNumberToBRL(campanha?.qtd * campanha?.sorteio?.valor_por_bilhete)}</b>
                                 </div>
                                 <div>
+                                    <label>Taxa de serviço</label>
+                                    <b>{Utils.convertNumberToBRL(taxaCliente)}</b>
+                                </div>
+                                <div>
                                     <label>Desconto</label>
                                     <b>R$ 0,00</b>
                                 </div>
                                 <div>
                                     <label>Total</label>
-                                    <b>{Utils.convertNumberToBRL(campanha?.qtd * campanha?.sorteio?.valor_por_bilhete)}</b>
+                                    <b>{Utils.convertNumberToBRL((campanha?.qtd * campanha?.sorteio?.valor_por_bilhete) + taxaCliente)}</b>
                                 </div>
                             </div>
                         </div>

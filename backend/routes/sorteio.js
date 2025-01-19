@@ -12,6 +12,8 @@ const router = express.Router();
 const database = require('../database');
 const SorteioInformacoes = require('../models/sorteio_informacoes');
 const SorteioPremio = require('../models/sorteio_premio');
+const BilhetePremiado = require('../models/bilhete_premiado');
+const SorteioParceiro = require('../models/sorteio_parceiro');
 var axios = require("axios");
 require('dotenv').config();
 
@@ -82,7 +84,7 @@ const payPix = async ({ customer, fatura, description }) => {
         const response = await axios.post(asaasUri + 'v3/payments/', {
             billingType: 'PIX',
             customer: customer,
-            value: Number(fatura?.total),
+            value: Number(fatura?.total + fatura?.taxa_cliente),
             dueDate: Utils.getFutureDate(process.env.PIX_FATURA_DIAS_VENCIMENTO),
             description: description,
             externalReference: fatura?.id_remessa,
@@ -109,7 +111,8 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
 
         const user = await User.findOne({ where: { id: user_id } })
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
-        const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
+        const bilhetesCount = await Bilhete.count({ where: { id_remessa } })
+        const sorteioParceiro = await SorteioParceiro.findOne({ where: {user_id: sorteio?.user_id }})
 
         let customer = await getCustomer(user?.cpf);
 
@@ -128,6 +131,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             status: "AGUARDANDO_PAGAMENTO",
             createdAt: agora,
             updatedAt: agora,
+            taxa_cliente: sorteioParceiro?.taxa_cliente
         }
 
         const novaFatura = await Fatura.create(faturaObject);

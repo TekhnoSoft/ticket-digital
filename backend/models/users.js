@@ -9,7 +9,7 @@ const User = database.define('tb_users', {
         primaryKey: true
     },
     role: {
-        type: Sequelize.ENUM("user", "admin"),
+        type: Sequelize.ENUM("user", "parceiro", "admin"),
         allowNull: false,
         defaultValue: "user"
     },

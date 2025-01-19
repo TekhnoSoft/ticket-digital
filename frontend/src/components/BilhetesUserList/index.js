@@ -220,7 +220,7 @@ export default ({ user, setUser }) => {
                                     </div>
                                     <SpaceBox space={8} />
                                     <div>
-                                        <span style={{ color: 'black', fontSize: '14PX' }}><b>{Utils.convertNumberToBRL(fatura?.total)}</b> · {Utils.formatDateSimple(fatura?.data_compra)}</span>
+                                        <span style={{ color: 'black', fontSize: '14PX' }}><b>{Utils.convertNumberToBRL(fatura?.total + fatura?.taxa_cliente)}</b> · {Utils.formatDateSimple(fatura?.data_compra)}</span>
                                     </div>
                                 </Card>
                             ))}

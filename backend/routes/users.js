@@ -9,6 +9,7 @@ const Fatura = require('../models/fatura');
 const sequelize = require('../database');
 const Sorteio = require('../models/sorteio');
 const SorteioImagens = require('../models/sorteio_imagens');
+const SorteioParceiro = require('../models/sorteio_parceiro');
 const router = express.Router();
 
 router.get('/auth', validateToken, async (req, res) => {
@@ -257,6 +258,7 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
                 f.subtotal,
                 f.total,
                 f.data_compra,
+                f.taxa_cliente,
                 b.id AS bilhete_id,
                 b.numero,
                 b.numero_texto,
@@ -290,6 +292,7 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
                     total: row.total,
                     data_compra: row.data_compra,
                     nome_sorteio: row.nome_sorteio,
+                    taxa_cliente: row.taxa_cliente,
                     bilhetes: []
                 };
                 faturas.push(fatura);
@@ -338,6 +341,17 @@ router.get('/fatura/:id_remessa', validateOrigin, async (req, res) => {
                 phone: user?.phone
             }
         });
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+router.get('/:user_id/taxas', validateOrigin, async (req, res) => {
+    const {user_id} = req.params;
+    try{
+        const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id } });
+        return res.status(200).json(sorteioParceiro?.taxa_cliente);
     }catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });

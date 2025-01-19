@@ -58,7 +58,11 @@ const Fatura = database.define('tb_faturas', {
     qr_code_payment_barcode: {
         type: Sequelize.TEXT('long'),
         allowNull: true,
-    }
+    },
+    taxa_cliente: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+    },
 });
 
 module.exports = Fatura;

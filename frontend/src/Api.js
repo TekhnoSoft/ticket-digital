@@ -102,6 +102,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getTaxas: async ({user_id}) => {
+            return await axios.get(`${API_BASE}/users/${user_id}/taxas`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
