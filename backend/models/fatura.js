@@ -23,6 +23,14 @@ const Fatura = database.define('tb_faturas', {
         allowNull: false,
         defaultValue: "AGUARDANDO_PAGAMENTO"
     },
+    operadora: {
+        type: Sequelize.ENUM(
+            "ASAAS", 
+            "MERCADOPAGO",
+        ),
+        allowNull: true,
+        defaultValue: "MERCADOPAGO"
+    },
     subtotal: {
         type: Sequelize.FLOAT,
         allowNull: true,

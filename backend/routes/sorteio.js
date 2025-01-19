@@ -16,7 +16,7 @@ const BilhetePremiado = require('../models/bilhete_premiado');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 var axios = require("axios");
 require('dotenv').config();
-
+const { payPixMercadoPago } = require('../providers/marcado_pago');
 
 const asaasUri = process.env.ASAAS_API_URI;
 const apiKey = process.env.ASAAS_API_KEY;
@@ -114,7 +114,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
         const user = await User.findOne({ where: { id: user_id } })
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
         const bilhetesCount = await Bilhete.count({ where: { id_remessa } })
-        const sorteioParceiro = await SorteioParceiro.findOne({ where: {user_id: sorteio?.user_id }})
+        const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } })
 
         let customer = await getCustomer(user?.cpf);
 
@@ -133,32 +133,52 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             status: "AGUARDANDO_PAGAMENTO",
             createdAt: agora,
             updatedAt: agora,
+            operadora: sorteioParceiro?.operadora,
             taxa_cliente: sorteioParceiro?.taxa_cliente
         }
 
         const novaFatura = await Fatura.create(faturaObject);
 
         let pay = null;
+        let id_payment_response = null;
+        let qr_code_payment_image = null;
+        let qr_code_payment_barcode = null;
 
-        pay = await payPix({
-            customer: customer,
-            fatura: faturaObject,
-            description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`
-        })
+        switch (sorteioParceiro?.operadora) {
+            case "ASAAS":
+                pay = await payPix({
+                    customer: customer,
+                    fatura: faturaObject,
+                    description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`
+                })
+                id_payment_response = pay?.id;
+                qr_code_payment_image = pay?.encodedImage;
+                qr_code_payment_barcode = pay?.payload;
+                break;
+            case "MERCADOPAGO":
+                let total = Number(faturaObject?.total) + Number(faturaObject?.taxa_cliente);
+                pay = await payPixMercadoPago({
+                    valor: total,
+                    description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`,
+                    email: user?.email
+                })
+                id_payment_response = pay?.id;
+                qr_code_payment_image = pay?.point_of_interaction?.transaction_data?.qr_code_base64;
+                qr_code_payment_barcode = pay?.point_of_interaction?.transaction_data?.qr_code;
+                break;
+        }
 
         if (pay != null) {
-
             await Fatura.update(
                 {
-                    id_payment_response: pay?.id,
-                    qr_code_payment_image: pay?.encodedImage,
-                    qr_code_payment_barcode: pay?.payload
+                    id_payment_response: id_payment_response,
+                    qr_code_payment_image: qr_code_payment_image,
+                    qr_code_payment_barcode: qr_code_payment_barcode
                 },
                 {
                     where: { id: novaFatura?.id }
                 },
             );
-
         }
 
         return novaFatura;
@@ -504,7 +524,7 @@ router.get('/campanhas', validateOrigin, async (req, res) => {
         `;
 
         const resultados = await database.query(query, {
-            replacements: { },
+            replacements: {},
             type: Sequelize.QueryTypes.SELECT,
         });
 

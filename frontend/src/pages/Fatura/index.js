@@ -165,7 +165,7 @@ export default () => {
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <div>
                                                     <center>
-                                                        {qrCode ? (
+                                                        {barCode ? (
                                                             <QRCode
                                                                 size={256}
                                                                 style={{ height: "auto", maxWidth: "212px", width: "212px" }}

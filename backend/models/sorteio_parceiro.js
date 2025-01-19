@@ -16,6 +16,14 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
         type: Sequelize.FLOAT,
         allowNull: false
     },
+    operadora: {
+        type: Sequelize.ENUM(
+            "ASAAS", 
+            "MERCADOPAGO",
+        ),
+        allowNull: true,
+        defaultValue: "MERCADOPAGO"
+    },
 });
 
 module.exports = SorteioParceiro;

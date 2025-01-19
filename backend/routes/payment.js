@@ -20,6 +20,15 @@ router.post('/payment-received', async (req, res) => {
     }
 })
 
+router.post('/payment-received-mercadopago', async (req, res) => {
+    try {
+        await paymentReceivedMercadoPago(req.body);
+        return res.status(200).json({ success: true, code: 200, message: "Webhook sincronizado!", data: null });
+    } catch (err) {
+        return res.status(200).json({ success: false, code: 400, message: err.message, data: null });
+    }
+})
+
 const paymentReceived = async (data) => {
 
     let id = data?.payment?.id;
@@ -48,6 +57,10 @@ const paymentReceived = async (data) => {
         );
     }
 
+}
+
+const paymentReceivedMercadoPago = async (data) => {
+    console.log(data);
 }
 
 module.exports = router;

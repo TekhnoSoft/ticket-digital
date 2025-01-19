@@ -170,7 +170,7 @@ export default () => {
                     setPaymentStatus("PAGO");
                     setStep(5);
                     window.scrollTo(0, 0);
-                    if(interval){
+                    if (interval) {
                         clearInterval(interval);
                     }
                     break;
@@ -178,7 +178,7 @@ export default () => {
                     setPaymentStatus("CANCELADO");
                     setStep(5);
                     window.scrollTo(0, 0);
-                    if(interval){
+                    if (interval) {
                         clearInterval(interval);
                     }
                     break;
@@ -188,8 +188,8 @@ export default () => {
 
     const handleCopy = () => {
         navigator.clipboard.writeText(barCode)
-            .then(() => Utils.notify("success","Código copiado!"))
-            .catch(err => Utils.notify("error","Erro ao copiar"));
+            .then(() => Utils.notify("success", "Código copiado!"))
+            .catch(err => Utils.notify("error", "Erro ao copiar"));
     };
 
     return (
@@ -361,7 +361,7 @@ export default () => {
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         {barCode ? (
                                             <>
-                                                <Input style={{ width: '100%', borderRadius: '4px 0px 0px 4px' }} value={barCode} type={"text"} readOnly={true}/>
+                                                <Input style={{ width: '100%', borderRadius: '4px 0px 0px 4px' }} value={barCode} type={"text"} readOnly={true} />
                                                 <Button onClick={handleCopy} style={{ width: '90px', borderRadius: '0px 4px 4px 0px' }}>
                                                     Copiar
                                                 </Button>
@@ -396,11 +396,11 @@ export default () => {
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <div>
                                                 <center>
-                                                    {qrCode ? (
+                                                    {barCode ? (
                                                         <QRCode
                                                             size={256}
                                                             style={{ height: "auto", maxWidth: "212px", width: "212px" }}
-                                                            value={qrCode}
+                                                            value={barCode}
                                                             viewBox={`0 0 256 256`}
                                                         />
                                                     ) : (null)}
