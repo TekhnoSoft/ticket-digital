@@ -46,11 +46,6 @@ const paymentReceived = async (data) => {
                 where: { id_remessa: fatura?.id_remessa }
             },
         );
-
-        console.log("aqui 2");
-        console.log(id);
-        console.log(fatura);
-        console.log(status);
     }
 
 }
