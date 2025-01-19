@@ -430,7 +430,7 @@ router.get('/rank-buyers/:sorteio_id', validateOrigin, async (req, res) => {
                 COUNT(A.id) AS qtd 
             FROM tb_bilhetes AS A
             INNER JOIN tb_users AS B ON A.user_id = B.id
-            WHERE A.sorteio_id = :sorteio_id
+            WHERE A.sorteio_id = :sorteio_id AND A.status = 'PAGO'
             GROUP BY B.name
             ORDER BY qtd DESC;
         `;
