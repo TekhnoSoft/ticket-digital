@@ -36,7 +36,7 @@ const paymentReceived = async (data) => {
             },
         );
 
-        const fatura = await Fatura.findOnd({ where: { id_payment_response: id }})
+        const fatura = await Fatura.findOne({ where: { id_payment_response: id }})
 
         await Bilhete.update(
             {
