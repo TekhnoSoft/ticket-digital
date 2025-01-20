@@ -1,15 +1,13 @@
 const express = require('express');
-const User = require('../models/users');
-const Bilhete = require('../models/bilhete');
-const { validateOrigin } = require('../middlewares/CorsMiddleware');
-const { validateToken } = require('../middlewares/AuthMiddleware');
-const Utils = require('../utils');
-const { Op, Sequelize, where } = require('sequelize');
-const Fatura = require('../models/fatura');
-const sequelize = require('../database');
-const Sorteio = require('../models/sorteio');
-const SorteioImagens = require('../models/sorteio_imagens');
 const router = express.Router();
+
+const Bilhete = require('../models/bilhete');
+const Fatura = require('../models/fatura');
+const Sorteio = require('../models/sorteio');
+const SorteioParceiro = require('../models/sorteio_parceiro');
+
+var axios = require("axios");
+require('dotenv').config();
 
 router.post('/payment-received', async (req, res) => {
     try {
@@ -45,7 +43,7 @@ const paymentReceived = async (data) => {
             },
         );
 
-        const fatura = await Fatura.findOne({ where: { id_payment_response: id }})
+        const fatura = await Fatura.findOne({ where: { id_payment_response: id } })
 
         await Bilhete.update(
             {
@@ -60,7 +58,50 @@ const paymentReceived = async (data) => {
 }
 
 const paymentReceivedMercadoPago = async (data) => {
-    console.log(data);
+    const paymentId = data?.id;
+
+    if (!paymentId) {
+        throw new Error("ID do pagamento não encontrado!");
+    }
+
+    const fatura = await Fatura.findOne({ where: { id_payment_response: paymentId } });
+    const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id }});
+    const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id }});
+
+    const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${paymentId}`;
+    const token = sorteioParceiro?.operadoraAccessToken;
+
+    const response = await axios.get(url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const status = response.data?.status;
+
+    console.log(status, paymentId);
+
+    if(status == "approved"){
+
+        await Fatura.update(
+            {
+                status: "PAGO",
+            },
+            {
+                where: { id_payment_response: paymentId }
+            },
+        );
+
+        await Bilhete.update(
+            {
+                status: "PAGO",
+            },
+            {
+                where: { id_remessa: fatura?.id_remessa }
+            },
+        );
+
+    }
 }
 
 module.exports = router;

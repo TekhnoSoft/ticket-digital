@@ -215,6 +215,9 @@ const Utils = {
         const diff = formatDistanceToNow(zonedDate, { addSuffix: true, locale: ptBR });
     
         return diff;
+    },
+    stringIsNullOrEmpty: (str) => {
+        return !str || str.trim() === "";
     }
 }
 

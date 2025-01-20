@@ -253,7 +253,7 @@ export default () => {
                         </div>
                     </div>
                     <SpaceBox space={15} />
-                    {loaded ? (
+                    {loaded && !Utils.stringIsNullOrEmpty(campanha?.info?.data_sorteio) ? (
                         <>
                             <Hr elevation={1} />
                             <SpaceBox space={15} />

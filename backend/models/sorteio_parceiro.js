@@ -24,6 +24,10 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
         allowNull: true,
         defaultValue: "MERCADOPAGO"
     },
+    operadoraAccessToken: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    }
 });
 
 module.exports = SorteioParceiro;

@@ -160,7 +160,8 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
                 pay = await payPixMercadoPago({
                     valor: total,
                     description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`,
-                    email: user?.email
+                    email: user?.email,
+                    operadoraAccessToken: sorteioParceiro?.operadoraAccessToken
                 })
                 id_payment_response = pay?.id;
                 qr_code_payment_image = pay?.point_of_interaction?.transaction_data?.qr_code_base64;
@@ -486,7 +487,7 @@ router.get('/rank-winners/:sorteio_id', validateOrigin, async (req, res) => {
     const { sorteio_id } = req.params;
     try {
 
-        const query = `SELECT A.*, B.name AS ganhador_nome FROM ticketdigital.tb_sorteio_premios A LEFT JOIN tb_users AS B ON A.ganhador_id=B.id WHERE A.sorteio_id='1' ORDER BY A.colocacao ASC;`;
+        const query = `SELECT A.*, B.name AS ganhador_nome FROM ticketdigital.tb_sorteio_premios A LEFT JOIN tb_users AS B ON A.ganhador_id=B.id WHERE A.sorteio_id=:sorteio_id ORDER BY A.colocacao ASC;`;
 
         const resultados = await database.query(query, {
             replacements: { sorteio_id },

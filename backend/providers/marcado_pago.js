@@ -1,16 +1,15 @@
 const { MercadoPagoConfig, Payment } = require('mercadopago');
 
+const payPixMercadoPago = async ({valor, description, email, operadoraAccessToken}) => {
+    const client = new MercadoPagoConfig({
+        accessToken: operadoraAccessToken, 
+        options: {
+            timeout: 5000,
+        }
+    });
+    
+    const payment = new Payment(client);    
 
-const client = new MercadoPagoConfig({
-    accessToken: process.env.MERCADO_PAGO_ACESS_TOKEN, 
-    options: {
-        timeout: 5000,
-    }
-});
-
-const payment = new Payment(client);
-
-const payPixMercadoPago = async ({valor, description, email}) => {
     const body = {
         transaction_amount: valor,
         description: description,
