@@ -58,49 +58,55 @@ const paymentReceived = async (data) => {
 }
 
 const paymentReceivedMercadoPago = async (data) => {
-    const paymentId = data?.id;
+    try {
+        const paymentId = data?.id;
 
-    if (!paymentId) {
-        throw new Error("ID do pagamento não encontrado!");
-    }
+        console.log(data);
 
-    const fatura = await Fatura.findOne({ where: { id_payment_response: paymentId } });
-    const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id }});
-    const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id }});
-
-    const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${paymentId}`;
-    const token = sorteioParceiro?.operadoraAccessToken;
-
-    const response = await axios.get(url, {
-        headers: {
-            Authorization: `Bearer ${token}`
+        if (!paymentId) {
+            throw new Error("ID do pagamento não encontrado!");
         }
-    });
 
-    const status = response.data?.status;
+        const fatura = await Fatura.findOne({ where: { id_payment_response: paymentId } });
+        const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id } });
+        const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
 
-    console.log(status, paymentId);
+        const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${paymentId}`;
+        const token = sorteioParceiro?.operadoraAccessToken;
 
-    if(status == "approved"){
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
-        await Fatura.update(
-            {
-                status: "PAGO",
-            },
-            {
-                where: { id_payment_response: paymentId }
-            },
-        );
+        const status = response.data?.status;
 
-        await Bilhete.update(
-            {
-                status: "PAGO",
-            },
-            {
-                where: { id_remessa: fatura?.id_remessa }
-            },
-        );
+        console.log(status, paymentId);
 
+        if (status == "approved") {
+
+            await Fatura.update(
+                {
+                    status: "PAGO",
+                },
+                {
+                    where: { id_payment_response: paymentId }
+                },
+            );
+
+            await Bilhete.update(
+                {
+                    status: "PAGO",
+                },
+                {
+                    where: { id_remessa: fatura?.id_remessa }
+                },
+            );
+
+        }
+    }catch(err){
+        console.log(err);
     }
 }
 
