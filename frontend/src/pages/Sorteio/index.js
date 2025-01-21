@@ -62,6 +62,7 @@ export default () => {
     const [bilhetesReservados, setBilhetesReservados] = useState([]);
     const [rankBuyers, setRankBuyers] = useState([]);
     const [rankWinners, setRankWinners] = useState([]);
+    const [bilhetesPremiados, setBilhetesPremiados] = useState([]);
 
     const [btnsQtd, setBtnsQtd] = useState([]);
 
@@ -88,8 +89,10 @@ export default () => {
                 }
                 const { success: rankBuyersSuccess, data: rankBuyersData } = await Utils.processRequest(Api.geral.getRankBuyers, { sorteio_id: campanha?.id });
                 const { success: rankWinnersSuccess, data: rankWinnersData } = await Utils.processRequest(Api.geral.getRankWinners, { sorteio_id: campanha?.id });
+                const { success: bilhetesPremiadosSuccess, data: bilhetesPremiadosData } = await Utils.processRequest(Api.geral.getBilhetesPremiados, { sorteio_id: campanha?.id });
                 setRankBuyers(rankBuyersData);
                 setRankWinners(rankWinnersData);
+                setBilhetesPremiados(bilhetesPremiadosData);
             }
             setLoadedBilheteStatus(true);
         }
@@ -108,10 +111,10 @@ export default () => {
     };
 
     const getMedalhas = (colocacao) => {
-        switch(colocacao){
-            case 1: 
+        switch (colocacao) {
+            case 1:
                 return "🥇";
-            case 2: 
+            case 2:
                 return "🥈";
             case 3:
                 return "🥉";
@@ -513,135 +516,48 @@ export default () => {
                         </>
                     ))}
                 </Card>
-                <SpaceBox space={30} />
-                <div className='title-bilhetes'>
-                    <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ion-icon className="text-opacity" name="star-outline" size={"large"}></ion-icon>
-                    </div>&nbsp;&nbsp;
-                    <div>
-                        <b className='b-text'>Bilhetes premiados</b>
-                    </div>
-                </div>
-                <SpaceBox space={20} />
-                <Card className={"responsive-margin"} style={{ padding: '16px', maxHeight: '250px', overflowY: 'auto' }}>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                <label>9939083</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>Disponível</label>&nbsp;&nbsp;
-                                <div style={{ width: '10px', height: '10px', background: 'var(--primary-color)', borderRadius: '50%' }}></div>
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>(nenhum ganhador)  &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
+                {bilhetesPremiados?.length > 0 ? (
+                    <>
+                        <SpaceBox space={30} />
+                        <div className='title-bilhetes'>
+                            <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <ion-icon className="text-opacity" name="star-outline" size={"large"}></ion-icon>
+                            </div>&nbsp;&nbsp;
+                            <div>
+                                <b className='b-text'>Bilhetes premiados</b>
                             </div>
                         </div>
-                        <SpaceBox space={10} />
-                        <Hr elevation={1} />
-                        <SpaceBox space={15} />
-                    </div>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                <label>9939083</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>Comprado</label>&nbsp;&nbsp;
-                                <div style={{ width: '10px', height: '10px', background: 'gray', borderRadius: '50%' }}></div>
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>(nenhum ganhador)  &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                        <SpaceBox space={10} />
-                        <Hr elevation={1} />
-                        <SpaceBox space={15} />
-                    </div>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                <label>9939083</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>Disponível</label>&nbsp;&nbsp;
-                                <div style={{ width: '10px', height: '10px', background: 'var(--primary-color)', borderRadius: '50%' }}></div>
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>(nenhum ganhador)  &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                        <SpaceBox space={10} />
-                        <Hr elevation={1} />
-                        <SpaceBox space={15} />
-                    </div>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                <label>9939083</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>Disponível</label>&nbsp;&nbsp;
-                                <div style={{ width: '10px', height: '10px', background: 'var(--primary-color)', borderRadius: '50%' }}></div>
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>(nenhum ganhador)  &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                        <SpaceBox space={10} />
-                        <Hr elevation={1} />
-                        <SpaceBox space={15} />
-                    </div>
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
-                                <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                <label>9939083</label>
-                            </label>
-                            <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
-                                <label>Disponível</label>&nbsp;&nbsp;
-                                <div style={{ width: '10px', height: '10px', background: 'var(--primary-color)', borderRadius: '50%' }}></div>
-                            </label>
-                        </div>
-                        <SpaceBox space={10} />
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                <p>(nenhum ganhador)  &nbsp;·&nbsp; R$ 800,00 ( VERIFICAR OS STORIES DO INSTA )</p>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
+                        <SpaceBox space={20} />
+                        <Card className={"responsive-margin"} style={{ padding: '16px', maxHeight: '250px', overflowY: 'auto' }}>
+                            {bilhetesPremiados?.map(bilhete => (
+                                <div>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
+                                            <ion-icon name="ticket-outline"></ion-icon>&nbsp;
+                                            <label>{Utils.formatNumberToTicket(bilhete?.numero)}</label>
+                                        </label>
+                                        <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
+                                            <label>{bilhete?.user_id ? `Comprado` : `Disponível`}</label>&nbsp;&nbsp;
+                                            <div style={{ width: '10px', height: '10px', background: bilhete?.user_id ? 'var(--primary-color)' : 'gray', borderRadius: '50%' }}></div>
+                                        </label>
+                                    </div>
+                                    <SpaceBox space={10} />
+                                    <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <ion-icon name="person-outline"></ion-icon>
+                                        </div>
+                                        <div style={{ color: 'var(--text-opacity)', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                            <p>{bilhete?.user_id ? bilhete?.username : "(nenhum ganhador)"}  &nbsp;·&nbsp; {bilhete?.name}</p>
+                                        </div>
+                                    </div>
+                                    <SpaceBox space={10} />
+                                    <Hr elevation={1} />
+                                    <SpaceBox space={15} />
+                                </div>
+                            ))}
+                        </Card>
+                    </>
+                ) : (null)}
                 <SpaceBox space={30} />
                 <div className='title-bilhetes'>
                     <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

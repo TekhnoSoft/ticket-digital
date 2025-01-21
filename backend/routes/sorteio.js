@@ -547,4 +547,34 @@ router.get('/campanhas', validateOrigin, async (req, res) => {
     }
 })
 
+router.get('/bilhetes-premiados/:sorteio_id', validateOrigin, async (req, res) => {
+    const { sorteio_id } = req.params;
+    try {
+
+        const query = `SELECT A.*, B.name AS username FROM ticketdigital.tb_bilhete_premiados AS A LEFT JOIN tb_users AS B ON A.user_id=B.id WHERE sorteio_id=:sorteio_id`;
+
+        const resultados = await database.query(query, {
+            replacements: {sorteio_id},
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const bilhetes = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                id: row.id,
+                name: row.name,
+                numero: Number(row.numero),
+                username: row.username,
+                user_id: row.user_id
+            }
+            bilhetes.push(obj);
+        })
+
+        return res.status(200).json(bilhetes);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
 module.exports = router;

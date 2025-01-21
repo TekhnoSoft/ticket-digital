@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './style.css';
 import SpaceBox from '../SpaceBox';
 
-export default function Footer() {
+export default function Footer({footerMode}) {
     const [accordionOpen, setAccordionOpen] = useState(true);
 
     const toggleAccordion = () => {

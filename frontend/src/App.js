@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { MainContext } from "./helpers/MainContext";
-import { Sorteio, Checkout, Market, Fatura, PageNotFound } from "./pages";
+import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro } from "./pages";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { useEffect, useState } from 'react';
@@ -22,6 +22,8 @@ function App() {
           <Route path="/fatura/:id_remessa" element={<Fatura />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<PageNotFound />} />
+          {/*==================PRIVATE-ROUTES===================*/}
+          <Route path="/parceiro" element={<Parceiro />} />
         </Routes>
         <ToastContainer style={{zIndex: 999999}} />
       </Router>

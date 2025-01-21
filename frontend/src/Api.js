@@ -109,6 +109,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getBilhetesPremiados: async ({sorteio_id}) => {
+            return await axios.get(`${API_BASE}/sorteios/bilhetes-premiados/${sorteio_id}`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

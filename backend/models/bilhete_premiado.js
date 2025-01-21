@@ -22,7 +22,7 @@ const BilhetePremiado = database.define('tb_bilhete_premiados', {
     },
     user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
 });
 

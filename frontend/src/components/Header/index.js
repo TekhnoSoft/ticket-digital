@@ -48,6 +48,16 @@ export default ({ headerMode, headerPaymentStep, user, setUser }) => {
                         </div>
                     ) : (null)}
                 </div>
+            ) : headerMode == "PARCEIRO" ? (
+                <div className='header-parceiro'>
+                    <div className='header-content-parceiro'>
+                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
+                        <div className='button-group'>
+                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
+                            <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
+                        </div>
+                    </div>
+                </div>
             ) : (
                 <div className='header'>
                     <div className='header-content'>
