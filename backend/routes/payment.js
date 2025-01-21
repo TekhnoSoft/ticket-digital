@@ -61,9 +61,6 @@ const paymentReceivedMercadoPago = async (data) => {
     try {
         const paymentId = data?.data?.id;
 
-        console.log(data);
-        console.log(paymentId);
-
         if (!paymentId) {
             throw new Error("ID do pagamento não encontrado!");
         }
@@ -82,8 +79,6 @@ const paymentReceivedMercadoPago = async (data) => {
         });
 
         const status = response.data?.status;
-
-        console.log(status, paymentId);
 
         if (status == "approved") {
 
