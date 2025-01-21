@@ -59,9 +59,10 @@ const paymentReceived = async (data) => {
 
 const paymentReceivedMercadoPago = async (data) => {
     try {
-        const paymentId = data?.id;
+        const paymentId = data?.data?.id;
 
         console.log(data);
+        console.log(paymentId);
 
         if (!paymentId) {
             throw new Error("ID do pagamento não encontrado!");
