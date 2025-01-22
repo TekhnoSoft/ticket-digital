@@ -149,7 +149,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
                 pay = await payPix({
                     customer: customer,
                     fatura: faturaObject,
-                    description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`
+                    description: `${bilhetesCount}x - ${sorteio?.name}`
                 })
                 id_payment_response = pay?.id;
                 qr_code_payment_image = pay?.encodedImage;
@@ -159,7 +159,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
                 let total = Number(faturaObject?.total) + Number(faturaObject?.taxa_cliente);
                 pay = await payPixMercadoPago({
                     valor: total,
-                    description: `${bilhetesCount}x bilhetes - ${sorteio?.name}`,
+                    description: `${bilhetesCount}x - ${sorteio?.name}`,
                     email: user?.email,
                     operadoraAccessToken: sorteioParceiro?.operadoraAccessToken
                 })

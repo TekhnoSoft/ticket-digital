@@ -8,7 +8,7 @@ import Utils from '../../Utils';
 import Api from '../../Api';
 import { useNavigate } from 'react-router-dom';
 
-export default ({ user, setUser }) => {
+export default ({ user, setUser, modo }) => {
 
     const navigate = useNavigate();
 
@@ -132,7 +132,7 @@ export default ({ user, setUser }) => {
                     <div className="icon-circle">
                         <ion-icon name="ticket-outline"></ion-icon>
                     </div>
-                    <h3>Meus bilhetes</h3>
+                    <h3>Meus {Utils.getModo(modo)?.plural || ""}</h3>
                 </div>
             </div>
             {!user ? (

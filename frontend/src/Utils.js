@@ -27,7 +27,7 @@ const Utils = {
                 return { success: true, data: response.data }; // Sucesso com os dados
             }
             console.error('Erro na resposta da API:', response);
-            if(showToast){
+            if (showToast) {
                 Utils.notify("error", response?.response?.data?.message);
             }
             return { success: false, data: null }; // Falha na resposta
@@ -49,24 +49,24 @@ const Utils = {
 
         // Cria um Uint8Array a partir dos dados do buffer
         const uint8Array = new Uint8Array(bufferObject.data);
-    
+
         // Converte o Uint8Array para uma string base64
         let binaryString = '';
         for (let i = 0; i < uint8Array.length; i++) {
             binaryString += String.fromCharCode(uint8Array[i]);
         }
-    
+
         // Converte a string binária para base64
         const base64String = btoa(binaryString);
-    
+
         // Prefixo para o tipo MIME
         const prefix = `data:${mimeType};base64,`;
-    
+
         // Retorna a string base64 completa com o prefixo
         return `${prefix}${base64String}`;
     },
     notify: (type, message) => {
-        switch(type) {
+        switch (type) {
             case "success":
                 toast.success(message, {
                     position: "top-center",
@@ -89,7 +89,7 @@ const Utils = {
                     draggable: true,
                     progress: undefined,
                     theme: "colored",
-                  })
+                })
                 break;
             case "warning":
                 toast.warning(message, {
@@ -101,7 +101,7 @@ const Utils = {
                     draggable: true,
                     progress: undefined,
                     theme: "colored",
-                  })
+                })
                 break;
         }
     },
@@ -114,32 +114,32 @@ const Utils = {
     validarCelular: (numero) => {
         // Remove todos os caracteres não numéricos
         let numeroLimpo = numero.replace(/\D/g, '');
-    
+
         // Expressão regular para validar número de celular no Brasil
         const regexCelular = /^(\d{2})9\d{8}$/;
-    
+
         return regexCelular.test(numeroLimpo);
     },
     validarEmail: (email) => {
         // Expressão regular para validar e-mails
         const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
+
         return regexEmail.test(email);
     },
     formatToCelular: (numero) => {
         // Remove todos os caracteres não numéricos
         let numeroLimpo = numero?.replace(/\D/g, '');
-    
+
         // Verifica se tem o tamanho correto (11 dígitos: DDD + 9 dígitos do número)
         if (numeroLimpo?.length === 11) {
             return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(2, 7)}-${numeroLimpo.substring(7)}`;
         }
-    
+
         // Retorna o número sem formatação se não tiver o tamanho esperado
         return numero;
     },
     validateCpf: (cpf) => {
-        if(!cpf) return false;
+        if (!cpf) return false;
         cpf = cpf.replace(/[^\d]/g, ''); // Remove caracteres não numéricos
         if (cpf.length !== 11) return false;
 
@@ -182,42 +182,64 @@ const Utils = {
     formatCpf: (cpf) => {
         // Remove todos os caracteres não numéricos
         let cpfLimpo = cpf?.replace(/\D/g, '');
-    
+
         // Verifica se tem 11 dígitos (formato válido de CPF)
         if (cpfLimpo.length === 11) {
             return cpfLimpo?.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
         }
-    
+
         // Retorna sem formatação se o CPF for inválido
         return cpf;
     },
     formatDateTime: (dateString) => {
         const date = new Date(dateString);
-    
+
         const pad = (num) => num.toString().padStart(2, '0');
-    
+
         const day = pad(date.getDate());
         const month = pad(date.getMonth() + 1); // Mês é baseado em zero
         const year = date.getFullYear();
         const hours = pad(date.getHours());
         const minutes = pad(date.getMinutes());
         const seconds = pad(date.getSeconds());
-    
+
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     },
     formatDateSimple: (dateString) => {
         const timeZone = 'America/Sao_Paulo'; // Ajuste para o seu fuso horário local
-        
+
         // Converte a data para o fuso horário correto
         const zonedDate = toZonedTime(dateString, timeZone);
-    
+
         // Calcula a diferença, retornando a tradução para português
         const diff = formatDistanceToNow(zonedDate, { addSuffix: true, locale: ptBR });
-    
+
         return diff;
     },
     stringIsNullOrEmpty: (str) => {
         return !str || str.trim() === "";
+    },
+    getModo: (modo) => {
+        switch (modo) {
+            case "BILHETE":
+                return {
+                    singular: "bilhete",
+                    plural: "bilhetes",
+                    title: "Bilhetes",
+                }
+            case "EBOOK":
+                return {
+                    singular: "e-book",
+                    plural: "e-books",
+                    title: "E-books/Números"
+                }
+            default:
+                return {
+                    singular: "...",
+                    plural: "...",
+                    title: "...",
+                }
+        }
     }
 }
 

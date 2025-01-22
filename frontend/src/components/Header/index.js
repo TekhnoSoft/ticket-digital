@@ -5,8 +5,9 @@ import Hr from '../Hr';
 import Modal from '../Modal';
 import BilhetesUserList from '../BilhetesUserList';
 import { useNavigate } from 'react-router-dom';
+import Utils from '../../Utils';
 
-export default ({ headerMode, headerPaymentStep, user, setUser }) => {
+export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
 
     const navigate = useNavigate();
 
@@ -24,14 +25,14 @@ export default ({ headerMode, headerPaymentStep, user, setUser }) => {
     return (
         <>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
-                <BilhetesUserList user={user} setUser={setUser} />
+                <BilhetesUserList modo={modo} user={user} setUser={setUser} />
             </Modal>
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
                         <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
                         <div className='button-group'>
-                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
+                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
                         </div>
                         <div className='menu-toggle' onClick={handleToggle}>
@@ -41,7 +42,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser }) => {
                     {open ? (
                         <div className='hader-mobile-menu'>
                             <div className='button-group-mobile'>
-                                <Button onClick={() => {setShowModalCampanhas(true)}} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus bilhetes</Button>
+                                <Button onClick={() => {setShowModalCampanhas(true)}} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="list-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Campanhas</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>
                             </div>
@@ -53,7 +54,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser }) => {
                     <div className='header-content-parceiro'>
                         <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
                         <div className='button-group'>
-                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus bilhetes</Button>
+                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
                         </div>
                     </div>

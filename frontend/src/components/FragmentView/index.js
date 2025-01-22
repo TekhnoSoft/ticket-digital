@@ -50,7 +50,7 @@ const Sidebar = () => {
     );
 };
 
-export default ({ children, headerMode, headerPaymentStep }) => {
+export default ({ children, headerMode, headerPaymentStep, modo }) => {
 
     const { user, setUser } = useContext(MainContext); 
 
@@ -60,7 +60,7 @@ export default ({ children, headerMode, headerPaymentStep }) => {
 
     return (
         <>
-            <Header user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep}/>
+            <Header modo={modo} user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep}/>
             {headerMode == "PARCEIRO" ? (
                 <>
                     <Sidebar/>

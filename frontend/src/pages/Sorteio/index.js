@@ -162,13 +162,13 @@ export default () => {
         switch (viewMode) {
             case "USUARIO_ESCOLHE":
                 if (numeros?.length < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes.`);
+                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} ${Utils.getModo(campanha?.modo)?.plural || ""}.`);
                     return;
                 }
                 break;
             case "SISTEMA_ESCOLHE":
                 if (qtd < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} bilhetes.`);
+                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} ${Utils.getModo(campanha?.modo)?.plural || ""}.`);
                     return;
                 }
                 break;
@@ -193,13 +193,13 @@ export default () => {
     }
 
     return (
-        <FragmentView headerMode={"USER"}>
+        <FragmentView headerMode={"USER"} modo={campanha?.modo || ""}>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
-                <BilhetesUserList user={user} setUser={setUser} />
+                <BilhetesUserList modo={campanha?.modo || ""} user={user} setUser={setUser} />
             </Modal>
             <Modal onCloseCallback={onCloseModalUserCallback} setShow={setShowModalUser} show={showModalUser}>
                 <div>
-                    <h3>Meus bilhetes</h3>
+                    <h3>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</h3>
                 </div>
                 <div>
                     <SpaceBox space={10} />
@@ -297,7 +297,7 @@ export default () => {
                         <ion-icon className="text-opacity" name="ticket-outline" size={"large"}></ion-icon>
                     </div>&nbsp;&nbsp;
                     <div>
-                        <b className='b-text'>Bilhetes</b>
+                        <b className='b-text'>{Utils.getModo(campanha?.modo)?.title || ""}</b>
                         <div>
                             <label className='text-opacity' style={{ fontSize: '15px' }}>
                                 Selecione a quantidade que deseja comprar.
@@ -327,7 +327,7 @@ export default () => {
                             </span>
                             <span onClick={() => { setShowModalCampanhas(true) }} className='filter-button' style={{ background: 'var(--primary-color)', alignSelf: 'center' }}>
                                 <ion-icon name="ticket"></ion-icon>&nbsp;
-                                <span>Meus bilhetes</span>
+                                <span>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</span>
                             </span>
                         </div>
                         <SpaceBox space={15} />
@@ -478,7 +478,7 @@ export default () => {
                                 <div className='responsive-margin button-checkout-parent'>
                                     <Button onClick={() => { setShowModalCampanhas(true) }} className={'responsive-button btn-bilhetes'}>
                                         <ion-icon name="ticket-outline" class="text-opacity"></ion-icon>&nbsp;
-                                        <b>Meus bilhetes</b>
+                                        <b>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</b>
                                     </Button>
                                 </div>
                             </>
@@ -510,7 +510,7 @@ export default () => {
                                 <b className='winner-position'>{(index + 1)}º</b>
                                 <div className='winner-info'>
                                     <div>🏆<b>{r?.name}</b></div>
-                                    <div className='text-opacity'>Bilhetes: <b>{r?.qtd}</b></div>
+                                    <div className='text-opacity'>{Utils.getModo(campanha?.modo)?.plural || ""}: <b>{r?.qtd}</b></div>
                                 </div>
                             </div>
                         </>
@@ -524,7 +524,7 @@ export default () => {
                                 <ion-icon className="text-opacity" name="star-outline" size={"large"}></ion-icon>
                             </div>&nbsp;&nbsp;
                             <div>
-                                <b className='b-text'>Bilhetes premiados</b>
+                                <b className='b-text'>{Utils.getModo(campanha?.modo)?.title || ""} premiados</b>
                             </div>
                         </div>
                         <SpaceBox space={20} />
@@ -622,7 +622,7 @@ export default () => {
                     <div className='cart-bottom'>
                         <div style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: Utils.mobileCheck() ? '100%' : null }}>
                             <div style={{ width: Utils.mobileCheck() ? '100%' : 'calc(100% - 185px)' }}>
-                                <label style={{ fontSize: '14px' }} className='text-opacity'>Bilhetes ({numeros?.length}):</label>
+                                <label style={{ fontSize: '14px' }} className='text-opacity'>{Utils.getModo(campanha?.modo)?.title || ""} ({numeros?.length}):</label>
                                 <SpaceBox space={8} />
                                 <div style={{ display: 'flex', gap: '2px', width: 'calc(100% - 32px)', overflowX: 'auto', paddingBottom: '5px' }}>
                                     {numeros.map(n => (

@@ -55,6 +55,11 @@ const Sorteio = database.define('tb_sorteios', {
         allowNull: false,
         defaultValue: "5MIN"
     },
+    modo: {
+        type: Sequelize.ENUM("BILHETE", "EBOOK", "COTA", "AÇÃO"),
+        allowNull: true,
+        defaultValue: "BILHETE"
+    },
     user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
