@@ -6,7 +6,6 @@
     justify-content: space-between;
     flex-direction: column;
     margin: 0px auto;
-    margin-top: 80px;
 }
 
 .fragment-view-parceiro{
@@ -16,7 +15,6 @@
     justify-content: space-between;
     flex-direction: column;
     margin: 0px auto;
-    margin-top: 80px;
 }
 
 .bottom-nav {
@@ -28,6 +26,7 @@
     background-color: #fff;
     padding: 10px 0;
     z-index: 8;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .nav-item {
@@ -111,6 +110,12 @@
         margin-top: 8px;
         margin-right: 0px;
     }
+    .fragment-view {
+        margin-top: 60px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 60px;
+    }
 }
 
 @media (min-width:481px) {
@@ -124,6 +129,12 @@
         margin-left: 0px;
         margin-top: 8px;
         margin-right: 0px;
+    }
+    .fragment-view {
+        margin-top: 60px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 60px;
     }
 }
 
@@ -139,6 +150,12 @@
         margin-top: 8px;
         margin-right: 0px;
     }
+    .fragment-view {
+        margin-top: 60px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 60px;
+    }
 }
 
 @media (min-width:961px) {
@@ -152,6 +169,12 @@
         margin-left: 230px;
         margin-top: 20px;
         margin-right: 30px;
+    }
+    .fragment-view {
+        margin-top: 80px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 80px;
     }
 }
 
@@ -167,6 +190,12 @@
         margin-top: 20px;
         margin-right: 30px;
     }
+    .fragment-view {
+        margin-top: 80px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 80px;
+    }
 }
 
 @media (min-width:1281px) {
@@ -180,5 +209,11 @@
         margin-left: 230px;
         margin-top: 20px;
         margin-right: 30px;
+    }
+    .fragment-view {
+        margin-top: 80px;
+    }
+    .fragment-view-parceiro {
+        margin-top: 80px;
     }
 }

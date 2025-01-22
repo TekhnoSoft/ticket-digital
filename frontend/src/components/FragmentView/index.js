@@ -3,31 +3,50 @@ import './style.css';
 import Header from '../Header';
 import Footer from '../Footer';
 import { MainContext } from '../../helpers/MainContext';
-import { ticketOutline, cubeOutline, peopleOutline, colorPaletteOutline, personOutline, logInOutline } from 'ionicons/icons';
+import { ticketOutline, cubeOutline, peopleOutline, colorPaletteOutline, personOutline, logInOutline, ticket, cube, people, colorPalette, person, logIn } from 'ionicons/icons';
+import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
-    { name: 'Campanhas', icon: ticketOutline },
-    { name: 'Pedidos', icon: cubeOutline },
-    { name: 'Afiliados', icon: peopleOutline },
-    { name: 'Personalizar', icon: colorPaletteOutline },
-    { name: 'Perfil', icon: personOutline }
+    { id: 0, name: 'Campanhas', path: '', icon: ticketOutline, iconFill: ticket, path: "/parceiro" },
+    { id: 1, name: 'Pedidos', icon: cubeOutline, iconFill: cube, path: "/parceiro-pedidos" },
+    { id: 2, name: 'Afiliados', icon: peopleOutline, iconFill: people, path: "/parceiro-afiliados" },
+    { id: 3, name: 'Visual', icon: colorPaletteOutline, iconFill: colorPalette, path: "/parceiro-visual" },
+    { id: 4, name: 'Perfil', icon: personOutline, iconFill: person, path: "/parceiro-perfil" }
 ];
 
-const BottomNavigationBar = () => {
+const BottomNavigationBar = ({ pageIndex, setPageIndex }) => {
+
+    const navigate = useNavigate();
+
+    const handlePage = (index, path) => {
+        localStorage.setItem("pageIndex", index);
+        setPageIndex(index);
+        navigate(path);
+    }
+
     return (
         <div className="bottom-nav">
             {menuItems.map((item, index) => (
-                <div key={index} className="nav-item">
-                    <ion-icon icon={item.icon} className="nav-icon" />
-                    <span>{item.name}</span>
+                <div key={index} className="nav-item" onClick={() => { handlePage(index, item?.path) }}>
+                    <ion-icon icon={pageIndex == item?.id ? item.iconFill : item.icon} style={{ color: pageIndex == item?.id ? 'var(--primary-color)' : undefined }} className="nav-icon" />
+                    <span style={{ fontSize: '12px', color: pageIndex == item?.id ? 'var(--primary-color)' : undefined }}>{item.name}</span>
                 </div>
             ))}
         </div>
     );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ pageIndex, setPageIndex }) => {
+
     const [isOpen, setIsOpen] = useState(true);
+
+    const navigate = useNavigate();
+
+    const handlePage = (index, path) => {
+        localStorage.setItem("pageIndex", index);
+        setPageIndex(index);
+        navigate(path);
+    }
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
@@ -36,9 +55,9 @@ const Sidebar = () => {
             </div>*/}
             <div className="sidebar-menu">
                 {menuItems.map((item, index) => (
-                    <div key={index} className="menu-item">
-                        <ion-icon icon={item.icon} className="menu-icon" />
-                        {isOpen && <span className="menu-text">{item.name}</span>}
+                    <div key={index} className="menu-item" style={{ borderLeft: pageIndex == item?.id ? 'solid 3px var(--primary-color)' : undefined }} onClick={() => { handlePage(index, item?.path) }}>
+                        <ion-icon icon={item.icon} style={{ color: pageIndex == item?.id ? 'var(--primary-color)' : undefined }} className="menu-icon" />
+                        {isOpen && <span className="menu-text" style={{ color: pageIndex == item?.id ? 'var(--primary-color)' : undefined }}>{item.name}</span>}
                     </div>
                 ))}
                 <div key={99} className="menu-item">
@@ -52,19 +71,32 @@ const Sidebar = () => {
 
 export default ({ children, headerMode, headerPaymentStep, modo }) => {
 
-    const { user, setUser } = useContext(MainContext); 
+    const { user, setUser } = useContext(MainContext);
+
+    const [pageIndex, setPageIndex] = useState(() => {
+        let pathname = window.location.pathname;
+        let menuSelected = menuItems.filter(m => {
+            return m.path == pathname;
+        })[0];
+
+        if (menuSelected != null) {
+            return menuSelected?.id
+        } else {
+            return localStorage.getItem("pageIndex") || 0;
+        }
+    });
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []); 
+    }, []);
 
     return (
         <>
-            <Header modo={modo} user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep}/>
+            <Header modo={modo} user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep} />
             {headerMode == "PARCEIRO" ? (
                 <>
-                    <Sidebar/>
-                    <BottomNavigationBar/>
+                    <Sidebar pageIndex={pageIndex} setPageIndex={setPageIndex} />
+                    <BottomNavigationBar pageIndex={pageIndex} setPageIndex={setPageIndex} />
                 </>
             ) : (null)}
             <div className={headerMode == "PARCEIRO" ? 'fragment-view-parceiro' : 'fragment-view'}>

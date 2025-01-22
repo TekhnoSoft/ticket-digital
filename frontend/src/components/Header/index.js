@@ -30,7 +30,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
+                        <img src='../Logo.png' className='header-logo' style={{cursor: 'pointer'}} onClick={() => {}}/>
                         <div className='button-group'>
                             <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                             <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
@@ -50,19 +50,20 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
                     ) : (null)}
                 </div>
             ) : headerMode == "PARCEIRO" ? (
-                <div className='header-parceiro'>
+                <div className='header-parceiro' >
                     <div className='header-content-parceiro'>
-                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => {}}/>
+                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => {}}/>
                         <div className='button-group'>
-                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
-                            <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
+                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="help-circle-outline"></ion-icon></Button>
+                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="notifications-outline"></ion-icon></Button>
+                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="person-outline"></ion-icon></Button>
                         </div>
                     </div>
                 </div>
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} style={{cursor: 'pointer'}} onClick={() => navigate(-1)}/>
+                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => navigate(-1)}/>
                         <div className='button-group'>
                             <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
                                 <ion-icon name="person-outline"></ion-icon>
