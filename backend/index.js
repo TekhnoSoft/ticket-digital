@@ -21,9 +21,6 @@ app.use('/users', usersRoute);
 app.use('/sorteios', sorteiosRoute);
 app.use('/payment', paymentRoute);
 
-const bilheteThread = require("./micro-services/bilhete");
-const faturaThread = require("./micro-services/fatura");
-
 /*(async () => {
     try {
         // Sincronizando o banco de dados. Aqui estamos dizendo ao Sequelize para sincronizar as tabelas.
@@ -38,9 +35,6 @@ const faturaThread = require("./micro-services/fatura");
         console.error("Erro ao sincronizar o banco de dados:", error);
     }
 })()*/
-
-//bilheteThread();
-//faturaThread();
 
 if(process.env.DEVELOPMENT_MODE == "true"){
     var httpServer = http.createServer(app);
