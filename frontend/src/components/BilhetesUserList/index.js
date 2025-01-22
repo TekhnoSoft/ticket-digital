@@ -207,7 +207,7 @@ export default ({ user, setUser, modo }) => {
                                             <div style={{ width: '15px', height: '15px', borderRadius: '8px', background: 'red', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '6px' }}>
                                                 <ion-icon name="close"></ion-icon>
                                             </div>
-                                            <b>Pedido cancelado</b>
+                                            <b>Pedido expirado</b>
                                         </div>
                                     ) : (null)}
                                     <SpaceBox space={8} />
