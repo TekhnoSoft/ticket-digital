@@ -20,7 +20,7 @@ export default () => {
                     <img src='../Logo.png' width={"100px"} />
                     <SpaceBox space={15} />
                     <h1 style={{ color: 'var(--text-opacity)' }}>Criar conta</h1>
-                    <p style={{ color: 'var(--text-opacity)' }}>Crie a sua campanha, configure para ficar do seu jeito, <br /> e receba você mesmo o dinheiro!</p>
+                    <p style={{ color: 'var(--text-opacity)' }}>Crie a sua campanha, configure para ficar do seu jeito,&nbsp;<br />&nbsp;e receba você mesmo o dinheiro!</p>
                     <SpaceBox space={15} />
                     <Input type={"text"} label={"Digite seu nome"} setValue={setName} value={name} />
                     <SpaceBox space={5} />
@@ -40,7 +40,7 @@ export default () => {
                     </div>
                     <SpaceBox space={25} />
                     <Button style={{ width: '100%' }}>
-                        Entrar
+                        Criar conta
                     </Button>
                     <SpaceBox space={15} />
                     <div className='login-or'>
