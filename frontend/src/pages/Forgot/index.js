@@ -13,7 +13,7 @@ export default () => {
         <div className='login-content'>
             <div className='login-left'>
                 <div className='login-left-content'>
-                    <img src='../logo.png' width={"100px"} />
+                    <img src='../Logo.png' width={"100px"} />
                     <SpaceBox space={15} />
                     <h1 style={{ color: 'var(--text-opacity)' }}>Recuperar senha</h1>
                     <p style={{ color: 'var(--text-opacity)' }}>Digite o endereço de e-mail da sua conta e enviaremos <br/> um link para redefinir sua senha.</p>

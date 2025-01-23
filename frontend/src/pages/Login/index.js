@@ -14,7 +14,7 @@ export default () => {
         <div className='login-content'>
             <div className='login-left'>
                 <div className='login-left-content'>
-                    <img src='../logo.png' width={"100px"} />
+                    <img src='../Logo.png' width={"100px"} />
                     <SpaceBox space={15} />
                     <h1 style={{ color: 'var(--text-opacity)' }}>Seja bem-vindo!</h1>
                     <p style={{ color: 'var(--text-opacity)' }}>Insira suas informações abaixo para entrar na sua conta</p>

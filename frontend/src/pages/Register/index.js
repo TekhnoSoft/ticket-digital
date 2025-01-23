@@ -17,7 +17,7 @@ export default () => {
         <div className='login-content'>
             <div className='login-left'>
                 <div className='login-left-content'>
-                    <img src='../logo.png' width={"100px"} />
+                    <img src='../Logo.png' width={"100px"} />
                     <SpaceBox space={15} />
                     <h1 style={{ color: 'var(--text-opacity)' }}>Criar conta</h1>
                     <p style={{ color: 'var(--text-opacity)' }}>Crie a sua campanha, configure para ficar do seu jeito, <br /> e receba você mesmo o dinheiro!</p>
