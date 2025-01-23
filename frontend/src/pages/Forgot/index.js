@@ -8,7 +8,6 @@ export default () => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
 
     return (
         <div className='login-content'>
@@ -16,19 +15,13 @@ export default () => {
                 <div className='login-left-content'>
                     <img src='../logo.png' width={"100px"} />
                     <SpaceBox space={15} />
-                    <h1 style={{ color: 'var(--text-opacity)' }}>Seja bem-vindo!</h1>
-                    <p style={{ color: 'var(--text-opacity)' }}>Insira suas informações abaixo para entrar na sua conta</p>
+                    <h1 style={{ color: 'var(--text-opacity)' }}>Recuperar senha</h1>
+                    <p style={{ color: 'var(--text-opacity)' }}>Digite o endereço de e-mail da sua conta e enviaremos <br/> um link para redefinir sua senha.</p>
                     <SpaceBox space={15} />
                     <Input type={"email"} label={"Digite seu e-mail"} setValue={setEmail} value={email} />
-                    <SpaceBox space={5} />
-                    <Input type={"password"} label={"Digite sua senha"} setValue={setPassword} value={password} />
-                    <SpaceBox space={5} />
-                    <div className='forgot-password'>
-                        <b onClick={() => { navigate('/forgot-password') }} style={{ cursor: 'pointer' }}>Esqueceu sua senha?</b>
-                    </div>
                     <SpaceBox space={25} />
                     <Button style={{ width: '100%' }}>
-                        Entrar
+                        Enviar link
                     </Button>
                     <SpaceBox space={15} />
                     <div className='login-or'>
@@ -37,8 +30,8 @@ export default () => {
                         <Hr elevation={1} color={"#ddd"} />
                     </div>
                     <SpaceBox space={8} />
-                    <center><label style={{ color: 'var(--text-opacity)' }}>Ainda não tem uma conta? <b onClick={() => { navigate('/register') }} style={{ color: 'var(--primary-color)', cursor: 'pointer' }}>Registre-se</b></label></center>
-                    <SpaceBox space={8} />
+                    <center><label style={{ color: 'var(--text-opacity)' }}>Lembrou a senha? <b onClick={() => { navigate('/login') }} style={{ color: 'var(--primary-color)', cursor: 'pointer' }}>Login</b></label></center>
+                    <SpaceBox space={15} />
                 </div>
             </div>
             <div className='login-right'>

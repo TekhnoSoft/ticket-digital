@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { MainContext } from "./helpers/MainContext";
-import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroAfiliados, ParceiroVisual, ParceiroPerfil } from "./pages";
+import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroAfiliados, ParceiroVisual, ParceiroPerfil, Forgot } from "./pages";
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -11,10 +11,10 @@ function App() {
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")) || null)
-  } , [])
+  }, [])
 
   return (
-    <MainContext.Provider value={{user, setUser}}>
+    <MainContext.Provider value={{ user, setUser }}>
       <Router>
         <Routes>
           <Route exact path="/" element={<Market />} />
@@ -23,6 +23,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<Forgot />} />
           <Route path="*" element={<PageNotFound />} />
           {/*==================PRIVATE-ROUTES===================*/}
           <Route path="/parceiro" element={<Parceiro />} />
@@ -31,7 +32,7 @@ function App() {
           <Route path="/parceiro-visual" element={<ParceiroVisual />} />
           <Route path="/parceiro-perfil" element={<ParceiroPerfil />} />
         </Routes>
-        <ToastContainer style={{zIndex: 999999}} />
+        <ToastContainer style={{ zIndex: 999999 }} />
       </Router>
     </MainContext.Provider>
   );

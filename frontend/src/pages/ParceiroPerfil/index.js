@@ -6,7 +6,7 @@ export default () => {
     return (
         <FragmentView headerMode={"PARCEIRO"}>
             <SpaceBox space={8}/>
-            <h2>Titulo</h2>
+            <h2>Perfil</h2>
             <SpaceBox space={15}/>
         </FragmentView>
     )
