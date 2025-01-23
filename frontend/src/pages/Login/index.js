@@ -1,14 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './style.css';
 import { Button, Hr, Input, SpaceBox } from '../../components';
 import { useNavigate } from 'react-router-dom';
+import Utils from '../../Utils';
+import Api from '../../Api';
+import { MainContext } from '../../helpers/MainContext';
 
 export default () => {
+
+    const { userParceiro } = useContext(MainContext);
 
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    useEffect(() => {
+        if(userParceiro){
+            navigate("/parceiro");
+        }
+    }, [userParceiro])
+
+    const login = async () => {
+
+        if (Utils.stringIsNullOrEmpty(email)) {
+            Utils.notify("error", "Digite seu e-mail.");
+            return;
+        }
+
+        if (!Utils.validarEmail(email)) {
+            Utils.notify("error", "E-mail inválido.");
+            return;
+        }
+
+
+        if (Utils.stringIsNullOrEmpty(password)) {
+            Utils.notify("error", "Digite sua senha.");
+            return;
+        }
+
+        const { success, data } = await Utils.processRequest(Api.parceiro.login, {email, password}, true);
+
+        if (success) {
+            Utils.notify("success", "Logado com sucesso!");
+            localStorage.setItem("TICKETDIGITAL_ACCESS_TOKEN", data?.token);
+            window.location.reload();
+        }
+
+    }
 
     return (
         <div className='login-content'>
@@ -27,7 +66,7 @@ export default () => {
                         <b onClick={() => { navigate('/forgot-password') }} style={{ cursor: 'pointer' }}>Esqueceu sua senha?</b>
                     </div>
                     <SpaceBox space={25} />
-                    <Button style={{ width: '100%' }}>
+                    <Button style={{ width: '100%' }} onClick={login}>
                         Entrar
                     </Button>
                     <SpaceBox space={15} />

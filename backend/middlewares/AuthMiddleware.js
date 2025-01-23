@@ -12,17 +12,17 @@ const validateToken = (req, res, next) => {
 
         const accessToken = req.header("TICKETDIGITAL_ACCESS_TOKEN");
 
-        if(!accessToken) return res.json({error: 'Acesso não autorizado!', success: false, data: {success: false}})
+        if(!accessToken) return res.status(404).json({error: 'Acesso não autorizado!', success: false, data: {success: false}})
 
         const decoded = verify(accessToken, process.env.JWT_SECRET);
 
         req.user = decoded;
 
-        if(!decoded) return res.json({error: 'Token inválido!', success: false, data: {success: false}})
+        if(!decoded) return res.status(404).json({error: 'Token inválido!', success: false, data: {success: false}})
 
         return next();
     }catch(err){
-        return res.json({success: false, code: 500, message: "Acesso não autorizado.", data: err});
+        return res.status(404).json({success: false, code: 500, message: "Acesso não autorizado.", data: err});
     }
 }
 

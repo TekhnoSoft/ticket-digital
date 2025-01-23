@@ -5,6 +5,7 @@ import Footer from '../Footer';
 import { MainContext } from '../../helpers/MainContext';
 import { ticketOutline, cubeOutline, peopleOutline, colorPaletteOutline, personOutline, logInOutline, ticket, cube, people, colorPalette, person, logIn } from 'ionicons/icons';
 import { useNavigate } from 'react-router-dom';
+import Utils from '../../Utils';
 
 const menuItems = [
     { id: 0, name: 'Campanhas', path: '', icon: ticketOutline, iconFill: ticket, path: "/parceiro" },
@@ -38,6 +39,8 @@ const BottomNavigationBar = ({ pageIndex, setPageIndex }) => {
 
 const Sidebar = ({ pageIndex, setPageIndex }) => {
 
+    const { logout } = useContext(MainContext);
+
     const [isOpen, setIsOpen] = useState(true);
 
     const navigate = useNavigate();
@@ -46,6 +49,14 @@ const Sidebar = ({ pageIndex, setPageIndex }) => {
         localStorage.setItem("pageIndex", index);
         setPageIndex(index);
         navigate(path);
+    }
+
+    const handleLogout = () => {
+        if(logout){
+            logout(() => {
+                Utils.notify("success", "Desconectado com sucesso.");
+            });
+        }
     }
 
     return (
@@ -60,7 +71,7 @@ const Sidebar = ({ pageIndex, setPageIndex }) => {
                         {isOpen && <span className="menu-text" style={{ color: pageIndex == item?.id ? 'var(--primary-color)' : undefined }}>{item.name}</span>}
                     </div>
                 ))}
-                <div key={99} className="menu-item">
+                <div key={99} className="menu-item" onClick={handleLogout}>
                     <ion-icon icon={logInOutline} className="menu-icon" />
                     {isOpen && <span className="menu-text">Sair</span>}
                 </div>

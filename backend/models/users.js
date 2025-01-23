@@ -35,10 +35,13 @@ const User = database.define('tb_users', {
         type: Sequelize.TEXT,
         allowNull: true,
     },
-    affiliate_code: {
-        type: Sequelize.STRING,
+    convite_code: {
+        type: Sequelize.TEXT,
         allowNull: true,
-        unique: true
+    },
+    affiliate_code: {
+        type: Sequelize.TEXT,
+        allowNull: true,
     },
 });
 

@@ -117,6 +117,36 @@ const Api = {
                 return err;
             });
         }
+    },
+    parceiro: {
+        auth: async () => {
+            return await axios.get(`${API_BASE}/users/auth`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        get: async () => {
+            return await axios.get(`${API_BASE}/users/get`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        login: async ({ email, password }) => {
+            return await axios.post(`${API_BASE}/users/login`, {email, password}).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        register: async ({ name, email, password, code }) => {
+            return await axios.post(`${API_BASE}/users/register`, {name, email, password, code}).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        }
     }
 }
 

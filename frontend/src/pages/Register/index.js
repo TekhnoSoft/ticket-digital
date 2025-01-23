@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './style.css';
 import { Button, Hr, Input, SpaceBox } from '../../components';
 import { useNavigate } from 'react-router-dom';
+import Api from '../../Api';
+import Utils from '../../Utils';
+import { MainContext } from '../../helpers/MainContext';
 
 export default () => {
+
+    const { userParceiro } = useContext(MainContext);
 
     const navigate = useNavigate();
 
@@ -12,6 +17,54 @@ export default () => {
     const [password, setPassword] = useState("");
     const [passwordC, setPasswordC] = useState("");
     const [code, setCode] = useState("");
+
+    useEffect(() => {
+        if(userParceiro){
+            navigate("/parceiro");
+        }
+    }, [userParceiro])
+
+    const register = async () => {
+
+        if (Utils.stringIsNullOrEmpty(name)) {
+            Utils.notify("error", "Digite seu nome.");
+            return;
+        }
+
+        if (Utils.stringIsNullOrEmpty(email)) {
+            Utils.notify("error", "Digite seu e-mail.");
+            return;
+        }
+
+        if (!Utils.validarEmail(email)) {
+            Utils.notify("error", "E-mail inválido.");
+            return;
+        }
+
+        if (Utils.stringIsNullOrEmpty(password)) {
+            Utils.notify("error", "Digite sua senha.");
+            return;
+        }
+
+        if (password != passwordC) {
+            Utils.notify("error", "As senhas não se coincidem.");
+            return;
+        }
+
+        if (Utils.stringIsNullOrEmpty(code)) {
+            Utils.notify("error", "Digite o código de convite.");
+            return;
+        }
+
+        const { success } = await Utils.processRequest(Api.parceiro.register, {name, email, password, code}, true);
+
+        if (success) {
+            Utils.notify("success", "Registrado com sucesso, agora, faça login.");
+            navigate("/login");
+        }
+
+    }
+
 
     return (
         <div className='login-content'>
@@ -39,7 +92,7 @@ export default () => {
                         </div>
                     </div>
                     <SpaceBox space={25} />
-                    <Button style={{ width: '100%' }}>
+                    <Button style={{ width: '100%' }} onClick={register}>
                         Criar conta
                     </Button>
                     <SpaceBox space={15} />

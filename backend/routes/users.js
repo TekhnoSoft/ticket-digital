@@ -10,13 +10,16 @@ const sequelize = require('../database');
 const Sorteio = require('../models/sorteio');
 const SorteioImagens = require('../models/sorteio_imagens');
 const SorteioParceiro = require('../models/sorteio_parceiro');
+const UserParceiroConvite = require('../models/user_parceiro_convites');
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 
 router.get('/auth', validateToken, async (req, res) => {
     try{
-        return res.json({message: "Token válido", data: req.user.id});
+        return res.status(200).json({message: "Token válido", data: req.user.id});
     }catch(err){
-        return res.json({message: "Erro ao recuperar o token", data: null});
+        return res.status(401).json({message: "Erro ao recuperar o token", data: null});
     }
 })
 
@@ -33,6 +36,7 @@ router.get('/get', validateToken, async (req, res) => {
             name: user?.name,
             phone: user?.phone,
             role: user?.role,
+            cpf: user?.cpf,
         }});
     } catch (error) {
         return res.status(400).json({ message: error.message, data: null });
@@ -42,22 +46,22 @@ router.get('/get', validateToken, async (req, res) => {
 router.post('/login', validateOrigin, async (req, res) => {
     try {
         const { email, password } = req.body;
-        const errors = [];
 
         if (!Utils.validateEmail(email)) {
-            errors.push("Email inválido");
-        }
-
-        if (errors.length > 0) {
-            return res.status(400).json({ errors });
+            return res.status(401).json({message: "Email inválido" });
         }
 
         const user = await User.findOne({ where: { email } });
+        
+        if(user?.role != "parceiro"){
+            return res.status(401).json({message: "E-mail de parceiro não encontrado." });
+        }
+        
         if (!user) {
             return res.status(401).json({message: "Credenciais inválidas." });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        const isPasswordValid = await bcrypt.compare(password, user?.password_hash);
         if (!isPasswordValid) {
             return res.status(401).json({message: "Credenciais inválidas." });
         }
@@ -72,54 +76,73 @@ router.post('/login', validateOrigin, async (req, res) => {
 
 router.post('/register', validateOrigin, async (req, res) => {
     try {
-        const { name, phone, email, password, role, affiliate_code } = req.body;
-        const errors = [];
+        const { name, email, password, code } = req.body;
+
+        const role = "parceiro";
 
         if (name.trim().length < 3) {
-            errors.push("Nome completo deve ter pelo menos 3 caracteres");
-        }
-
-        if (!Utils.validatePhone(phone)) {
-            errors.push("Celular deve conter 11 dígitos (DDD + número)");
+            return res.status(401).json({message: "Nome completo deve ter pelo menos 3 caracteres." });
         }
 
         if (!Utils.validateEmail(email)) {
-            errors.push("Email inválido");
+
+            return res.status(401).json({message: "Email inválido." });
         }
 
         if (password.length < 6) {
-            errors.push("Senha deve ter pelo menos 6 caracteres");
+            return res.status(401).json({message: "Senha deve ter pelo menos 6 caracteres." });
         }
 
         if (!Utils.validatePassword(password)) {
-            errors.push("A senha precisa ter letras, números e caracteres.");
-        }
-
-        if (errors.length > 0) {
-            return res.status(400).json({ errors });
+            return res.status(401).json({message: "A senha precisa ter letras, números e caracteres." });
         }
 
         const existingUser = await User.findOne({
-            where: { [Sequelize.Op.or]: [{ phone }, { email }] }
+            where: { [Sequelize.Op.or]: [{ email }] }
         });
 
         if (existingUser) {
-            return res.status(400).json({ errors: ['Telefone ou email já estão cadastrados.'] });
+            return res.status(400).json({ message: 'E-mail já foi utilizado.' });
+        }
+
+        if (code.trim().length < 3) {
+            return res.status(401).json({message: "Digite o código de convite." });
+        }
+
+        const hasCode = await UserParceiroConvite.findOne({ where: {code: code}});
+        if(!hasCode){
+            return res.status(401).json({message: "Esse código de convite não existe." });
+        }
+
+        if(hasCode?.used || hasCode?.user_id){
+            return res.status(401).json({message: "Esse código de convite já foi expirado." });
         }
 
         const password_hash = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
             name,
-            phone,
             email,
             password_hash,
+            phone: "",
             role,
-            affiliate_code
+            affiliate_code: Utils.makeid(6),
+            convite_code: code,
         });
 
-        return res.status(201).json({ user: newUser });
+        await UserParceiroConvite.update(
+            {
+                used: true,
+                user_id: newUser?.id,
+            },
+            {
+                where: { code: hasCode?.code }
+            },
+        );
+
+        return res.status(201).json(true);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: 'Erro ao criar usuário.' });
     }
 });
