@@ -11,6 +11,7 @@ const Sorteio = require('../models/sorteio');
 const SorteioImagens = require('../models/sorteio_imagens');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 const UserParceiroConvite = require('../models/user_parceiro_convites');
+const database = require('../database');
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
@@ -375,6 +376,53 @@ router.get('/:user_id/taxas', validateOrigin, async (req, res) => {
     try{
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id } });
         return res.status(200).json(sorteioParceiro?.taxa_cliente);
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+////////////////////////////////////////////////////////////////PARCEIRO////////////////////////////////////////////////////////////
+
+router.get('/parceiro/campanhas', validateToken, async (req, res) => {
+    try{
+        let id = req.user.id;
+        const user = await User.findOne({ where: { id } });
+        if(!user || user == null){
+            return res.status(404).json({ message: "Parceiro não encontrado.", data: null });
+        }
+
+        let user_id = user?.id;
+
+        const query = `
+            SELECT A.*, 
+                (SELECT B.id 
+                    FROM tb_sorteio_imagens AS B 
+                    WHERE B.sorteio_id = A.id 
+                    LIMIT 1) AS id_imagem
+            FROM ticketdigital.tb_sorteios AS A
+            WHERE A.user_id=:user_id;
+        `;
+
+        const resultados = await database.query(query, {
+            replacements: {user_id},
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const campanhas = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                id_imagem: row.id_imagem,
+                name: row.name,
+                valor_por_bilhete: row.valor_por_bilhete,
+                keybind: row.keybind,
+                status: row.status
+            }
+            campanhas.push(obj);
+        })
+
+        return res.status(200).json(campanhas);
     }catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });

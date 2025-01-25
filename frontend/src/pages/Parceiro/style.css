@@ -1,0 +1,105 @@
+.grid-container-c {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.grid-item-c {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.grid-item-c-content {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    position: relative;
+}
+
+.item-image-c {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.item-content-c {
+    flex-grow: 1;
+}
+
+.item-name-c {
+    display: block;
+    font-weight: bold;
+}
+
+.item-link-c {
+    color: rgb(129, 129, 129);
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.menu-icon-c {
+    position: relative;
+    cursor: pointer;
+}
+
+.menu-options-c {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    min-width: 120px;
+    padding: 5px 0;
+}
+
+.menu-icon-c:hover .menu-options-c {
+    display: block;
+}
+
+.menu-item-c {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.menu-item-c:hover {
+    background: #eee;
+}
+
+.menu-item-c ion-icon {
+    margin-right: 8px;
+}
+
+.status-c {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.status-dot-c {
+    width: 10px;
+    height: 10px;
+    background: orange;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .grid-container-c {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-container-c {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
