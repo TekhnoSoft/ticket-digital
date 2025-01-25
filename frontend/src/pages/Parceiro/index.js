@@ -56,6 +56,10 @@ export default () => {
         }
     }
 
+    const filteredCampanhas = campanhas.filter(campanha =>
+        campanha?.name.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <FragmentView headerMode={"PARCEIRO"}>
             <SpaceBox space={8} />
@@ -69,10 +73,10 @@ export default () => {
             </div>
 
             {loaded ? (
-                campanhas?.length > 0 ? (
+                filteredCampanhas.length > 0 ? (
                     <div className="grid-container-c">
-                        {campanhas?.map(campanha => (
-                            <div className="grid-item-c">
+                        {filteredCampanhas.map(campanha => (
+                            <div className="grid-item-c" key={campanha?.id}>
                                 <div className='grid-item-c-content'>
                                     <img src={Environment.API_BASE + `/sorteios/imagem/${campanha?.id_imagem}` || `../placeholder-image.png`} alt="Campanha" className="item-image-c" />
                                     <div className="item-content-c">
@@ -125,7 +129,6 @@ export default () => {
             )}
 
             <SpaceBox space={80} />
-
         </FragmentView>
-    )
+    );
 }
