@@ -1,0 +1,124 @@
+/* Tabela */
+.table-container-p {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sales-table-p {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff; /* Fundo branco para um design clean */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.sales-table-p th,
+.sales-table-p td {
+    padding: 16px 24px;
+    text-align: center;
+    border: none; /* Sem bordas duras para suavizar o visual */
+    color: #333; /* Cor escura para o texto */
+    font-size: 14px;
+}
+
+.sales-table-p th {
+    background-color: #fff; /* Fundo claro para os cabeçalhos */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333; /* Cor escura para o texto do cabeçalho */
+}
+
+.sales-table-p tr:nth-child(even) {
+    background-color: #f9f9f9; /* Linha alternada clara */
+}
+
+.sales-table-p tr:hover {
+    background-color: #e9e9e9; /* Efeito hover suave, fundo um pouco mais escuro */
+}
+
+.sales-table-p td {
+    transition: background-color 0.3s ease;
+}
+
+.sales-table-p tr:nth-child(odd):hover td {
+    background-color: #e9e9e9; /* Efeito hover suave para linhas ímpares */
+}
+
+/* Filtro */
+.filter-container-p {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.filter-input-p {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    width: 200px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.filter-input-p:focus {
+    background-color: #f4f4f4;
+    border-color: #007bff;
+    outline: none;
+}
+
+.filter-icon-p {
+    font-size: 22px;
+    color: #007bff;
+    cursor: pointer;
+    align-self: center;
+    transition: color 0.3s ease;
+}
+
+.filter-icon-p:hover {
+    color: #66ccff; /* Efeito de hover mais suave */
+}
+
+/* Status */
+.status-bubble-p {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.status-bubble-p.pendente {
+    background-color: #f39c12; /* Laranja para pendente */
+}
+
+.status-bubble-p.concluído {
+    background-color: #27ae60; /* Verde para concluído */
+}
+
+.status-bubble-p.cancelado {
+    background-color: #e74c3c; /* Vermelho para cancelado */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sales-table-p th,
+    .sales-table-p td {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .filter-container-p {
+        flex-direction: column;
+    }
+
+    .filter-input-p {
+        width: 100%;
+    }
+}

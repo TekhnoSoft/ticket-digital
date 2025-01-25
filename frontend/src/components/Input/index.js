@@ -22,7 +22,7 @@ function setFocus(on) {
     }
 }
 
-const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hidden, id, accept, capture, maxLegth, hideInputBoxMargin, readOnly}) => {
+const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hidden, id, accept, capture, maxLegth, hideInputBoxMargin, readOnly, name}) => {
 
     const handleChange = (event) => {
         const newValue = event.target.value;
@@ -262,6 +262,7 @@ const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hi
                     onFocus={() => setFocus(true)} 
                     onBlur={() => setFocus(false)}
                     value={value}
+                    name={name}
                     onChange={handleChange}
                     disabled={disabled}
                     style={{resize: 'none', height: 'auto'}}
@@ -275,6 +276,7 @@ const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hi
                         onFocus={() => setFocus(true)} 
                         onBlur={() => setFocus(false)}
                         value={value}
+                        name={name}
                         onChange={handleChange}
                         ref={ref}
                         disabled={disabled}
@@ -286,6 +288,7 @@ const Input = ({style, type, label, value, setValue, ref, disabled, onChange, hi
                         id={id}
                         type={type} 
                         onChange={onChange}
+                        name={name}
                         accept={accept}
                         capture={capture}
                         maxLength={maxLegth}
