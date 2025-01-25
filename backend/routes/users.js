@@ -17,10 +17,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 
 router.get('/auth', validateToken, async (req, res) => {
-    try{
-        return res.status(200).json({message: "Token válido", data: req.user.id});
-    }catch(err){
-        return res.status(401).json({message: "Erro ao recuperar o token", data: null});
+    try {
+        return res.status(200).json({ message: "Token válido", data: req.user.id });
+    } catch (err) {
+        return res.status(401).json({ message: "Erro ao recuperar o token", data: null });
     }
 })
 
@@ -28,17 +28,19 @@ router.get('/get', validateToken, async (req, res) => {
     try {
         let id = req.user.id;
         const user = await User.findOne({ where: { id } });
-        if(!user || user == null){
+        if (!user || user == null) {
             return res.status(404).json({ message: "Cliente não encontrado.", data: null });
         }
-        return res.status(200).json({  message: "Cliente recuperado com sucesso!", data: {
-            id: user?.id,
-            email: user?.email,
-            name: user?.name,
-            phone: user?.phone,
-            role: user?.role,
-            cpf: user?.cpf,
-        }});
+        return res.status(200).json({
+            message: "Cliente recuperado com sucesso!", data: {
+                id: user?.id,
+                email: user?.email,
+                name: user?.name,
+                phone: user?.phone,
+                role: user?.role,
+                cpf: user?.cpf,
+            }
+        });
     } catch (error) {
         return res.status(400).json({ message: error.message, data: null });
     }
@@ -49,29 +51,29 @@ router.post('/login', validateOrigin, async (req, res) => {
         const { email, password } = req.body;
 
         if (!Utils.validateEmail(email)) {
-            return res.status(401).json({message: "Email inválido" });
+            return res.status(401).json({ message: "Email inválido" });
         }
 
         const user = await User.findOne({ where: { email } });
-        
-        if(user?.role != "parceiro"){
-            return res.status(401).json({message: "E-mail de parceiro não encontrado." });
+
+        if (user?.role != "parceiro") {
+            return res.status(401).json({ message: "E-mail de parceiro não encontrado." });
         }
-        
+
         if (!user) {
-            return res.status(401).json({message: "Credenciais inválidas." });
+            return res.status(401).json({ message: "Credenciais inválidas." });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user?.password_hash);
         if (!isPasswordValid) {
-            return res.status(401).json({message: "Credenciais inválidas." });
+            return res.status(401).json({ message: "Credenciais inválidas." });
         }
 
         const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
 
-        return res.status(201).json({message: "Login realizado com sucesso.", token });
+        return res.status(201).json({ message: "Login realizado com sucesso.", token });
     } catch (error) {
-        return res.status(500).json({message: "Erro no servidor. Tente novamente mais tarde." });
+        return res.status(500).json({ message: "Erro no servidor. Tente novamente mais tarde." });
     }
 })
 
@@ -82,20 +84,20 @@ router.post('/register', validateOrigin, async (req, res) => {
         const role = "parceiro";
 
         if (name.trim().length < 3) {
-            return res.status(401).json({message: "Nome completo deve ter pelo menos 3 caracteres." });
+            return res.status(401).json({ message: "Nome completo deve ter pelo menos 3 caracteres." });
         }
 
         if (!Utils.validateEmail(email)) {
 
-            return res.status(401).json({message: "Email inválido." });
+            return res.status(401).json({ message: "Email inválido." });
         }
 
         if (password.length < 6) {
-            return res.status(401).json({message: "Senha deve ter pelo menos 6 caracteres." });
+            return res.status(401).json({ message: "Senha deve ter pelo menos 6 caracteres." });
         }
 
         if (!Utils.validatePassword(password)) {
-            return res.status(401).json({message: "A senha precisa ter letras, números e caracteres." });
+            return res.status(401).json({ message: "A senha precisa ter letras, números e caracteres." });
         }
 
         const existingUser = await User.findOne({
@@ -107,16 +109,16 @@ router.post('/register', validateOrigin, async (req, res) => {
         }
 
         if (code.trim().length < 3) {
-            return res.status(401).json({message: "Digite o código de convite." });
+            return res.status(401).json({ message: "Digite o código de convite." });
         }
 
-        const hasCode = await UserParceiroConvite.findOne({ where: {code: code}});
-        if(!hasCode){
-            return res.status(401).json({message: "Esse código de convite não existe." });
+        const hasCode = await UserParceiroConvite.findOne({ where: { code: code } });
+        if (!hasCode) {
+            return res.status(401).json({ message: "Esse código de convite não existe." });
         }
 
-        if(hasCode?.used || hasCode?.user_id){
-            return res.status(401).json({message: "Esse código de convite já foi expirado." });
+        if (hasCode?.used || hasCode?.user_id) {
+            return res.status(401).json({ message: "Esse código de convite já foi expirado." });
         }
 
         const password_hash = await bcrypt.hash(password, 10);
@@ -185,68 +187,70 @@ router.put('/users', validateToken, async (req, res) => {
 });
 
 router.get('/get-by-phone/:phone', validateOrigin, async (req, res) => {
-    try{
-        const {phone} = req.params;
+    try {
+        const { phone } = req.params;
 
         const user = await User.findOne({ where: { phone } });
 
-        if(!user || user == null){
+        if (!user || user == null) {
             return res.status(404).json({ message: "Usuário não encontrado.", data: null });
         }
 
-        return res.status(200).json({  message: "Usuário recuperado com sucesso!", data: {
-            id: user?.id,
-            email: user?.email,
-            name: user?.name,
-            phone: user?.phone,
-            cpf: user?.cpf,
-            role: user?.role,
-        }});
-    }catch(err){
+        return res.status(200).json({
+            message: "Usuário recuperado com sucesso!", data: {
+                id: user?.id,
+                email: user?.email,
+                name: user?.name,
+                phone: user?.phone,
+                cpf: user?.cpf,
+                role: user?.role,
+            }
+        });
+    } catch (err) {
         return res.status(500).json({ error: 'Erro interno.' });
     }
 })
 
 router.post('/pre-register', validateOrigin, async (req, res) => {
-    try{
-        const {name, phone, email, cpf} = req.body;
+    try {
+        const { name, phone, email, cpf } = req.body;
 
-        if(name?.trim()?.length < 3){
+        if (name?.trim()?.length < 3) {
             return res.status(400).json({ message: "Nome inválido.", data: null });
         }
 
-        if(!Utils.validatePhone(phone)){
+        if (!Utils.validatePhone(phone)) {
             return res.status(400).json({ message: "Celular inválido.", data: null });
         }
 
-        if(!Utils.validateEmail(email)){
+        if (!Utils.validateEmail(email)) {
             return res.status(400).json({ message: "Email inválido.", data: null });
         }
 
-        if(!Utils.validateCPF(cpf)){
+        if (!Utils.validateCPF(cpf)) {
             return res.status(400).json({ message: "CPF inválido.", data: null });
         }
 
-        const userPhone = await User.findOne({ 
-            where: { 
-                [Op.or]: [{ phone }] 
-            } 
+        const userPhone = await User.findOne({
+            where: {
+                [Op.or]: [{ phone }]
+            }
         });
 
-        const userEmail = await User.findOne({ 
-            where: { 
-                [Op.or]: [{ email }] 
-            } 
+        const userEmail = await User.findOne({
+            where: {
+                [Op.or]: [{ email }]
+            }
         });
 
-        if(userPhone){
+        if (userPhone) {
             return res.status(400).json({ message: "Usuário com esse celular já existe.", data: null });
         }
 
-        if(userEmail){
+        if (userEmail) {
             return res.status(400).json({ message: "Usuário com esse email já existe.", data: null });
         }
-        
+
         const newUser = await User.create({
             name,
             phone,
@@ -256,15 +260,17 @@ router.post('/pre-register', validateOrigin, async (req, res) => {
             affiliate_code: Utils.makeid(6)
         });
 
-        return res.status(201).json({  message: "Usuário registrado com sucesso!", data: {
-            id: newUser?.id,
-            email: newUser?.email,
-            name: newUser?.name,
-            phone: newUser?.phone,
-            cpf: newUser.cpf,
-        }});
+        return res.status(201).json({
+            message: "Usuário registrado com sucesso!", data: {
+                id: newUser?.id,
+                email: newUser?.email,
+                name: newUser?.name,
+                phone: newUser?.phone,
+                cpf: newUser.cpf,
+            }
+        });
 
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({ error: 'Erro interno.' });
     }
 })
@@ -341,14 +347,14 @@ router.get('/faturas/:user_id', validateOrigin, async (req, res) => {
 });
 
 router.get('/fatura/:id_remessa', validateOrigin, async (req, res) => {
-    const {id_remessa} = req.params;
-    try{
+    const { id_remessa } = req.params;
+    try {
 
-        const fatura = await Fatura.findOne({ where: { id_remessa }});
-        const sorteio = await Sorteio.findOne({ where: {id: fatura?.sorteio_id}});
-        const imagem = await SorteioImagens.findOne({ 
-            where: { sorteio_id: fatura?.sorteio_id }, 
-            attributes: ['id'] 
+        const fatura = await Fatura.findOne({ where: { id_remessa } });
+        const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id } });
+        const imagem = await SorteioImagens.findOne({
+            where: { sorteio_id: fatura?.sorteio_id },
+            attributes: ['id']
         });
         const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
         const user = await User.findOne({ where: { id: fatura?.user_id } });
@@ -365,18 +371,18 @@ router.get('/fatura/:id_remessa', validateOrigin, async (req, res) => {
                 phone: user?.phone
             }
         });
-    }catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });
     }
 })
 
 router.get('/:user_id/taxas', validateOrigin, async (req, res) => {
-    const {user_id} = req.params;
-    try{
+    const { user_id } = req.params;
+    try {
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id } });
         return res.status(200).json(sorteioParceiro?.taxa_cliente);
-    }catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });
     }
@@ -385,10 +391,10 @@ router.get('/:user_id/taxas', validateOrigin, async (req, res) => {
 ////////////////////////////////////////////////////////////////PARCEIRO////////////////////////////////////////////////////////////
 
 router.get('/parceiro/campanhas', validateToken, async (req, res) => {
-    try{
+    try {
         let id = req.user.id;
         const user = await User.findOne({ where: { id } });
-        if(!user || user == null){
+        if (!user || user == null) {
             return res.status(404).json({ message: "Parceiro não encontrado.", data: null });
         }
 
@@ -399,13 +405,17 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
                 (SELECT B.id 
                     FROM tb_sorteio_imagens AS B 
                     WHERE B.sorteio_id = A.id 
-                    LIMIT 1) AS id_imagem
+                    LIMIT 1) AS id_imagem,
+                (COUNT(C.id) / CAST(D.valor AS FLOAT)) * 100 AS progresso
             FROM ticketdigital.tb_sorteios AS A
-            WHERE A.user_id=:user_id;
+            LEFT JOIN tb_bilhetes AS C ON C.sorteio_id = A.id AND C.status = 'PAGO'
+            LEFT JOIN tb_sorteio_regras AS D ON A.sorteio_regras_id = D.id
+            WHERE A.user_id = :user_id
+            GROUP BY A.id, D.valor;
         `;
 
         const resultados = await database.query(query, {
-            replacements: {user_id},
+            replacements: { user_id },
             type: Sequelize.QueryTypes.SELECT,
         });
 
@@ -417,13 +427,14 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
                 name: row.name,
                 valor_por_bilhete: row.valor_por_bilhete,
                 keybind: row.keybind,
-                status: row.status
+                status: row.status,
+                progresso: Number(row?.progresso)
             }
             campanhas.push(obj);
         })
 
         return res.status(200).json(campanhas);
-    }catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });
     }
