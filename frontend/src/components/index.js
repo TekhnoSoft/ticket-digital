@@ -12,3 +12,5 @@ export { default as Input } from './Input';
 export { default as Modal } from './Modal';
 export { default as BilhetesUserList } from './BilhetesUserList';
 export { default as Countdown } from './Countdown';
+export { default as Select } from './Select';
+export { default as Option } from './Option';

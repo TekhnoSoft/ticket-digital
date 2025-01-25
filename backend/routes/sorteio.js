@@ -134,7 +134,9 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor }) => {
             createdAt: agora,
             updatedAt: agora,
             operadora: sorteioParceiro?.operadora,
-            taxa_cliente: sorteioParceiro?.taxa_cliente
+            taxa_cliente: sorteioParceiro?.taxa_cliente,
+            quantidade: bilhetesCount,
+            taxa_afiliado: 0,
         }
 
         const novaFatura = await Fatura.create(faturaObject);

@@ -1,35 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FragmentView from '../../components/FragmentView';
 import SpaceBox from '../../components/SpaceBox';
 import './style.css';
 import Input from '../../components/Input';
 import Utils from '../../Utils';
+import Api from '../../Api';
+import { Button, Card, Option, Select } from '../../components';
 
 export default () => {
-    const [filters, setFilters] = useState({
-        nome: '',
-        data: '',
-        status: ''
-    });
 
+    const [loaded, setLoaded] = useState(false);
+    const [pedidos, setPedidos] = useState([]);
+    const [campanhas, setCampanhas] = useState([]);
     const [name, setName] = useState('');
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('');
+    const [campanha, setCampanha] = useState('');
 
-    const data = [
-        { nome: 'Marcos', campanha: 'BMW 320I OU 120K', quantidade: 5, data: '2025-01-01', subtotal: 100, desconto: 10, taxa: 5, afiliado: 3, total: 95, status: 'Pendente' },
-        { nome: 'Paulo', campanha: 'BMW 320I OU 120K', quantidade: 2, data: '2025-01-02', subtotal: 200, desconto: 20, taxa: 10, afiliado: 3, total: 170, status: 'Concluído' },
-        { nome: 'Paulo', campanha: 'BMW 320I OU 120K', quantidade: 2, data: '2025-01-02', subtotal: 200, desconto: 20, taxa: 10, afiliado: 3, total: 170, status: 'Cancelado' },
-        // Adicione mais dados aqui
-    ];
+    useEffect(() => {
+        load();
+    }, [])
 
-    const filteredData = data.filter(item => {
+    const load = async () => {
+        setLoaded(false);
+        const { success: successPedidos, data: dataPedidos } = await Utils.processRequest(Api.parceiro.getPedidos, {});
+        const { success: successCampanhas, data: dataCampanhas } = await Utils.processRequest(Api.parceiro.getCampanhas, {});
+        if (successPedidos && successCampanhas) {
+            setPedidos(dataPedidos);
+            setCampanhas(dataCampanhas);
+        }
+        setLoaded(true);
+    }
+
+    const filteredData = pedidos.filter(item => {
         return (
-            (name ? item.nome.toLowerCase().includes(name.toLowerCase()) : true) &&
-            (date ? item.data.includes(date) : true) &&
-            (status ? item.status.toLowerCase().includes(status.toLowerCase()) : true)
+            (name ? item.name.toLowerCase().includes(name.toLowerCase()) : true) &&
+            (date ? item.data_compra.includes(date) : true) &&
+            (status ? item.status.toLowerCase().includes(status.toLowerCase()) : true) &&
+            (campanha ? item.sorteio_name.toLowerCase().includes(campanha.toLowerCase()) : true)
         );
     });
+
+    const getStatusProps = (status) => {
+        switch (status) {
+            case "AGUARDANDO_PAGAMENTO":
+                return "pendente"
+            case "PAGO":
+                return "pago"
+            case "CANCELADO":
+                return "cancelado"
+        }
+    }
+
+    const handleClearFilter = () => {
+        setName('');
+        setDate('');
+        setStatus('');
+        setCampanha('');
+    }
 
     return (
         <FragmentView headerMode={"PARCEIRO"}>
@@ -37,49 +65,77 @@ export default () => {
             <h2>Pedidos</h2>
             <SpaceBox space={15} />
 
-            <div className="filter-container-p">
-                <Input hideInputBoxMargin type={"text"} label={"Filtrar por nome"} value={name} setValue={setName}/>
-                <Input hideInputBoxMargin type={"date"} value={date} setValue={setDate}/>
-                <Input hideInputBoxMargin type={"text"} label={"Filtrar por status"} value={status} setValue={setStatus}/>
-            </div>
-
-            <div className="table-container-p">
-                <table className="sales-table-p">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Campanha</th>
-                            <th>Quantidade</th>
-                            <th>Data</th>
-                            <th>Subtotal</th>
-                            <th>Desconto</th>
-                            <th>Taxa</th>
-                            <th>Afiliado</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredData.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.nome}</td>
-                                <td>{item.campanha}</td>
-                                <td>x{item.quantidade}</td>
-                                <td>{item.data}</td>
-                                <td>{Utils.convertNumberToBRL(item.subtotal)}</td>
-                                <td>{Utils.convertNumberToBRL(item.desconto)}</td>
-                                <td>{Utils.convertNumberToBRL(item.taxa)}</td>
-                                <td>{Utils.convertNumberToBRL(item.afiliado)}</td>
-                                <td>{Utils.convertNumberToBRL(item.total)}</td>
-                                <td>
-                                    <span className={`status-bubble-p ${item.status.toLowerCase()}`}></span>
-                                    {item.status}
-                                </td>
-                            </tr>
+            <Card title={"Filtros"} icon={<ion-icon name="filter-outline"></ion-icon>}>
+                <div className="filter-container-p">
+                    <Select hideInputBoxMargin value={campanha} setValue={setCampanha}>
+                        <Option value={""}>(Campanha)</Option>
+                        {campanhas?.map(c => (
+                            <Option value={c?.name}>{c?.name}</Option>
                         ))}
-                    </tbody>
-                </table>
-            </div>
+                    </Select>
+                    <Input hideInputBoxMargin type={"text"} label={"Filtrar por nome"} value={name} setValue={setName} />
+                    <Input hideInputBoxMargin type={"date"} value={date} setValue={setDate} />
+                    <Select hideInputBoxMargin value={status} setValue={setStatus}>
+                        <Option value={""}>(Status)</Option>
+                        <Option value={"AGUARDANDO_PAGAMENTO"}>Pendente</Option>
+                        <Option value={"PAGO"}>Pago</Option>
+                        <Option value={"CANCELADO"}>Cancelado</Option>
+                    </Select>
+                    <Button onClick={handleClearFilter}>Limpar filtro</Button>
+                </div>
+            </Card>
+
+            {loaded ? (
+                filteredData?.length > 0 ? (
+                    <div className="table-container-p">
+                        <table className="sales-table-p">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Quantidade</th>
+                                    <th>Campanha</th>
+                                    <th>Nome</th>
+                                    <th>Data</th>
+                                    <th>Subtotal</th>
+                                    <th>Desconto</th>
+                                    <th>Taxa Afiliado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredData.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <span className={`status-bubble-p ${getStatusProps(item.status)}`}></span>&nbsp;{getStatusProps(item.status)}
+                                        </td>
+                                        <td>{Utils.convertNumberToBRL(item.total)}</td>
+                                        <td>x{item.quantidade}</td>
+                                        <td>{item.sorteio_name}</td>
+                                        <td>{item.name}</td>
+                                        <td>{Utils.formatDataISO(item.data_compra)}</td>
+                                        <td>{Utils.convertNumberToBRL(item.subtotal)}</td>
+                                        <td>{Utils.convertNumberToBRL(item.desconto)}</td>
+                                        <td>{Utils.convertNumberToBRL(item.taxa_afiliado)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>) : (
+                    <>
+                        <SpaceBox space={40} />
+                        <center><b>Não há dados...</b></center>
+                        <SpaceBox space={40} />
+                    </>
+                )
+            ) : (
+                <>
+                    <SpaceBox space={40} />
+                    <center><b>Carregando...</b></center>
+                    <SpaceBox space={40} />
+                </>
+            )}
+
+            <SpaceBox space={80} />
         </FragmentView>
     );
 };

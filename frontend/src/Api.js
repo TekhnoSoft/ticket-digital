@@ -153,6 +153,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getPedidos: async ({}) => {
+            return await axios.get(`${API_BASE}/users/parceiro/pedidos`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

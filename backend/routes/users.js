@@ -440,4 +440,67 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
     }
 })
 
+router.get('/parceiro/pedidos', validateToken, async (req, res) => {
+    try {
+        let id = req.user.id;
+        const user = await User.findOne({ where: { id } });
+        if (!user || user == null) {
+            return res.status(404).json({ message: "Parceiro não encontrado.", data: null });
+        }
+
+        let user_id = user?.id;
+
+        const query = `
+            SELECT 
+                F.id, 
+                F.id_remessa, 
+                F.status, 
+                F.subtotal, 
+                F.desconto, 
+                F.taxa_afiliado, 
+                F.total, 
+                F.data_compra, 
+                F.taxa_cliente, 
+                U.name, 
+                S.name AS sorteio_name,
+                F.quantidade
+            FROM tb_faturas AS F 
+                INNER JOIN tb_users AS U ON F.user_id=U.id 
+                INNER JOIN tb_sorteios AS S ON F.sorteio_id=S.id
+            WHERE sorteio_id IN (SELECT id FROM tb_sorteios WHERE user_id=:user_id)
+            ORDER BY F.data_compra DESC LIMIT 1000;
+        `;
+
+        const resultados = await database.query(query, {
+            replacements: { user_id },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const pedidos = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                id: row.id,
+                id_remessa: row?.id_remessa,
+                status: row?.status,
+                subtotal: row?.subtotal,
+                desconto: row?.desconto,
+                taxa_afiliado: row?.taxa_afiliado,
+                total: row?.total,
+                data_compra: row?.data_compra,
+                taxa_cliente: row?.taxa_cliente,
+                name: row?.name,
+                sorteio_name: row?.sorteio_name,
+                quantidade: row?.quantidade
+            }
+            pedidos.push(obj);
+        })
+
+        return res.status(200).json(pedidos);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
 module.exports = router;

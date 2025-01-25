@@ -31,11 +31,19 @@ const Fatura = database.define('tb_faturas', {
         allowNull: true,
         defaultValue: "MERCADOPAGO"
     },
+    quantidade: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    },
     subtotal: {
         type: Sequelize.FLOAT,
         allowNull: true,
     },
     desconto: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+    },
+    taxa_afiliado: {
         type: Sequelize.FLOAT,
         allowNull: true,
     },

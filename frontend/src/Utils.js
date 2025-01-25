@@ -240,6 +240,13 @@ const Utils = {
                     title: "...",
                 }
         }
+    },
+    formatDataISO: (dataISO) => {
+        const [data, hora] = dataISO.split('T');
+        const [ano, mes, dia] = data.split('-');
+        const [horas, minutos] = hora.split(':');
+    
+        return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
     }
 }
 
