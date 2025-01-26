@@ -130,6 +130,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getSorteioPublicacaoTaxas: async ({}) => {
+            return await axios.get(`${API_BASE}/sorteios/taxas`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     },
     parceiro: {

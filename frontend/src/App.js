@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { MainContext } from "./helpers/MainContext";
-import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroAfiliados, ParceiroVisual, ParceiroPerfil, Forgot, ParceiroAddCampanha, ParceiroEditCampanha } from "./pages";
+import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroPagamentos, ParceiroVisual, ParceiroPerfil, Forgot, ParceiroAddCampanha, ParceiroEditCampanha } from "./pages";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
@@ -61,7 +61,7 @@ function App() {
           {/*==================PRIVATE-ROUTES===================*/}
           <Route path="/parceiro" element={userParceiro ? <Parceiro /> : <Login />} />
           <Route path="/parceiro-pedidos" element={userParceiro ? <ParceiroPedidos /> : <Login />} />
-          <Route path="/parceiro-afiliados" element={userParceiro ? <ParceiroAfiliados /> : <Login />} />
+          <Route path="/parceiro-pagamentos" element={userParceiro ? <ParceiroPagamentos /> : <Login />} />
           <Route path="/parceiro-visual" element={userParceiro ? <ParceiroVisual /> : <Login />} />
           <Route path="/parceiro-perfil" element={userParceiro ? <ParceiroPerfil /> : <Login />} />
           <Route path="/parceiro-add-campanha" element={userParceiro ? <ParceiroAddCampanha /> : <Login />} />

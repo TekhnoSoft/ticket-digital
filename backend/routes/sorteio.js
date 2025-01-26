@@ -24,6 +24,7 @@ const wallet_id = process.env.ASAAS_WALLET_ID;
 
 const https = require('https');
 const User = require('../models/users');
+const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 
 const httpsAgent = new https.Agent({
     minVersion: 'TLSv1.3',
@@ -594,6 +595,17 @@ router.get('/categorias', validateOrigin, async (req, res) => {
             order: [['nome', 'ASC']]
           });
         return res.status(200).json(sorteioCategoria);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/taxas', validateOrigin, async (req, res) => {
+    try {
+        const sorteioPublicacaoPrecos = await SorteioPublicacaoPrecos.findAll({
+            order: [['id', 'ASC']]
+          });
+        return res.status(200).json(sorteioPublicacaoPrecos);
     } catch (err) {
         return res.status(500).json(err);
     }

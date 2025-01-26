@@ -18,12 +18,13 @@ export default () => {
     const [contato, setContato] = useState("");
     const [categoria, setCategoria] = useState("");
     const [quantidade, setQuantidade] = useState("");
-    const [valor, setValor] = useState("");
+    const [valor, setValor] = useState("R$ 0,00");
 
     const [tipo, setTipo] = useState(0);
 
     const [flgDataSorteio, setFlgDataSorteio] = useState(false);
-    const [dataSorteio, setDataSorteio] = useState('');
+    const [dataSorteio, setDataSorteio] = useState("");
+    const [expiracaoPagamento, setExpiracaoPagamento] = useState("");
 
     const [nCotas, setNCotas] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -33,18 +34,39 @@ export default () => {
     const [tituloPremio, setTituloPremio] = useState("");
     const [descricaoPremio, setDescricaoPremio] = useState("");
 
+    const [taxas, setTaxas] = useState([]);
+    const [arrecadacao, setArrecadacao] = useState("");
+    const [taxaPublicacao, setTaxaPublicacao] = useState(""); 
+    const [showModalTaxas, setShowModalTaxas] = useState(false);
+
     useEffect(() => {
         load();
     }, [])
 
+    useEffect(() => {
+        let qtdCotas = nCotas.filter(c => { return c?.id == quantidade })[0]?.valor || 0;
+        let _valor = Utils.convertBRLToNumber(valor);
+        let _arrecadacao = (qtdCotas * _valor);
+        setArrecadacao(Utils.convertNumberToBRL(_arrecadacao));
+        setTaxaPublicacao(Utils.convertNumberToBRL(obterPreco(_arrecadacao)));
+    }, [quantidade, valor])
+
     const load = async () => {
         const { success: successRegras, data: dataRegras } = await Utils.processRequest(Api.geral.getSorteioRegras, {});
         const { success: successCategorias, data: dataCategorias } = await Utils.processRequest(Api.geral.getSorteioCategorias, {});
-        if (successRegras && successCategorias) {
+        const { success: successTaxas, data: dataTaxas } = await Utils.processRequest(Api.geral.getSorteioPublicacaoTaxas, {});
+        if (successRegras && successCategorias && successTaxas) {
             setNCotas(dataRegras);
             setCategorias(dataCategorias);
+            setTaxas(dataTaxas);
         }
     }
+
+    const obterPreco = (valor) => {
+        console.log(valor)
+        const faixa = taxas.find(faixa => valor >= faixa.min && valor <= faixa.max);
+        return faixa ? faixa.price : null;
+    }    
 
     const next = () => {
         let valid = validateForm();
@@ -62,8 +84,44 @@ export default () => {
     const validateForm = () => {
         switch (step) {
             case 0:
+                if (Utils.stringIsNullOrEmpty(titulo)) {
+                    Utils.notify("error", "Digite o título da campanha.");
+                    return false;
+                }
+                if (Utils.stringIsNullOrEmpty(contato)) {
+                    Utils.notify("error", "Digite o número de contato.");
+                    return false;
+                }
+                if (!Utils.validarCelular(contato)) {
+                    Utils.notify("error", "Digite um contato válido.");
+                    return false;
+                }
+                if (Utils.stringIsNullOrEmpty(categoria)) {
+                    Utils.notify("error", "Selecione a categoria da campanha.");
+                    return false;
+                }
+                if (Utils.stringIsNullOrEmpty(quantidade)) {
+                    Utils.notify("error", "Selecione a quantidade de cotas.");
+                    return false;
+                }
+                if (Utils.stringIsNullOrEmpty(valor)) {
+                    Utils.notify("error", "Digite o valor unitário das cotas.");
+                    return false;
+                }
+                if (flgDataSorteio && Utils.stringIsNullOrEmpty(dataSorteio)) {
+                    Utils.notify("error", "Informe a data do sorteio.");
+                    return false;
+                }
+                if (Utils.stringIsNullOrEmpty(expiracaoPagamento)) {
+                    Utils.notify("error", "Selecione o prazo de expiração de pagamento das cotas.");
+                    return false;
+                }
                 return true;
             case 1:
+                if (premios?.length <= 0) {
+                    Utils.notify("error", "Informe pelo menos um prêmio.");
+                    return false;
+                }
                 return true;
         }
     }
@@ -92,7 +150,23 @@ export default () => {
     };
 
     const handleFinish = () => {
-        
+
+        let campanha = {
+            nome: titulo,
+            contato: contato,
+            categoria: categoria,
+            regra: quantidade,
+            valor: valor,
+            tipo: tipo,
+            data: flgDataSorteio ? dataSorteio : null,
+            prazo_pagamento: expiracaoPagamento,
+            premios: premios
+        }
+
+    }
+
+    const onCloseTaxasCallback = () => {
+
     }
 
     return (
@@ -110,6 +184,34 @@ export default () => {
                     <Input type={"textarea"} label={"Descrição"} setValue={setDescricaoPremio} value={descricaoPremio} />
                     <SpaceBox space={8} />
                     <Button style={{ width: '100%' }} onClick={() => handleAdd({ id: Date.now(), name: tituloPremio, description: descricaoPremio })}>Adicionar</Button>
+                </div>
+            </Modal>
+            <Modal onCloseCallback={onCloseTaxasCallback} show={showModalTaxas} setShow={setShowModalTaxas}>
+                <div className='table-container-p' style={{height: '500px', scrollY: 'auto', marginTop: '0px'}}>
+                    <table className='sales-table-p'>
+                        <thead>
+                            <tr style={{position: 'sticky', top: '0px'}}>
+                                <th style={{fontSize: '12px'}}>
+                                    Arrecadação estimada
+                                </th>
+                                <th style={{fontSize: '12px'}}>
+                                    Taxa de publicação
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {taxas?.map(t => (
+                                <tr>
+                                    <td style={{fontSize: '12px'}}>
+                                        {t?.name}
+                                    </td>
+                                    <td style={{fontSize: '12px'}}>
+                                        {Utils.convertNumberToBRL(Number(t?.price))}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </Modal>
             <div style={{ maxWidth: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -138,6 +240,19 @@ export default () => {
                                     ))}
                                 </Select>
                                 <Input hideInputBoxMargin style={{ width: '100%' }} type={"moeda"} label={"Valor por cota"} setValue={setValor} value={valor} />
+                            </div>
+                        </Card>
+                        <SpaceBox space={15} />
+                        <Card title={"Taxas de publicação"} icon={<ion-icon name="megaphone-outline"></ion-icon>} alignItems={"start"} button={{ title: "Ver taxas", onClick: () => { setShowModalTaxas(true) }, style: { background: "rgb(242, 242, 242)", color: 'rgb(82, 82, 82)', height: '35px', borderRadius: '8px' } }} >
+                            <SpaceBox space={8} />
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <b>Taxa de publicação</b>
+                                <b>{taxaPublicacao}</b>
+                            </div>
+                            <SpaceBox space={8} />
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <b>Arrecadação estimada</b>
+                                <b>{arrecadacao}</b>
                             </div>
                         </Card>
                         <SpaceBox space={15} />
@@ -180,7 +295,7 @@ export default () => {
                                 <SpaceBox space={15} />
                             )}
                             <SpaceBox space={10} />
-                            <Select hideInputBoxMargin width={"100%"} label={"Prazo de pagamento das cotas"} setValue={setQuantidade} value={quantidade}>
+                            <Select hideInputBoxMargin width={"100%"} label={"Prazo de pagamento das cotas"} setValue={setExpiracaoPagamento} value={expiracaoPagamento}>
                                 <Option value={""}>Selecionar...</Option>
                                 <Option value={"5MIN"}>5 Minutos (recomendado)</Option>
                                 <Option value={"10MIN"}>10 Minutos</Option>
@@ -212,12 +327,12 @@ export default () => {
                                                 <b style={{ fontSize: '28px' }}>{index + 1}º</b>
                                                 <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '20px' }}>
                                                     <b>{p?.name}</b>
-                                                    <ion-icon onClick={() => { handleRemove(p?.id) }} name="trash-outline" size={"large"} style={{ color: 'rgb(82, 82, 82)' }}></ion-icon>
+                                                    <ion-icon onClick={() => { handleRemove(p?.id) }} name="trash-outline" size={"large"} style={{ cursor: 'pointer', color: 'rgb(82, 82, 82)' }}></ion-icon>
                                                 </Card>
                                             </div>
                                         ))}
                                         <SpaceBox space={15} />
-                                        <div onClick={addPremioHandler} style={{ display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', padding: '20px', borderRadius: '8PX', border: 'dashed 1px gray' }}>
+                                        <div onClick={addPremioHandler} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', padding: '20px', borderRadius: '8PX', border: 'dashed 1px gray' }}>
                                             <ion-icon name="add-circle-outline"></ion-icon>
                                             <b>Adicionar prêmio</b>
                                         </div>

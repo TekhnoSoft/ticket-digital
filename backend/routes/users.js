@@ -11,6 +11,7 @@ const Sorteio = require('../models/sorteio');
 const SorteioImagens = require('../models/sorteio_imagens');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 const UserParceiroConvite = require('../models/user_parceiro_convites');
+const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const database = require('../database');
 const router = express.Router();
 const bcrypt = require("bcryptjs");

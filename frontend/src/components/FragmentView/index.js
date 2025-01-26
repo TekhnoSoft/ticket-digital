@@ -3,14 +3,14 @@ import './style.css';
 import Header from '../Header';
 import Footer from '../Footer';
 import { MainContext } from '../../helpers/MainContext';
-import { ticketOutline, cubeOutline, peopleOutline, colorPaletteOutline, personOutline, logInOutline, ticket, cube, people, colorPalette, person, logIn } from 'ionicons/icons';
+import { ticketOutline, cubeOutline, walletOutline, wallet, colorPaletteOutline, personOutline, logInOutline, ticket, cube, people, colorPalette, person, logIn } from 'ionicons/icons';
 import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
 
 const menuItems = [
     { id: 0, name: 'Campanhas', path: '', icon: ticketOutline, iconFill: ticket, path: "/parceiro" },
     { id: 1, name: 'Pedidos', icon: cubeOutline, iconFill: cube, path: "/parceiro-pedidos" },
-    { id: 2, name: 'Afiliados', icon: peopleOutline, iconFill: people, path: "/parceiro-afiliados" },
+    { id: 2, name: 'Pagamentos', icon: walletOutline, iconFill: wallet, path: "/parceiro-pagamentos" },
     { id: 3, name: 'Visual', icon: colorPaletteOutline, iconFill: colorPalette, path: "/parceiro-visual" },
     { id: 4, name: 'Perfil', icon: personOutline, iconFill: person, path: "/parceiro-perfil" }
 ];

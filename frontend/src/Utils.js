@@ -245,8 +245,21 @@ const Utils = {
         const [data, hora] = dataISO.split('T');
         const [ano, mes, dia] = data.split('-');
         const [horas, minutos] = hora.split(':');
-    
+
         return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
+    },
+    convertBRLToNumber(brlString) {
+        if (!brlString) return 0;
+
+        const str = String(brlString);
+
+        return parseFloat(
+            str
+                .replace(/\s/g, '')  // Remove espaços
+                .replace('R$', '')   // Remove o símbolo "R$"
+                .replace(/\./g, '')  // Remove os pontos dos milhares
+                .replace(',', '.')   // Substitui a vírgula decimal por ponto
+        ) || 0;
     }
 }
 
