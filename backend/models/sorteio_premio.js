@@ -12,6 +12,10 @@ const SorteioPremio = database.define('tb_sorteio_premios', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    description: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
     bilhete_id: {
         type: Sequelize.STRING,
         allowNull: true

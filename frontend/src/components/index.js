@@ -14,3 +14,5 @@ export { default as BilhetesUserList } from './BilhetesUserList';
 export { default as Countdown } from './Countdown';
 export { default as Select } from './Select';
 export { default as Option } from './Option';
+export { default as TextEditor } from './TextEditor';
+export { default as Switch } from './Switch';

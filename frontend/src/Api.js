@@ -116,6 +116,20 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getSorteioRegras: async ({}) => {
+            return await axios.get(`${API_BASE}/sorteios/regras`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getSorteioCategorias: async ({}) => {
+            return await axios.get(`${API_BASE}/sorteios/categorias`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     },
     parceiro: {

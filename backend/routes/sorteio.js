@@ -579,4 +579,24 @@ router.get('/bilhetes-premiados/:sorteio_id', validateOrigin, async (req, res) =
     }
 })
 
+router.get('/regras', validateOrigin, async (req, res) => {
+    try {
+        const sorteioRegras = await SorteioRegras.findAll();
+        return res.status(200).json(sorteioRegras);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/categorias', validateOrigin, async (req, res) => {
+    try {
+        const sorteioCategoria = await SorteioCategoria.findAll({
+            order: [['nome', 'ASC']]
+          });
+        return res.status(200).json(sorteioCategoria);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
 module.exports = router;

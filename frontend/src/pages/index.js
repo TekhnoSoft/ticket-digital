@@ -7,6 +7,8 @@ export { default as ParceiroAfiliados } from './ParceiroAfiliados';
 export { default as ParceiroPedidos } from './ParceiroPedidos';
 export { default as ParceiroPerfil } from './ParceiroPerfil';
 export { default as ParceiroVisual } from './ParceiroVisual';
+export { default as ParceiroAddCampanha } from './ParceiroAddCampanha';
+export { default as ParceiroEditCampanha } from './ParceiroEditCampanha';
 export { default as Login } from './Login';
 export { default as Register } from './Register';
 export { default as Forgot } from './Forgot';

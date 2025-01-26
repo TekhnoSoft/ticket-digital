@@ -65,7 +65,7 @@ export default () => {
             <SpaceBox space={8} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <h2>Campanhas</h2>
-                <Button>+ campanha</Button>
+                <Button onClick={() => {navigate('/parceiro-add-campanha')}}>+ campanha</Button>
             </div>
             <SpaceBox space={15} />
             <div className='search-box'>
