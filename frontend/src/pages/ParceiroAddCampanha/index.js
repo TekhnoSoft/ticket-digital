@@ -91,6 +91,10 @@ export default () => {
         setPremios((prev) => prev.filter((premio) => premio.id !== id));
     };
 
+    const handleFinish = () => {
+        
+    }
+
     return (
         <FragmentView headerMode={"PARCEIRO"}>
             <Modal onCloseCallback={onClosePremiosCallback} setShow={setShowModalPremios} show={showModalPremios}>
@@ -236,7 +240,7 @@ export default () => {
                             <Button style={{ width: '100%' }} onClick={addPremioHandler}>+ Adicionar prêmio</Button>
                         ) : (
                             <>
-                                <Button style={{ width: '100%' }} onClick={next}>Criar campanha</Button>
+                                <Button style={{ width: '100%' }} onClick={handleFinish}>Criar campanha</Button>
                                 {step > 0 ? (
                                     <Button style={{ width: '100%', background: 'transparent', color: 'black', fontWeight: 'bold' }} onClick={prev}>
                                         <ion-icon name="arrow-back-outline"></ion-icon>
