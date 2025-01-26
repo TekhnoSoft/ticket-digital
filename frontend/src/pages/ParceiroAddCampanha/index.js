@@ -117,7 +117,7 @@ export default () => {
                             <SpaceBox space={5} />
                             <Input type={"text"} label={"Título da campanha"} setValue={setTitulo} value={titulo} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Input style={{ width: '100%' }} type={"celular"} label={"Telefone público"} setValue={setContato} value={contato} />
+                                <Input style={{ width: '100%' }} type={"celular"} label={"Celular público"} setValue={setContato} value={contato} />
                                 <Select width={"100%"} label={"Categoria"} setValue={setCategoria} value={categoria}>
                                     <Option value={""}>Selecionar...</Option>
                                     {categorias?.map(c => (
