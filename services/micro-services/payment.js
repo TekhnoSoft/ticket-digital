@@ -22,14 +22,10 @@ const paymentThread = () => {
                 }
             });
 
-            console.log(faturas);
-
             for (const fatura of faturas) {
                 
                 const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id } });
                 const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
-
-                console.log(sorteio);
 
                 const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${fatura?.id_payment_response}`;
                 const token = fatura?.tipo == "BILHETE" ? sorteioParceiro?.operadoraAccessToken : process.env.MERCADO_PAGO_ACESS_TOKEN;
@@ -39,8 +35,6 @@ const paymentThread = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-
-                //console.log(response);
         
                 const status = response.data?.status;
         
@@ -63,7 +57,6 @@ const paymentThread = () => {
                             },
                         );
                     }else if(fatura?.tipo == "CAMPANHA"){
-                        console.log("campanha")
                         await Sorteio.update(
                             {
                                 status: 'ATIVO',
