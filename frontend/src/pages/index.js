@@ -2,6 +2,7 @@ export { default as Sorteio } from './Sorteio';
 export { default as Checkout } from './Checkout';
 export { default as Market } from './Market';
 export { default as Fatura } from './Fatura';
+export { default as FaturaCampanha } from './FaturaCampanha';
 export { default as Parceiro } from './Parceiro';
 export { default as ParceiroPagamentos } from './ParceiroPagamentos';
 export { default as ParceiroPedidos } from './ParceiroPedidos';

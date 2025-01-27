@@ -70,7 +70,7 @@ const paymentReceivedMercadoPago = async (data) => {
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
 
         const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${paymentId}`;
-        const token = sorteioParceiro?.operadoraAccessToken;
+        const token = fatura?.tipo == "BILHETE" ? sorteioParceiro?.operadoraAccessToken : process.env.MERCADO_PAGO_ACESS_TOKEN;
 
         const response = await axios.get(url, {
             headers: {
@@ -91,14 +91,25 @@ const paymentReceivedMercadoPago = async (data) => {
                 },
             );
 
-            await Bilhete.update(
-                {
-                    status: "PAGO",
-                },
-                {
-                    where: { id_remessa: fatura?.id_remessa }
-                },
-            );
+            if(fatura?.tipo == "BILHETE"){
+                await Bilhete.update(
+                    {
+                        status: "PAGO",
+                    },
+                    {
+                        where: { id_remessa: fatura?.id_remessa }
+                    },
+                );
+            }else if(fatura?.tipo == "CAMPANHA"){
+                await Sorteio.update(
+                    {
+                        status: 'ATIVO',
+                    },
+                    {
+                        where: { id: sorteio?.id }
+                    },
+                )
+            }
 
         }
     }catch(err){

@@ -224,8 +224,8 @@ export default () => {
                                             </div>
                                             <SpaceBox space={8} />
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <b>Bilhetes:</b>
-                                                <span>Disponíveis somente após realizar o pagamento</span>
+                                                <b>Campanha:</b>
+                                                <span>Ativação somente após realizar o pagamento</span>
                                             </div>
                                         </div>
                                     </div>
@@ -290,26 +290,26 @@ export default () => {
                                 />
                                 <div>
                                     <h4>{campanha?.sorteio?.name}</h4>
-                                    <label>Quantidade: <b>{campanha?.qtd}</b></label>
+                                    <label>Campanha</label>
                                 </div>
                             </div>
                             <SpaceBox space={20} />
                             <div className="totals">
                                 <div>
                                     <label>Subtotal</label>
-                                    <b>{Utils.convertNumberToBRL(campanha?.qtd * campanha?.sorteio?.valor_por_bilhete)}</b>
+                                    <b>{Utils.convertNumberToBRL(campanha?.fatura?.subtotal)}</b>
                                 </div>
                                 <div>
                                     <label>Taxa de serviço</label>
-                                    <b>{Utils.convertNumberToBRL(taxaCliente)}</b>
+                                    <b>{Utils.convertNumberToBRL(campanha?.fatura?.taxa_cliente)}</b>
                                 </div>
                                 <div>
                                     <label>Desconto</label>
-                                    <b>R$ 0,00</b>
+                                    <b>{Utils.convertNumberToBRL(campanha?.fatura?.desconto)}</b>
                                 </div>
                                 <div>
                                     <label>Total</label>
-                                    <b>{Utils.convertNumberToBRL((campanha?.qtd * campanha?.sorteio?.valor_por_bilhete) + taxaCliente)}</b>
+                                    <b>{Utils.convertNumberToBRL(campanha?.fatura?.total)}</b>
                                 </div>
                             </div>
                         </div>

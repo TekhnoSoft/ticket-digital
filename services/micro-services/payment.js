@@ -13,7 +13,7 @@ const paymentThread = () => {
         try {
 
             const faturas = await Fatura.findAll({
-                attributes: ['sorteio_id', 'id_payment_response', 'id_remessa'],
+                attributes: ['sorteio_id', 'id_payment_response', 'id_remessa', 'tipo'],
                 where: {
                     status: "AGUARDANDO_PAGAMENTO",
                     id_payment_response: {
@@ -30,7 +30,7 @@ const paymentThread = () => {
                 const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
 
                 const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${fatura?.id_payment_response}`;
-                const token = sorteioParceiro?.operadoraAccessToken;
+                const token = fatura?.tipo == "BILHETE" ? sorteioParceiro?.operadoraAccessToken : process.env.MERCADO_PAGO_ACESS_TOKEN;
 
                 const response = await axios.get(url, {
                     headers: {
@@ -51,14 +51,25 @@ const paymentThread = () => {
                             where: { id_payment_response: fatura?.id_payment_response }
                         },
                     );
-                    await Bilhete.update(
-                        {
-                            status: "PAGO",
-                        },
-                        {
-                            where: { id_remessa: fatura?.id_remessa }
-                        },
-                    );
+                    if(fatura?.tipo == "BILHETE"){
+                        await Bilhete.update(
+                            {
+                                status: "PAGO",
+                            },
+                            {
+                                where: { id_remessa: fatura?.id_remessa }
+                            },
+                        );
+                    }else if(fatura?.tipo == "CAMPANHA"){
+                        await Sorteio.update(
+                            {
+                                status: 'ATIVO',
+                            },
+                            {
+                                where: { id: sorteio?.id }
+                            },
+                        )
+                    }
                 }
             }
         } catch (error) {

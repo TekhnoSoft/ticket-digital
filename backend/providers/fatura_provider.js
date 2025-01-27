@@ -92,6 +92,8 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BI
     try {
         const agora = Utils.getDateNow();
 
+        valor = 0.10;
+
         const user = await User.findOne({ where: { id: user_id } })
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } })

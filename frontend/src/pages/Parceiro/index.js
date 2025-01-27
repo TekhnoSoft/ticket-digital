@@ -117,16 +117,19 @@ export default () => {
                                             </div>
                                         </div>
                                     </>
-                                ) : campanha?.status == "AGUARDANDO_ATIVACAO" ? (
-                                    <>
-
-                                    </>
                                 ) : (null)}
                                 <SpaceBox space={2} />
                                 <div class="status-c">
                                     <span class="status-dot-c" style={{ background: getStatusProps(campanha?.status).background }}></span>
                                     <span class="status-text-c">{getStatusProps(campanha?.status).status}</span>
                                 </div>
+                                {campanha?.status == "AGUARDANDO_ATIVACAO" ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }} onClick={(event) => {
+                                        event.stopPropagation();
+                                    }}>
+                                        <Button onClick={() => {navigate(`/fatura-campanha/${campanha?.id_remessa}`)}}>Ativar</Button>
+                                    </div>
+                                ) : (null)}
                             </div>
                         ))}
                     </div>

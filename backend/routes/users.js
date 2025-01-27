@@ -411,7 +411,8 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
                     FROM tb_sorteio_imagens AS B 
                     WHERE B.sorteio_id = A.id 
                     LIMIT 1) AS id_imagem,
-                (COUNT(C.id) / CAST(D.valor AS FLOAT)) * 100 AS progresso
+                (COUNT(C.id) / CAST(D.valor AS FLOAT)) * 100 AS progresso,
+                (SELECT id_remessa FROM tb_faturas WHERE sorteio_id = A.id AND tipo='CAMPANHA') as id_remessa
             FROM ticketdigital.tb_sorteios AS A
             LEFT JOIN tb_bilhetes AS C ON C.sorteio_id = A.id AND C.status = 'PAGO'
             LEFT JOIN tb_sorteio_regras AS D ON A.sorteio_regras_id = D.id
@@ -434,7 +435,8 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
                 valor_por_bilhete: row.valor_por_bilhete,
                 keybind: row.keybind,
                 status: row.status,
-                progresso: Number(row?.progresso)
+                progresso: Number(row?.progresso),
+                id_remessa: row?.id_remessa
             }
             campanhas.push(obj);
         })
