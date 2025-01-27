@@ -69,6 +69,10 @@ const paymentReceivedMercadoPago = async (data) => {
         const sorteio = await Sorteio.findOne({ where: { id: fatura?.sorteio_id } });
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
 
+        console.log("webhook");
+        console.log(sorteio);
+        console.log(fatura);
+
         const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${paymentId}`;
         const token = fatura?.tipo == "BILHETE" ? sorteioParceiro?.operadoraAccessToken : process.env.MERCADO_PAGO_ACESS_TOKEN;
 
@@ -101,6 +105,7 @@ const paymentReceivedMercadoPago = async (data) => {
                     },
                 );
             }else if(fatura?.tipo == "CAMPANHA"){
+                console.log("campanha")
                 await Sorteio.update(
                     {
                         status: 'ATIVO',

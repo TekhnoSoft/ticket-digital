@@ -63,6 +63,7 @@ const paymentThread = () => {
                             },
                         );
                     }else if(fatura?.tipo == "CAMPANHA"){
+                        console.log("campanha")
                         await Sorteio.update(
                             {
                                 status: 'ATIVO',
