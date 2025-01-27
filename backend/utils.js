@@ -135,6 +135,22 @@ class Utils {
       
         return `${year}-${month}-${day}`;
     }
+    static formatarParaLink(str) {
+        return str
+            .normalize("NFD") // Remove acentos
+            .replace(/[\u0300-\u036f]/g, "") // Remove diacríticos
+            .toLowerCase() // Converte para minúsculas
+            .replace(/[^a-z0-9\s]/g, "") // Remove caracteres especiais
+            .trim() // Remove espaços extras nas extremidades
+            .replace(/\s+/g, "-"); // Substitui espaços por "-"
+    }
+    static replaceMaskPhone (phone) {
+        return phone?.replaceAll("(", "").replaceAll(")", "").replaceAll(".", "").replaceAll("-", "").replace(" ", "");
+    }
+    static obterPreco (taxas, valor) {
+        const faixa = taxas.find(faixa => valor >= faixa.min && valor <= faixa.max);
+        return faixa ? faixa.price : null;
+    }
 }
 
 module.exports = Utils;

@@ -52,7 +52,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
             ) : headerMode == "PARCEIRO" ? (
                 <div className='header-parceiro' >
                     <div className='header-content-parceiro'>
-                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => {}}/>
+                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => {navigate("/parceiro")}}/>
                         <div className='button-group'>
                             <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="help-circle-outline"></ion-icon></Button>
                             <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="notifications-outline"></ion-icon></Button>

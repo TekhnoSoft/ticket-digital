@@ -10,6 +10,7 @@ const faturaThread = () => {
             const faturas = await Fatura.findAll({
                 where: {
                     status: "AGUARDANDO_PAGAMENTO",
+                    tipo: "BILHETE"
                 },
             });
             for (const fatura of faturas) {

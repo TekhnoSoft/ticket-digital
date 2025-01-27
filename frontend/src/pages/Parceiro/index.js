@@ -65,7 +65,7 @@ export default () => {
             <SpaceBox space={8} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <h2>Campanhas</h2>
-                <Button onClick={() => {navigate('/parceiro-add-campanha')}}>+ campanha</Button>
+                <Button onClick={() => { navigate('/parceiro-add-campanha') }}>+ campanha</Button>
             </div>
             <SpaceBox space={15} />
             <div className='search-box'>
@@ -76,20 +76,33 @@ export default () => {
                 filteredCampanhas.length > 0 ? (
                     <div className="grid-container-c">
                         {filteredCampanhas.map(campanha => (
-                            <div className="grid-item-c" key={campanha?.id}>
+                            <div className="grid-item-c" key={campanha?.id} onClick={() => { navigate(`/parceiro-edit-campanha/${campanha?.id}`) }}>
                                 <div className='grid-item-c-content'>
-                                    <img src={Environment.API_BASE + `/sorteios/imagem/${campanha?.id_imagem}` || `../placeholder-image.png`} alt="Campanha" className="item-image-c" />
+                                    <img src={campanha?.id_imagem ? Environment.API_BASE + `/sorteios/imagem/${campanha?.id_imagem}` : `../placeholder-image.png`} alt="Campanha" className="item-image-c" />
                                     <div className="item-content-c">
                                         <span className="item-name-c">{campanha?.name}</span>
                                         <a href="#" className="item-link-c">/{campanha?.keybind}</a>
                                     </div>
                                     <div className="menu-icon-c">
-                                        <ion-icon name="ellipsis-vertical"></ion-icon>
+                                        <ion-icon name="ellipsis-vertical" onClick={(event) => {
+                                            event.stopPropagation();
+                                        }}></ion-icon>
                                         <div className="menu-options-c">
-                                            <div className="menu-item-c" onClick={() => {navigate(`/campanha/${campanha?.keybind}`)}}>
+                                            <div className="menu-item-c" onClick={(event) => {
+                                                event.stopPropagation();
+                                                navigate(`/parceiro-edit-campanha/${campanha?.id}`);
+                                            }}>
+                                                <ion-icon name="create-outline"></ion-icon> Editar
+                                            </div>
+                                            <div className="menu-item-c" onClick={(event) => {
+                                                event.stopPropagation();
+                                                navigate(`/campanha/${campanha?.keybind}`);
+                                            }}>
                                                 <ion-icon name="eye-outline"></ion-icon> Visualizar
                                             </div>
-                                            <div className="menu-item-c">
+                                            <div className="menu-item-c" onClick={(event) => {
+                                                event.stopPropagation();
+                                            }}>
                                                 <ion-icon name="copy-outline"></ion-icon> Duplicar
                                             </div>
                                         </div>
@@ -103,6 +116,10 @@ export default () => {
                                                 <span className="progress-text-c">{campanha?.progresso || 0}%</span>
                                             </div>
                                         </div>
+                                    </>
+                                ) : campanha?.status == "AGUARDANDO_ATIVACAO" ? (
+                                    <>
+
                                     </>
                                 ) : (null)}
                                 <SpaceBox space={2} />
@@ -128,7 +145,7 @@ export default () => {
                 </>
             )}
 
-            <SpaceBox space={80} />
+            <SpaceBox space={130} />
         </FragmentView>
     );
 }

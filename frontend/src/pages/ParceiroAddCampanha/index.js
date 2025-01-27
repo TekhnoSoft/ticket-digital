@@ -9,8 +9,11 @@ import Api from '../../Api';
 import Utils from '../../Utils';
 import { Button, Modal, Switch } from '../../components';
 import './style.css';
+import { useNavigate } from 'react-router-dom';
 
 export default () => {
+
+    const navigate = useNavigate();
 
     const [step, setStep] = useState(0);
 
@@ -36,7 +39,7 @@ export default () => {
 
     const [taxas, setTaxas] = useState([]);
     const [arrecadacao, setArrecadacao] = useState("");
-    const [taxaPublicacao, setTaxaPublicacao] = useState(""); 
+    const [taxaPublicacao, setTaxaPublicacao] = useState("");
     const [showModalTaxas, setShowModalTaxas] = useState(false);
 
     useEffect(() => {
@@ -63,10 +66,9 @@ export default () => {
     }
 
     const obterPreco = (valor) => {
-        console.log(valor)
         const faixa = taxas.find(faixa => valor >= faixa.min && valor <= faixa.max);
         return faixa ? faixa.price : null;
-    }    
+    }
 
     const next = () => {
         let valid = validateForm();
@@ -149,18 +151,25 @@ export default () => {
         setPremios((prev) => prev.filter((premio) => premio.id !== id));
     };
 
-    const handleFinish = () => {
+    const handleFinish = async () => {
 
         let campanha = {
             nome: titulo,
-            contato: contato,
-            categoria: categoria,
-            regra: quantidade,
-            valor: valor,
+            contato: Utils.replaceMaskPhone(contato),
+            categoria: Number(categoria),
+            regra: Number(quantidade),
+            valor: Utils.convertBRLToNumber(valor),
             tipo: tipo,
             data: flgDataSorteio ? dataSorteio : null,
             prazo_pagamento: expiracaoPagamento,
             premios: premios
+        }
+
+        const { success, data } = await Utils.processRequest(Api.parceiro.createCampanha, { campanha }, true);
+
+        if (success) {
+            Utils.notify("success", "Campanha criada com sucesso!");
+            navigate(`/parceiro-edit-campanha/${data?.id}`);
         }
 
     }
@@ -187,14 +196,14 @@ export default () => {
                 </div>
             </Modal>
             <Modal onCloseCallback={onCloseTaxasCallback} show={showModalTaxas} setShow={setShowModalTaxas}>
-                <div className='table-container-p' style={{height: '500px', scrollY: 'auto', marginTop: '0px'}}>
+                <div className='table-container-p' style={{ height: '500px', scrollY: 'auto', marginTop: '0px' }}>
                     <table className='sales-table-p'>
                         <thead>
-                            <tr style={{position: 'sticky', top: '0px'}}>
-                                <th style={{fontSize: '12px'}}>
+                            <tr style={{ position: 'sticky', top: '0px' }}>
+                                <th style={{ fontSize: '12px' }}>
                                     Arrecadação estimada
                                 </th>
-                                <th style={{fontSize: '12px'}}>
+                                <th style={{ fontSize: '12px' }}>
                                     Taxa de publicação
                                 </th>
                             </tr>
@@ -202,10 +211,10 @@ export default () => {
                         <tbody>
                             {taxas?.map(t => (
                                 <tr>
-                                    <td style={{fontSize: '12px'}}>
+                                    <td style={{ fontSize: '12px' }}>
                                         {t?.name}
                                     </td>
-                                    <td style={{fontSize: '12px'}}>
+                                    <td style={{ fontSize: '12px' }}>
                                         {Utils.convertNumberToBRL(Number(t?.price))}
                                     </td>
                                 </tr>
@@ -243,15 +252,10 @@ export default () => {
                             </div>
                         </Card>
                         <SpaceBox space={15} />
-                        <Card title={"Taxas de publicação"} icon={<ion-icon name="megaphone-outline"></ion-icon>} alignItems={"start"} button={{ title: "Ver taxas", onClick: () => { setShowModalTaxas(true) }, style: { background: "rgb(242, 242, 242)", color: 'rgb(82, 82, 82)', height: '35px', borderRadius: '8px' } }} >
+                        <Card title={"Arrecadação estimada"} icon={<ion-icon name="cash-outline"></ion-icon>}>
                             <SpaceBox space={8} />
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <b>Taxa de publicação</b>
-                                <b>{taxaPublicacao}</b>
-                            </div>
-                            <SpaceBox space={8} />
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <b>Arrecadação estimada</b>
+                                <b>Arrecadação</b>
                                 <b>{arrecadacao}</b>
                             </div>
                         </Card>
@@ -336,7 +340,20 @@ export default () => {
                                             <ion-icon name="add-circle-outline"></ion-icon>
                                             <b>Adicionar prêmio</b>
                                         </div>
-                                        <SpaceBox space={10} />
+                                        <SpaceBox space={20} />
+                                        <Card title={"Taxas de publicação"} icon={<ion-icon name="megaphone-outline"></ion-icon>} alignItems={"start"} button={{ title: "Ver taxas", onClick: () => { setShowModalTaxas(true) }, style: { background: "rgb(242, 242, 242)", color: 'rgb(82, 82, 82)', height: '35px', borderRadius: '8px' } }} >
+                                            <SpaceBox space={8} />
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <b>Taxa de publicação</b>
+                                                <b>{taxaPublicacao}</b>
+                                            </div>
+                                            <SpaceBox space={8} />
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <b>Arrecadação estimada (lucro)</b>
+                                                <b>{arrecadacao}</b>
+                                            </div>
+                                        </Card>
+                                        <SpaceBox space={20} />
                                         <p style={{ fontSize: '12px', color: 'var(--text-opacity)' }}>
                                             Ao criar a sua campanha, você concorda com nossos <b style={{ color: 'black' }}>termos de uso</b> e a nossa <b style={{ color: 'black' }}>política de privacidade</b>p, e confirma ter mais de 18 anos.
                                         </p>

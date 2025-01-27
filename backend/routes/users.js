@@ -10,12 +10,16 @@ const sequelize = require('../database');
 const Sorteio = require('../models/sorteio');
 const SorteioImagens = require('../models/sorteio_imagens');
 const SorteioParceiro = require('../models/sorteio_parceiro');
+const SorteioInformacoes = require('../models/sorteio_informacoes');
 const UserParceiroConvite = require('../models/user_parceiro_convites');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const database = require('../database');
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const SorteioPremio = require('../models/sorteio_premio');
+const { createFatura } = require('../providers/fatura_provider');
+const SorteioRegras = require('../models/sorteio_regras');
 
 router.get('/auth', validateToken, async (req, res) => {
     try {
@@ -424,6 +428,7 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
 
         resultados.forEach((row) => {
             let obj = {
+                id: row?.id,
                 id_imagem: row.id_imagem,
                 name: row.name,
                 valor_por_bilhete: row.valor_por_bilhete,
@@ -498,6 +503,72 @@ router.get('/parceiro/pedidos', validateToken, async (req, res) => {
         })
 
         return res.status(200).json(pedidos);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+router.post('/parceiro/create-campanha', validateToken, async (req, res) => {
+    const { campanha } = req.body;
+    try {
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.create({
+            name: campanha?.nome,
+            keybind: Utils.formatarParaLink(campanha?.nome) +"-"+ Utils.makeid(4).toLocaleLowerCase(),
+            tipo: campanha?.tipo == 0 ? "SISTEMA_ESCOLHE" : "USUARIO_ESCOLHE",
+            sorteio_regras_id: campanha?.regra,
+            valor_por_bilhete: campanha?.valor,
+            sorteio_informacoes_id: 1,
+            sorteio_categoria_id: campanha?.categoria,
+            prazo_pagamento: campanha?.prazo_pagamento,
+            modo: "EBOOK",
+            user_id: user_id
+        })
+
+        const info = await SorteioInformacoes.create({
+            sorteio_id: sorteio?.id,
+            link: Utils.formatarParaLink(campanha?.nome) +"-"+ Utils.makeid(4).toLocaleLowerCase(),
+            telefone_contato: Utils.replaceMaskPhone(campanha?.contato),
+            data_sorteio: campanha?.data,
+            minimo_cota_usuario: 5,
+            maximo_cota_usuario: 25,
+        })
+
+        await Sorteio.update(
+            {
+                sorteio_informacoes_id: info?.id,
+            },
+            {
+                where: { id: sorteio?.id }
+            },
+        );
+        
+        const premios = campanha?.premios?.map((premio, index) => ({
+            name: premio?.name,
+            description: premio?.description,
+            sorteio_id: sorteio?.id,
+            colocacao: (index + 1),
+        }));
+
+        await SorteioPremio.bulkCreate(premios, { validate: true });
+
+        const sorteioRegras = await SorteioRegras.findOne({ where: { id: sorteio?.sorteio_regras_id } });
+        const taxas = await SorteioPublicacaoPrecos.findAll({});
+        
+        let arrecadacao = (campanha?.valor * sorteioRegras?.valor);
+        let valor = Utils.obterPreco(taxas, arrecadacao);
+
+        await createFatura({
+            user_id: user_id,
+            sorteio_id: sorteio?.id,
+            id_remessa: Utils.makeid(50),
+            valor: valor,
+            tipo: "CAMPANHA"
+        });
+
+        return res.status(201).json({id: sorteio?.id});
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });

@@ -14,6 +14,14 @@ const Fatura = database.define('tb_faturas', {
         type: Sequelize.STRING,
         allowNull: false,
     },
+    tipo: {
+        type: Sequelize.ENUM(
+            "BILHETE", 
+            "CAMPANHA",
+        ),
+        allowNull: false,
+        defaultValue: "BILHETE"
+    },
     status: {
         type: Sequelize.ENUM(
             "AGUARDANDO_PAGAMENTO", 

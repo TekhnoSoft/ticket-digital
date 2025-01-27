@@ -181,6 +181,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        createCampanha: async ({campanha}) => {
+            return await axios.post(`${API_BASE}/users/parceiro/create-campanha`, {campanha}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
