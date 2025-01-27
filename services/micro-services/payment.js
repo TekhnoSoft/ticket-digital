@@ -30,10 +30,6 @@ const paymentThread = () => {
                 const url = `${process.env.MERCADO_PAGO_PAYMENT_URI}${fatura?.id_payment_response}`;
                 const token = fatura?.tipo == "BILHETE" ? sorteioParceiro?.operadoraAccessToken : process.env.MERCADO_PAGO_ACESS_TOKEN;
 
-                console.log(sorteioParceiro);
-                console.log(fatura);
-                console.log(token);
-
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Bearer ${token}`

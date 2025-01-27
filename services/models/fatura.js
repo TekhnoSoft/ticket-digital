@@ -9,10 +9,17 @@ const Fatura = database.define('tb_faturas', {
         allowNull: false,
         primaryKey: true
     },
-
     id_remessa: {
         type: Sequelize.STRING,
         allowNull: false,
+    },
+    tipo: {
+        type: Sequelize.ENUM(
+            "BILHETE", 
+            "CAMPANHA",
+        ),
+        allowNull: false,
+        defaultValue: "BILHETE"
     },
     status: {
         type: Sequelize.ENUM(
