@@ -8,8 +8,7 @@ export default () => {
         <FragmentView headerMode={"PARCEIRO"}>
             <SpaceBox space={8}/>
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <h2>Afiliados</h2>
-                <Button>+ afiliados</Button>
+                <h2>Pagamentos</h2>
             </div>
             <SpaceBox space={15}/>
         </FragmentView>

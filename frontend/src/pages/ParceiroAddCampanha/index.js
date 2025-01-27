@@ -42,6 +42,8 @@ export default () => {
     const [taxaPublicacao, setTaxaPublicacao] = useState("");
     const [showModalTaxas, setShowModalTaxas] = useState(false);
 
+    const [showButtonLoader, setShowButtonLoader] = useState(false);
+
     useEffect(() => {
         load();
     }, [])
@@ -153,6 +155,8 @@ export default () => {
 
     const handleFinish = async () => {
 
+        setShowButtonLoader(true);
+
         let campanha = {
             nome: titulo,
             contato: Utils.replaceMaskPhone(contato),
@@ -171,6 +175,8 @@ export default () => {
             Utils.notify("success", "Campanha criada com sucesso!");
             navigate(`/parceiro-edit-campanha/${data?.id}`);
         }
+
+        setShowButtonLoader(false);
 
     }
 
@@ -372,7 +378,13 @@ export default () => {
                             <Button style={{ width: '100%' }} onClick={addPremioHandler}>+ Adicionar prêmio</Button>
                         ) : (
                             <>
-                                <Button style={{ width: '100%' }} onClick={handleFinish}>Criar campanha</Button>
+                                <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={handleFinish}>
+                                    {showButtonLoader ? (
+                                        <>
+                                            &nbsp;<div class="loader"></div>
+                                        </>
+                                    ) : (<>Criar campanha</>)}
+                                </Button>
                                 {step > 0 ? (
                                     <Button style={{ width: '100%', background: 'transparent', color: 'black', fontWeight: 'bold' }} onClick={prev}>
                                         <ion-icon name="arrow-back-outline"></ion-icon>

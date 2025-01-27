@@ -475,7 +475,7 @@ router.get('/parceiro/pedidos', validateToken, async (req, res) => {
             FROM tb_faturas AS F 
                 INNER JOIN tb_users AS U ON F.user_id=U.id 
                 INNER JOIN tb_sorteios AS S ON F.sorteio_id=S.id
-            WHERE sorteio_id IN (SELECT id FROM tb_sorteios WHERE user_id=:user_id)
+            WHERE sorteio_id IN (SELECT id FROM tb_sorteios WHERE user_id=:user_id) AND F.tipo='BILHETE'
             ORDER BY F.data_compra DESC LIMIT 1000;
         `;
 
