@@ -27,7 +27,31 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
     operadoraAccessToken: {
         type: Sequelize.TEXT,
         allowNull: true
-    }
+    },
+    whatsappLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    facebookLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    youtubeLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    instagramLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    tiktokLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    telegramLink: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
 });
 
 module.exports = SorteioParceiro;

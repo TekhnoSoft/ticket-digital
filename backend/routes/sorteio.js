@@ -13,6 +13,7 @@ const database = require('../database');
 const SorteioInformacoes = require('../models/sorteio_informacoes');
 const { createFatura } = require('../providers/fatura_provider');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
+const SorteioParceiro = require('../models/sorteio_parceiro');
 require('dotenv').config();
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
@@ -48,12 +49,17 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             where: { sorteio_id: sorteio.id },
             attributes: ['id']
         });
+        const sorteioParceiro = await SorteioParceiro.findOne({ 
+            where: { user_id: sorteio.user_id },
+            attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink']
+        });
 
         if (sorteioInformacoes) {
             const sorteioPlano = sorteio.toJSON();
             sorteioPlano.info = sorteioInformacoes;
             sorteioPlano.imagens = sorteioImagens;
             sorteioPlano.regra = sorteioRegras[0];
+            sorteioPlano.parceiro = sorteioParceiro;
 
             return res.status(200).json(sorteioPlano);
         } else {
@@ -380,7 +386,7 @@ router.get('/bilhetes-premiados/:sorteio_id', validateOrigin, async (req, res) =
         const query = `SELECT A.*, B.name AS username FROM ticketdigital.tb_bilhete_premiados AS A LEFT JOIN tb_users AS B ON A.user_id=B.id WHERE sorteio_id=:sorteio_id`;
 
         const resultados = await database.query(query, {
-            replacements: {sorteio_id},
+            replacements: { sorteio_id },
             type: Sequelize.QueryTypes.SELECT,
         });
 
@@ -416,7 +422,7 @@ router.get('/categorias', validateOrigin, async (req, res) => {
     try {
         const sorteioCategoria = await SorteioCategoria.findAll({
             order: [['nome', 'ASC']]
-          });
+        });
         return res.status(200).json(sorteioCategoria);
     } catch (err) {
         return res.status(500).json(err);
@@ -427,7 +433,7 @@ router.get('/taxas', validateOrigin, async (req, res) => {
     try {
         const sorteioPublicacaoPrecos = await SorteioPublicacaoPrecos.findAll({
             order: [['id', 'ASC']]
-          });
+        });
         return res.status(200).json(sorteioPublicacaoPrecos);
     } catch (err) {
         return res.status(500).json(err);

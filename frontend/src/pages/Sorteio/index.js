@@ -271,24 +271,41 @@ export default () => {
                     <label className='text-opacity'>Redes sociais:</label>&nbsp;&nbsp;
                     <SpaceBox space={4} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
-                            <ion-icon name="logo-whatsapp"></ion-icon>
-                        </div>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
-                            <ion-icon name="logo-facebook"></ion-icon>
-                        </div>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
-                            <ion-icon name="logo-youtube"></ion-icon>
-                        </div>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
-                            <ion-icon name="logo-instagram"></ion-icon>
-                        </div>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
-                            <ion-icon name="logo-tiktok"></ion-icon>
-                        </div>
-                        <div style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(55, 174, 226)', color: 'white' }}>
-                            <ion-icon style={{ transform: 'rotateZ(-45deg)' }} name="send"></ion-icon>
-                        </div>
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.whatsappLink) && (
+                            <div onClick={() => {window.open(campanha?.parceiro?.whatsappLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
+                                <ion-icon name="logo-whatsapp"></ion-icon>
+                            </div>
+                        )}
+
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.facebookLink) && (
+                            <div onClick={() => {window.open(campanha?.parceiro?.facebookLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
+                                <ion-icon name="logo-facebook"></ion-icon>
+                            </div>
+                        )}
+
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.youtubeLink) && (
+                            <div onClick={() => {window.open(campanha?.parceiro?.youtubeLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
+                                <ion-icon name="logo-youtube"></ion-icon>
+                            </div>
+                        )}
+
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.instagramLink) && (
+                            <div onClick={() => {window.open(campanha?.parceiro?.instagramLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
+                                <ion-icon name="logo-instagram"></ion-icon>
+                            </div>
+                        )}
+
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.tiktokLink) && (
+                            <div onClick={() => {window.open(campanha?.tiktokLink?.whatsappLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
+                                <ion-icon name="logo-tiktok"></ion-icon>
+                            </div>
+                        )}
+
+                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.telegramLink) && (
+                            <div onClick={() => {window.open(campanha?.parceiro?.telegramLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0, 136, 204)', color: 'white' }}>
+                                <ion-icon name="paper-plane"></ion-icon>
+                            </div>
+                        )}
                     </div>
                 </Card>
                 <SpaceBox space={30} />
