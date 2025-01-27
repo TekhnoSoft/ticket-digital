@@ -111,6 +111,7 @@ export default () => {
                                 {campanha?.status == "ATIVO" || campanha?.status == "FINALIZADO" ? (
                                     <>
                                         <SpaceBox space={15} />
+                                        <label style={{fontSize: '12px', color: 'var(--text-opacity)'}}>Progresso:</label>
                                         <div className="progress-c">
                                             <div className="progress-bar-c" style={{ width: `${campanha?.progresso || 0}%` }}>
                                                 <span className="progress-text-c">{campanha?.progresso || 0}%</span>

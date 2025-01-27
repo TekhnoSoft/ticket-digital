@@ -265,6 +265,11 @@ router.post('/pre-register', validateOrigin, async (req, res) => {
             affiliate_code: Utils.makeid(6)
         });
 
+        await SorteioParceiro.create({
+            user_id: newUser?.id,
+            taxa_cliente: 0,
+        })
+
         return res.status(201).json({
             message: "Usuário registrado com sucesso!", data: {
                 id: newUser?.id,
