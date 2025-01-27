@@ -476,7 +476,8 @@ router.get('/parceiro/pedidos', validateToken, async (req, res) => {
                 F.taxa_cliente, 
                 U.name, 
                 S.name AS sorteio_name,
-                F.quantidade
+                F.quantidade,
+                F.tipo
             FROM tb_faturas AS F 
                 INNER JOIN tb_users AS U ON F.user_id=U.id 
                 INNER JOIN tb_sorteios AS S ON F.sorteio_id=S.id
@@ -504,7 +505,8 @@ router.get('/parceiro/pedidos', validateToken, async (req, res) => {
                 taxa_cliente: row?.taxa_cliente,
                 name: row?.name,
                 sorteio_name: row?.sorteio_name,
-                quantidade: row?.quantidade
+                quantidade: row?.quantidade,
+                tipo: row?.tipo
             }
             pedidos.push(obj);
         })
