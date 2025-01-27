@@ -14,6 +14,7 @@ const SorteioInformacoes = require('../models/sorteio_informacoes');
 const { createFatura } = require('../providers/fatura_provider');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const SorteioParceiro = require('../models/sorteio_parceiro');
+const EmailFila = require('../models/email_fila');
 require('dotenv').config();
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
