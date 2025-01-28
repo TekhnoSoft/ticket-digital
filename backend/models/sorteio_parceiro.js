@@ -28,6 +28,14 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
         type: Sequelize.TEXT,
         allowNull: true
     },
+    enterprise_name: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    colorPrimary: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
     whatsappLink: {
         type: Sequelize.TEXT,
         allowNull: true

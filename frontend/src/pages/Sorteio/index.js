@@ -566,7 +566,7 @@ export default () => {
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
                                             <ion-icon name="ticket-outline"></ion-icon>&nbsp;
-                                            <label>{Utils.formatNumberToTicket(bilhete?.numero)}</label>
+                                            <label>{Utils.formatNumberToTicket(bilhete?.numero, (campanha?.regra?.valor - 1))}</label>
                                         </label>
                                         <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
                                             <label>{bilhete?.user_id ? `Comprado` : `Disponível`}</label>&nbsp;&nbsp;
