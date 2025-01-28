@@ -168,6 +168,27 @@ const Api = {
                 return err;
             });
         },
+        resetPasswordSendCode: async ({ email }) => {
+            return await axios.post(`${API_BASE}/users/reset-password-send-code`, {email}).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        resetPasswordValidCode: async ({ email, code }) => {
+            return await axios.post(`${API_BASE}/users/reset-password-valid-code`, {email, code}).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        resetPasswordChange: async ({ email, code, password }) => {
+            return await axios.post(`${API_BASE}/users/reset-password-change`, {email, code, password}).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
         getCampanhas: async ({}) => {
             return await axios.get(`${API_BASE}/users/parceiro/campanhas`, Environment.HEADERS).then(async (response) => {
                 return await response;
@@ -188,7 +209,7 @@ const Api = {
             }).catch(err => {
                 return err;
             });
-        }
+        },
     }
 }
 

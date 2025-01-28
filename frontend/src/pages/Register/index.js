@@ -88,7 +88,7 @@ export default () => {
                     <SpaceBox space={5} />
                     <div style={{ display: 'flext', alignItems: 'center', justifyContent: 'centers' }}>
                         <div style={{ textAlign: 'center', fontSize: '12px' }}>
-                            Ao clicar no botão abaixo "Criar conta", você concorda com <br /> nossos <b style={{ cursor: 'pointer', color: 'var(--primary-color)' }}>termos de uso</b> e a nossa <b style={{ cursor: 'pointer', color: 'var(--primary-color)' }}>política de privacidade</b> e confirma ter mais de 18 anos.
+                            Ao clicar no botão abaixo "Criar conta", você concorda com <br /> nossos <b style={{ cursor: 'pointer', color: 'var(--primary-color)' }} onClick={() => {navigate('/termos-uso')}}>termos de uso</b> e a nossa <b style={{ cursor: 'pointer', color: 'var(--primary-color)' }}  onClick={() => {navigate('/politica-privacidade')}}>política de privacidade</b> e confirma ter mais de 18 anos.
                         </div>
                     </div>
                     <SpaceBox space={25} />

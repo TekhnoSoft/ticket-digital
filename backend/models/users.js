@@ -43,6 +43,10 @@ const User = database.define('tb_users', {
         type: Sequelize.TEXT,
         allowNull: true,
     },
+    password_reset_code:{
+        type: Sequelize.TEXT,
+        allowNull: true,
+    }
 });
 
 module.exports = User;

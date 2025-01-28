@@ -20,6 +20,7 @@ const jwt = require('jsonwebtoken');
 const SorteioPremio = require('../models/sorteio_premio');
 const { createFatura } = require('../providers/fatura_provider');
 const SorteioRegras = require('../models/sorteio_regras');
+const EmailFila = require('../models/email_fila');
 
 router.get('/auth', validateToken, async (req, res) => {
     try {
@@ -393,6 +394,135 @@ router.get('/:user_id/taxas', validateOrigin, async (req, res) => {
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id } });
         return res.status(200).json(sorteioParceiro?.taxa_cliente);
     } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+///////////////////////////////////////////////////////////////RESET-PASSWORD/////////////////////////////////////////////////////
+
+router.post('/reset-password-send-code', validateOrigin, async (req, res) => {
+    const { email } = req.body;
+    try{
+
+        if(!Utils.validateEmail(email)){
+            return res.status(400).json({ message: "E-mail inválido.", data: null });
+        }
+
+        const user = await User.findOne({ where: {email} });
+
+        if(user?.role != "parceiro"){
+            return res.status(400).json({ message: "Parceiro não encontrado.", data: null });
+        }
+
+        if(user){
+
+            let code = Utils.makeid(6);
+
+            await User.update(
+                {
+                    password_reset_code: code,
+                },
+                {
+                    where: { id: user?.id }
+                },
+            )
+
+            await EmailFila.create({
+                from: "server",
+                to: email,
+                subject: "Redefinição de senha - Ticket Digital",
+                content: `Código: ${code}`
+            })
+
+            return res.status(200).json(true);
+        }else{
+            return res.status(400).json({ message: "E-mail não encontrado.", data: null });
+        }
+
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+router.post('/reset-password-valid-code', validateOrigin, async (req, res) => {
+    const { email, code } = req.body;
+    try{
+
+        if(!Utils.validateEmail(email)){
+            return res.status(400).json({ message: "E-mail inválido.", data: null });
+        }
+
+        if(code?.trim()?.length < 6){
+            return res.status(400).json({ message: "Código inválido.", data: null });
+        }
+
+        const user = await User.findOne({ where: {email} });
+
+        if(!user){
+            return res.status(400).json({ message: "E-mail não encontrado.", data: null });
+        }
+
+        if(user?.role != "parceiro"){
+            return res.status(400).json({ message: "Parceiro não encontrado.", data: null });
+        }
+
+        if(user?.password_reset_code != code){
+            return res.status(400).json({ message: "Código inválido.", data: null });
+        }
+
+        return res.status(200).json(true);
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+router.post('/reset-password-change', validateOrigin, async (req, res) => {
+    const { email, code, password } = req.body;
+    try{
+
+        if(!Utils.validateEmail(email)){
+            return res.status(400).json({ message: "E-mail inválido.", data: null });
+        }
+
+        if(code?.trim()?.length < 6){
+            return res.status(400).json({ message: "Código inválido.", data: null });
+        }
+
+        if (password.length < 6) {
+            return res.status(401).json({ message: "Senha deve ter pelo menos 6 caracteres." });
+        }
+
+        if (!Utils.validatePassword(password)) {
+            return res.status(401).json({ message: "A senha precisa ter letras, números e caracteres." });
+        }
+
+        const user = await User.findOne({ where: { email, password_reset_code: code } });
+
+        if(!user){
+            return res.status(400).json({ message: "E-mail não encontrado.", data: null });
+        }
+
+        if(user?.role != "parceiro"){
+            return res.status(400).json({ message: "Parceiro não encontrado.", data: null });
+        }
+
+        const password_hash = await bcrypt.hash(password, 10);
+
+        await User.update(
+            {
+                password_hash,
+                password_reset_code: null,
+            },
+            {
+                where: { id: user?.id }
+            },
+        )
+
+        return res.status(200).json(true);
+    }catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro interno: ' + err });
     }
