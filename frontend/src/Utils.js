@@ -233,6 +233,12 @@ const Utils = {
                     plural: "e-books",
                     title: "E-books/Números"
                 }
+            case "COTA":
+                return {
+                    singular: "cota",
+                    plural: "Cotas",
+                    title: "E-books/Cotas"
+                }
             default:
                 return {
                     singular: "...",

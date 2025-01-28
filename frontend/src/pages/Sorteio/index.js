@@ -165,13 +165,13 @@ export default () => {
         switch (viewMode) {
             case "USUARIO_ESCOLHE":
                 if (numeros?.length < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} ${Utils.getModo(campanha?.modo)?.plural || ""}.`);
+                    Utils.notify("error", `A quantidade mínima é ${campanha?.info?.minimo_cota_usuario}.`);
                     return;
                 }
                 break;
             case "SISTEMA_ESCOLHE":
                 if (qtd < campanha?.info?.minimo_cota_usuario) {
-                    Utils.notify("error", `Escolha no mínimo ${campanha?.info?.minimo_cota_usuario} ${Utils.getModo(campanha?.modo)?.plural || ""}.`);
+                    Utils.notify("error", `A quantidade mínima é ${campanha?.info?.minimo_cota_usuario}.`);
                     return;
                 }
                 break;
