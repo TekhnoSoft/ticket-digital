@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './style.css';
 import SpaceBox from '../SpaceBox';
+import { Link } from 'react-router-dom';
 
 export default function Footer({footerMode}) {
     const [accordionOpen, setAccordionOpen] = useState(true);
@@ -25,8 +26,8 @@ export default function Footer({footerMode}) {
                         ></ion-icon>
                     </div>
                     <ul className={`accordion-content ${accordionOpen ? 'open' : ''}`}>
-                        <li><a href="/termos">Termos de Uso</a></li>
-                        <li><a href="/politica">Política de Privacidade</a></li>
+                        <li><Link to="/termos-uso">Termos de Uso</Link></li>
+                        <li><Link to="/politica-privacidade">Política de Privacidade</Link></li>
                     </ul>
                 </div>
 

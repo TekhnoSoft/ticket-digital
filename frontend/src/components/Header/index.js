@@ -13,6 +13,11 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
 
     const [open, setOpen] = useState(false);
     const [showModalCampanhas, setShowModalCampanhas] = useState(false);
+    const [pathName, setPathName] = useState(window.location.pathname);
+
+    useEffect(() => {
+        setPathName(window.location.pathname);
+    }, [window.location.pathname])
 
     const handleToggle = () => {
         setOpen(!open);
@@ -30,19 +35,25 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' className='header-logo' style={{cursor: 'pointer'}} onClick={() => {}}/>
-                        <div className='button-group'>
-                            <Button onClick={() => {setShowModalCampanhas(true)}}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
-                            <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
-                        </div>
-                        <div className='menu-toggle' onClick={handleToggle}>
-                            <ion-icon className="menu-toggle-icon" name={`${open ? 'close-outline' : 'menu-outline'}`} size={"large"}></ion-icon>
-                        </div>
+                        <img src='../Logo.png' className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { }} />
+                        {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
+                            <></>
+                        ) : (
+                            <>
+                                <div className='button-group'>
+                                    <Button onClick={() => { setShowModalCampanhas(true) }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
+                                    <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
+                                </div>
+                                <div className='menu-toggle' onClick={handleToggle}>
+                                    <ion-icon className="menu-toggle-icon" name={`${open ? 'close-outline' : 'menu-outline'}`} size={"large"}></ion-icon>
+                                </div>
+                            </>
+                        )}
                     </div>
                     {open ? (
                         <div className='hader-mobile-menu'>
                             <div className='button-group-mobile'>
-                                <Button onClick={() => {setShowModalCampanhas(true)}} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
+                                <Button onClick={() => { setShowModalCampanhas(true) }} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="list-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Campanhas</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>
                             </div>
@@ -52,36 +63,42 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
             ) : headerMode == "PARCEIRO" ? (
                 <div className='header-parceiro' >
                     <div className='header-content-parceiro'>
-                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => {navigate("/parceiro")}}/>
+                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { navigate("/parceiro") }} />
                         <div className='button-group'>
-                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="help-circle-outline"></ion-icon></Button>
-                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="notifications-outline"></ion-icon></Button>
-                            <Button style={{background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer'}} onClick={() => {}}><ion-icon size={"large"} name="person-outline"></ion-icon></Button>
+                            <Button style={{ background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer' }} onClick={() => { }}><ion-icon size={"large"} name="help-circle-outline"></ion-icon></Button>
+                            <Button style={{ background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer' }} onClick={() => { }}><ion-icon size={"large"} name="notifications-outline"></ion-icon></Button>
+                            <Button style={{ background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer' }} onClick={() => { }}><ion-icon size={"large"} name="person-outline"></ion-icon></Button>
                         </div>
                     </div>
                 </div>
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{cursor: 'pointer'}} onClick={() => navigate(-1)}/>
-                        <div className='button-group'>
-                            <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <Hr elevation={3} width={"40px"} color={headerPaymentStep > 2 ? 'var(--primary-color)' : "#ddd"} />
-                            <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: headerPaymentStep > 2 ? 'var(--primary-color)' : '#ddd', color: headerPaymentStep > 2 ? 'white' : 'gray', borderRadius: '50%' }}>
-                                <ion-icon name="document-outline"></ion-icon>
-                            </div>
-                        </div>
-                        <div className='menu-toggle' onClick={handleToggle}>
-                            <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <Hr elevation={3} width={"20px"} color={headerPaymentStep > 2 ? 'var(--primary-color)' : "#ddd"} />
-                            <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: headerPaymentStep > 2 ? 'var(--primary-color)' : '#ddd', color: headerPaymentStep > 2 ? 'white' : 'gray', borderRadius: '50%' }}>
-                                <ion-icon name="document-outline"></ion-icon>
-                            </div>
-                        </div>
+                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
+                        {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
+                            <></>
+                        ) : (
+                            <>
+                                <div className='button-group'>
+                                    <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
+                                        <ion-icon name="person-outline"></ion-icon>
+                                    </div>
+                                    <Hr elevation={3} width={"40px"} color={headerPaymentStep > 2 ? 'var(--primary-color)' : "#ddd"} />
+                                    <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: headerPaymentStep > 2 ? 'var(--primary-color)' : '#ddd', color: headerPaymentStep > 2 ? 'white' : 'gray', borderRadius: '50%' }}>
+                                        <ion-icon name="document-outline"></ion-icon>
+                                    </div>
+                                </div>
+                                <div className='menu-toggle' onClick={handleToggle}>
+                                    <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '50%' }}>
+                                        <ion-icon name="person-outline"></ion-icon>
+                                    </div>
+                                    <Hr elevation={3} width={"20px"} color={headerPaymentStep > 2 ? 'var(--primary-color)' : "#ddd"} />
+                                    <div style={{ width: '40px', height: '40px', alignItems: 'center', display: 'flex', justifyContent: 'center', background: headerPaymentStep > 2 ? 'var(--primary-color)' : '#ddd', color: headerPaymentStep > 2 ? 'white' : 'gray', borderRadius: '50%' }}>
+                                        <ion-icon name="document-outline"></ion-icon>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

@@ -292,7 +292,7 @@ router.get('/rank-buyers/:sorteio_id', validateOrigin, async (req, res) => {
             INNER JOIN tb_users AS B ON A.user_id = B.id
             WHERE A.sorteio_id = :sorteio_id AND A.status = 'PAGO'
             GROUP BY B.name
-            ORDER BY qtd DESC;
+            ORDER BY qtd DESC LIMIT 5;
         `;
 
         const resultados = await database.query(query, {
