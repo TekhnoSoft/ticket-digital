@@ -1,0 +1,93 @@
+/* Estilos gerais */
+#abas {
+    margin: 0;
+    padding: 0;
+    display: flex; /* Flexbox para manter as abas em linha */
+    flex-wrap: nowrap; /* Garante que as abas não quebrem linha */
+    justify-content: flex-start; /* Alinha as abas à esquerda */
+    overflow-x: auto; /* Permite o scroll horizontal */
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch; /* Melhora o desempenho de rolagem no iOS */
+    gap: 10px; /* Espaçamento entre as abas */
+}
+
+#abas li {
+    display: inline-block;
+    border-radius: 16px;
+    border-bottom: none;
+    background-color: rgba(35, 45, 60, 0.08);
+    align-items: center;
+    flex-shrink: 0; /* Garante que os itens não encolham */
+}
+
+#abas li div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    height: 40px;
+}
+
+#abas li span {
+    display: block;
+    text-decoration: none;
+    color: #000000;
+}
+
+#abas li div.selecionada {
+    background-color: #f0fdf5;
+    border-radius: 8px;
+    color: var(--primary-color) !important;
+    position: relative;
+    top: 1px;
+    font-weight: bold;
+}
+
+#abas li div.selecionada span {
+    color: var(--primary-color) !important;
+}
+
+/* Estilo para os conteúdos das abas */
+.conteudo {
+    display: block;
+    padding: 10px;
+    display: none;
+}
+
+.conteudo.visivel {
+    display: block;
+}
+
+/* Estilo para dispositivos móveis */
+@media (max-width: 768px) {
+    #abas {
+        overflow-x: auto; /* Scroll horizontal */
+        white-space: nowrap; /* Impede a quebra de linha */
+        gap: 0px; /* Ajuste do espaçamento entre as abas */
+    }
+
+    #abas li {
+        display: inline-block;
+        margin-right: 10px; /* Espaçamento entre as abas */
+    }
+
+    #abas li div {
+        padding: 10px 15px; /* Ajuste do padding */
+    }
+}
+
+/* Estilo para o desktop */
+@media (min-width: 769px) {
+    #abas {
+        display: flex; /* Mantém as abas em linha no desktop */
+    }
+
+    #abas li {
+        display: inline-block;
+    }
+
+    #abas li div {
+        padding: 10px 20px;
+    }
+}

@@ -73,6 +73,9 @@ export default () => {
 
     const [taxaCliente, setTaxaCliente] = useState(null);
 
+    const [showModalImagePreview, setShowModalImagePreview] = useState(false);
+    const [imagePreview, setImagePreview] = useState("../placeholder-image.png");
+
     useEffect(() => {
         load();
     }, [])
@@ -184,12 +187,21 @@ export default () => {
         navigate("/checkout");
     }
 
+    const handleImagePreview = (url) => {
+        setShowModalImagePreview(true);
+        setImagePreview(url);
+    }
+
     const onCloseModalUserCallback = () => {
 
     }
 
     const onCloseModalCampanhasCallback = () => {
 
+    }
+
+    const onCloseModalImagePreviewCallback = () => {
+        setImagePreview("placeholder-image.png");
     }
 
     return (
@@ -213,6 +225,9 @@ export default () => {
                     </div>
                 </div>
             </Modal>
+            <Modal onCloseCallback={onCloseModalImagePreviewCallback} setShow={setShowModalImagePreview} show={showModalImagePreview}>
+                <img src={imagePreview} width={'100%'}/>
+            </Modal>
             <div className='info-content'>
                 <div className='info-images'>
                     <Carousel
@@ -231,7 +246,7 @@ export default () => {
                         {loaded ? (
                             campanha?.imagens?.map(imagem => {
                                 return (
-                                    <div className='image-slide' key={imagem?.id}>
+                                    <div className='image-slide' key={imagem?.id} onClick={() => {handleImagePreview(Environment.API_BASE + `/sorteios/imagem/${imagem?.id}`)}}>
                                         <img src={Environment.API_BASE + `/sorteios/imagem/${imagem?.id}` || `../placeholder-image.png`} alt={"Imagem da Campanha"} />
                                     </div>
                                 );

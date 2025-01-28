@@ -100,11 +100,11 @@ export default () => {
                                             }}>
                                                 <ion-icon name="eye-outline"></ion-icon> Visualizar
                                             </div>
-                                            <div className="menu-item-c" onClick={(event) => {
+                                            {/*<div className="menu-item-c" onClick={(event) => {
                                                 event.stopPropagation();
                                             }}>
                                                 <ion-icon name="copy-outline"></ion-icon> Duplicar
-                                            </div>
+                                            </div>*/}
                                         </div>
                                     </div>
                                 </div>
@@ -125,10 +125,11 @@ export default () => {
                                     <span class="status-text-c">{getStatusProps(campanha?.status).status}</span>
                                 </div>
                                 {campanha?.status == "AGUARDANDO_ATIVACAO" ? (
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }} onClick={(event) => {
-                                        event.stopPropagation();
-                                    }}>
-                                        <Button onClick={() => {navigate(`/fatura-campanha/${campanha?.id_remessa}`)}}>Ativar</Button>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
+                                        <Button onClick={(event) => {
+                                            event.stopPropagation();
+                                            navigate(`/fatura-campanha/${campanha?.id_remessa}`);
+                                        }}>Ativar</Button>
                                     </div>
                                 ) : (null)}
                             </div>

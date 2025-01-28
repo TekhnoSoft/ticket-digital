@@ -68,7 +68,7 @@ function App() {
           <Route path="/parceiro-visual" element={userParceiro ? <ParceiroVisual /> : <Login />} />
           <Route path="/parceiro-perfil" element={userParceiro ? <ParceiroPerfil /> : <Login />} />
           <Route path="/parceiro-add-campanha" element={userParceiro ? <ParceiroAddCampanha /> : <Login />} />
-          <Route path="/parceiro-edit-campanha/:sorteio_id" element={userParceiro ? <ParceiroEditCampanha /> : <Login />} />
+          <Route path="/parceiro-edit-campanha/:campanha_id" element={userParceiro ? <ParceiroEditCampanha /> : <Login />} />
         </Routes>
         <ToastContainer style={{ zIndex: 999999 }} />
       </Router>

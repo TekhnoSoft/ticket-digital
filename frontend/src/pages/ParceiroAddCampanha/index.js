@@ -261,7 +261,7 @@ export default () => {
                         <Card title={"Arrecadação estimada"} icon={<ion-icon name="cash-outline"></ion-icon>}>
                             <SpaceBox space={8} />
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <b>Arrecadação (lucro)</b>
+                                <b>Arrecadação</b>
                                 <b>{arrecadacao}</b>
                             </div>
                         </Card>
@@ -355,7 +355,7 @@ export default () => {
                                             </div>
                                             <SpaceBox space={8} />
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <b>Arrecadação estimada (lucro)</b>
+                                                <b>Arrecadação estimada</b>
                                                 <b>{arrecadacao}</b>
                                             </div>
                                         </Card>
