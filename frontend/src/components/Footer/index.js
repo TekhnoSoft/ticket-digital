@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import './style.css';
 import SpaceBox from '../SpaceBox';
 import { Link } from 'react-router-dom';
+import Environment from '../../Environment';
 
-export default function Footer({footerMode}) {
+export default function Footer({footerMode, parceiro, logo}) {
     const [accordionOpen, setAccordionOpen] = useState(true);
 
     const toggleAccordion = () => {
@@ -52,7 +53,7 @@ export default function Footer({footerMode}) {
                 <div className="footer-bottom">
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                         <span>&copy; {new Date().getFullYear()} Todos os direitos reservados</span>&nbsp;&nbsp;
-                        <img src="../Logo.png" alt="Logo" />
+                        <img src={logo ? Environment.API_BASE + `/sorteios/imagem/${logo}` : '../placeholder-image.png'} alt="Logo" />
                     </div>
                     <button className="scroll-to-top" onClick={scrollToTop} style={{ marginTop: '10px' }}>
                         <ion-icon name="chevron-up-outline"></ion-icon>

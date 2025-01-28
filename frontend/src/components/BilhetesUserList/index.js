@@ -132,7 +132,7 @@ export default ({ user, setUser, modo }) => {
                     <div className="icon-circle">
                         <ion-icon name="ticket-outline"></ion-icon>
                     </div>
-                    <h3>Meus {Utils.getModo(modo)?.plural || ""}</h3>
+                    <h3>Meus pedidos</h3>
                 </div>
             </div>
             {!user ? (

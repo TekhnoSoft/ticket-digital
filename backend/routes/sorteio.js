@@ -50,9 +50,13 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             where: { sorteio_id: sorteio.id },
             attributes: ['id']
         });
+        const sorteioImagemLogo = await SorteioImagens.findOne({
+            where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
+            attributes: ['id']
+        });
         const sorteioParceiro = await SorteioParceiro.findOne({ 
             where: { user_id: sorteio.user_id },
-            attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink']
+            attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink', 'enterprise_name', 'colorPrimary']
         });
 
         if (sorteioInformacoes) {
@@ -61,6 +65,7 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             sorteioPlano.imagens = sorteioImagens;
             sorteioPlano.regra = sorteioRegras[0];
             sorteioPlano.parceiro = sorteioParceiro;
+            sorteioPlano.logo = sorteioImagemLogo;
 
             return res.status(200).json(sorteioPlano);
         } else {

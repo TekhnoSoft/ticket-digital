@@ -370,11 +370,19 @@ router.get('/fatura/:id_remessa', validateOrigin, async (req, res) => {
         const bilhetesCount = await Bilhete.count({ where: { id_remessa } });
         const user = await User.findOne({ where: { id: fatura?.user_id } });
 
+        const parceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } });
+        const logo = await SorteioImagens.findOne({
+            where: { sorteio_id: fatura?.sorteio_id, tipo: 'LOGO' },
+            attributes: ['id']
+        });
+
         return res.status(200).json({
             fatura: fatura,
             sorteio: sorteio,
             qtd: bilhetesCount,
             imagem: imagem?.id,
+            parceiro: parceiro,
+            logo: logo,
             user: {
                 cpf: user?.cpf,
                 name: user?.name,

@@ -77,6 +77,7 @@ export default () => {
     const [imagePreview, setImagePreview] = useState("../placeholder-image.png");
 
     useEffect(() => {
+        localStorage.removeItem("checkout");
         load();
     }, [])
 
@@ -154,6 +155,11 @@ export default () => {
             setQtd(campanhaData?.info?.minimo_cota_usuario);
 
             window.document.title = campanhaData?.name;
+
+            if (campanhaData?.parceiro?.colorPrimary) {
+                document.documentElement.style.setProperty('--primary-color', campanhaData?.parceiro?.colorPrimary);
+            }
+
         } else {
             navigate("/404");
         }
@@ -205,7 +211,7 @@ export default () => {
     }
 
     return (
-        <FragmentView headerMode={"USER"} modo={campanha?.modo || ""} info={campanha?.info}>
+        <FragmentView headerMode={"USER"} modo={campanha?.modo || ""} info={campanha?.info} parceiro={campanha?.parceiro} logo={campanha?.logo?.id}>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
                 <BilhetesUserList modo={campanha?.modo || ""} user={user} setUser={setUser} />
             </Modal>
@@ -226,7 +232,7 @@ export default () => {
                 </div>
             </Modal>
             <Modal onCloseCallback={onCloseModalImagePreviewCallback} setShow={setShowModalImagePreview} show={showModalImagePreview}>
-                <img src={imagePreview} width={'100%'}/>
+                <img src={imagePreview} width={'100%'} />
             </Modal>
             <div className='info-content'>
                 <div className='info-images'>
@@ -246,7 +252,7 @@ export default () => {
                         {loaded ? (
                             campanha?.imagens?.map(imagem => {
                                 return (
-                                    <div className='image-slide' key={imagem?.id} onClick={() => {handleImagePreview(Environment.API_BASE + `/sorteios/imagem/${imagem?.id}`)}}>
+                                    <div className='image-slide' key={imagem?.id} onClick={() => { handleImagePreview(Environment.API_BASE + `/sorteios/imagem/${imagem?.id}`) }}>
                                         <img src={Environment.API_BASE + `/sorteios/imagem/${imagem?.id}` || `../placeholder-image.png`} alt={"Imagem da Campanha"} />
                                     </div>
                                 );
@@ -287,37 +293,37 @@ export default () => {
                     <SpaceBox space={4} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.whatsappLink) && (
-                            <div onClick={() => {window.open(campanha?.parceiro?.whatsappLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.parceiro?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
                                 <ion-icon name="logo-whatsapp"></ion-icon>
                             </div>
                         )}
 
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.facebookLink) && (
-                            <div onClick={() => {window.open(campanha?.parceiro?.facebookLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.parceiro?.facebookLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
                                 <ion-icon name="logo-facebook"></ion-icon>
                             </div>
                         )}
 
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.youtubeLink) && (
-                            <div onClick={() => {window.open(campanha?.parceiro?.youtubeLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.parceiro?.youtubeLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
                                 <ion-icon name="logo-youtube"></ion-icon>
                             </div>
                         )}
 
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.instagramLink) && (
-                            <div onClick={() => {window.open(campanha?.parceiro?.instagramLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.parceiro?.instagramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
                                 <ion-icon name="logo-instagram"></ion-icon>
                             </div>
                         )}
 
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.tiktokLink) && (
-                            <div onClick={() => {window.open(campanha?.tiktokLink?.whatsappLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.tiktokLink?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
                                 <ion-icon name="logo-tiktok"></ion-icon>
                             </div>
                         )}
 
                         {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.telegramLink) && (
-                            <div onClick={() => {window.open(campanha?.parceiro?.telegramLink, 'blank')}} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0, 136, 204)', color: 'white' }}>
+                            <div onClick={() => { window.open(campanha?.parceiro?.telegramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0, 136, 204)', color: 'white' }}>
                                 <ion-icon name="paper-plane"></ion-icon>
                             </div>
                         )}
@@ -339,58 +345,158 @@ export default () => {
                 </div>
                 <SpaceBox space={15} />
                 {viewMode == "USUARIO_ESCOLHE" ? (
-                    <div>
-                        <div className='filter-buttons responsive-margin'>
-                            <span onClick={() => { setFilter("") }} className='filter-button' style={{ background: '#242429' }}>
-                                <span>Todos</span>
-                                <b style={{ background: '#ffffff', color: '#242429' }}>{campanha?.regra?.valor}</b>
-                            </span>
-                            <span onClick={() => { setFilter("disponivel") }} className='filter-button' style={{ background: '#eaebed' }}>
-                                <span style={{ color: '#242429' }}>Disponiveis</span>
-                                <b style={{ background: '#242429', color: '#ffffff' }}>{campanha?.regra?.valor - (bilhetesReservados?.length + bilhetesPagos?.length)}</b>
-                            </span>
-                            <span onClick={() => { setFilter("reservado") }} className='filter-button' style={{ background: 'orange' }}>
-                                <span>Reservados</span>
-                                <b style={{ background: '#ffffff', color: 'orange' }}>{bilhetesReservados?.length}</b>
-                            </span>
-                            <span onClick={() => { setFilter("pago") }} className='filter-button' style={{ background: 'var(--primary-color)' }}>
-                                <span>Pagos</span>
-                                <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>{bilhetesPagos?.length}</b>
-                            </span>
-                            <span onClick={() => { setShowModalCampanhas(true) }} className='filter-button' style={{ background: 'var(--primary-color)', alignSelf: 'center' }}>
-                                <ion-icon name="ticket"></ion-icon>&nbsp;
-                                <span>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</span>
-                            </span>
+                    loaded ? (
+                        <div>
+                            <div className='filter-buttons responsive-margin'>
+                                <span onClick={() => { setFilter("") }} className='filter-button' style={{ background: '#242429' }}>
+                                    <span>Todos</span>
+                                    <b style={{ background: '#ffffff', color: '#242429' }}>{campanha?.regra?.valor}</b>
+                                </span>
+                                <span onClick={() => { setFilter("disponivel") }} className='filter-button' style={{ background: '#eaebed' }}>
+                                    <span style={{ color: '#242429' }}>Disponiveis</span>
+                                    <b style={{ background: '#242429', color: '#ffffff' }}>{campanha?.regra?.valor - (bilhetesReservados?.length + bilhetesPagos?.length)}</b>
+                                </span>
+                                <span onClick={() => { setFilter("reservado") }} className='filter-button' style={{ background: 'orange' }}>
+                                    <span>Reservados</span>
+                                    <b style={{ background: '#ffffff', color: 'orange' }}>{bilhetesReservados?.length}</b>
+                                </span>
+                                <span onClick={() => { setFilter("pago") }} className='filter-button' style={{ background: 'var(--primary-color)' }}>
+                                    <span>Pagos</span>
+                                    <b style={{ background: '#ffffff', color: 'var(--primary-color)' }}>{bilhetesPagos?.length}</b>
+                                </span>
+                                <span onClick={() => { setShowModalCampanhas(true) }} className='filter-button' style={{ background: 'var(--primary-color)', alignSelf: 'center' }}>
+                                    <ion-icon name="ticket"></ion-icon>&nbsp;
+                                    <span>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</span>
+                                </span>
+                            </div>
+                            <SpaceBox space={15} />
+                            {loadedBilheteStatus == true ? (
+                                <Pagination filter={filter} reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
+                            ) : (
+                                <>
+                                    <SpaceBox space={10} />
+                                    <center><b>Carregando...</b></center>
+                                    <SpaceBox space={10} />
+                                </>
+                            )}
                         </div>
-                        <SpaceBox space={15} />
-                        {loadedBilheteStatus == true ? (
-                            <Pagination filter={filter} reservados={bilhetesReservados} pagos={bilhetesPagos} campanha={campanha} numeros={numeros} addNumero={addNumero} removeNumero={removeNumero} />
-                        ) : (
-                            <>
-                                <SpaceBox space={10} />
-                                <center><b>Carregando...</b></center>
-                                <SpaceBox space={10} />
-                            </>
-                        )}
-                    </div>
+                    ) : (null)
                 ) : (
-                    <>
-                        <div className="buttons-cotas">
-                            {btnsQtd?.map((item, index) => (
-                                <Card
-                                    key={index}
-                                    className={"button-cota"}
+                    loaded ? (
+                        <>
+                            <div className="buttons-cotas">
+                                {btnsQtd?.map((item, index) => (
+                                    <Card
+                                        key={index}
+                                        className={"button-cota"}
+                                        style={{
+                                            cursor: 'pointer',
+                                            border: item?.popular ? 'solid 2px var(--primary-color)' : 'none',
+                                            position: 'relative',
+                                            height: '85px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        onClick={() => {
+                                            let newQtd = qtd + item?.qtd;
+                                            if (newQtd >= campanha?.info?.maximo_cota_usuario) {
+                                                setQtd(campanha?.info?.maximo_cota_usuario);
+                                            } else {
+                                                setQtd(newQtd);
+                                            }
+                                        }}
+                                    >
+                                        <div>
+                                            {item?.popular && (
+                                                <div
+                                                    style={{
+                                                        textAlign: 'center',
+                                                        position: 'absolute',
+                                                        top: '0px',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                        background: 'var(--primary-color)',
+                                                        color: 'white',
+                                                        borderRadius: '16px',
+                                                        fontSize: '12px',
+                                                        padding: '2px 8px',
+                                                    }}
+                                                >
+                                                    Mais&nbsp;popular
+                                                </div>
+                                            )}
+                                            <p className="text-opacity" style={textStyle}>
+                                                SELECIONAR
+                                            </p>
+                                            <p className="text-opacity" style={numberStyle}>
+                                                +{item?.qtd}
+                                            </p>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                            <SpaceBox space={15} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+                                <button
                                     style={{
+                                        backgroundColor: 'var(--primary-color)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '40px',
+                                        height: '40px',
+                                        fontSize: '20px',
                                         cursor: 'pointer',
-                                        border: item?.popular ? 'solid 2px var(--primary-color)' : 'none',
-                                        position: 'relative',
-                                        height: '85px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center'
                                     }}
                                     onClick={() => {
-                                        let newQtd = qtd + item?.qtd;
+                                        let newQtd = qtd - 1;
+                                        if (newQtd >= campanha?.info?.minimo_cota_usuario) {
+                                            setQtd(newQtd);
+                                        }
+                                    }}
+                                >
+                                    <ion-icon name="remove"></ion-icon>
+                                </button>
+                                <input
+                                    type="tel"
+                                    style={{
+                                        width: '200px',
+                                        height: '40px',
+                                        textAlign: 'center',
+                                        fontSize: '16px',
+                                        border: '1px solid #ccc',
+                                        borderRadius: '5px',
+                                    }}
+                                    value={qtd}
+                                    onChange={(e) => {
+                                        let v = e.target.value;
+                                        if (v >= campanha?.info.maximo_cota_usuario) {
+                                            setQtd(campanha?.info.maximo_cota_usuario)
+                                        } else {
+                                            setQtd(e.target.value)
+                                        }
+                                    }}
+                                />
+                                <button
+                                    style={{
+                                        backgroundColor: 'var(--primary-color)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '40px',
+                                        height: '40px',
+                                        fontSize: '20px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                    onClick={() => {
+                                        let newQtd = qtd + 1;
                                         if (newQtd >= campanha?.info?.maximo_cota_usuario) {
                                             setQtd(campanha?.info?.maximo_cota_usuario);
                                         } else {
@@ -398,124 +504,27 @@ export default () => {
                                         }
                                     }}
                                 >
-                                    <div>
-                                        {item?.popular && (
-                                            <div
-                                                style={{
-                                                    textAlign: 'center',
-                                                    position: 'absolute',
-                                                    top: '0px',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)',
-                                                    background: 'var(--primary-color)',
-                                                    color: 'white',
-                                                    borderRadius: '16px',
-                                                    fontSize: '12px',
-                                                    padding: '2px 8px',
-                                                }}
-                                            >
-                                                Mais&nbsp;popular
-                                            </div>
-                                        )}
-                                        <p className="text-opacity" style={textStyle}>
-                                            SELECIONAR
-                                        </p>
-                                        <p className="text-opacity" style={numberStyle}>
-                                            +{item?.qtd}
-                                        </p>
+                                    <ion-icon name="add"></ion-icon>
+                                </button>
+                            </div>
+                            <SpaceBox space={20} />
+                            <div className='responsive-margin button-checkout-parent'>
+                                <Button onClick={handleParticipe} className={'responsive-button'}>
+                                    Participar ({Utils.convertNumberToBRL(Number(qtd * campanha?.valor_por_bilhete) || 0)})
+                                </Button>
+                            </div>
+                            {Utils.mobileCheck() ? (
+                                <>
+                                    <SpaceBox space={8} />
+                                    <div className='responsive-margin button-checkout-parent'>
+                                        <Button onClick={() => { setShowModalCampanhas(true) }} className={'responsive-button btn-bilhetes'}>
+                                            <ion-icon name="ticket-outline" class="text-opacity"></ion-icon>&nbsp;
+                                            <b>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</b>
+                                        </Button>
                                     </div>
-                                </Card>
-                            ))}
-                        </div>
-                        <SpaceBox space={15} />
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
-                            <button
-                                style={{
-                                    backgroundColor: 'var(--primary-color)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    width: '40px',
-                                    height: '40px',
-                                    fontSize: '20px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                                onClick={() => {
-                                    let newQtd = qtd - 1;
-                                    if (newQtd >= campanha?.info?.minimo_cota_usuario) {
-                                        setQtd(newQtd);
-                                    }
-                                }}
-                            >
-                                <ion-icon name="remove"></ion-icon>
-                            </button>
-                            <input
-                                type="tel"
-                                style={{
-                                    width: '200px',
-                                    height: '40px',
-                                    textAlign: 'center',
-                                    fontSize: '16px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '5px',
-                                }}
-                                value={qtd}
-                                onChange={(e) => {
-                                    let v = e.target.value;
-                                    if (v >= campanha?.info.maximo_cota_usuario) {
-                                        setQtd(campanha?.info.maximo_cota_usuario)
-                                    } else {
-                                        setQtd(e.target.value)
-                                    }
-                                }}
-                            />
-                            <button
-                                style={{
-                                    backgroundColor: 'var(--primary-color)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    width: '40px',
-                                    height: '40px',
-                                    fontSize: '20px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                                onClick={() => {
-                                    let newQtd = qtd + 1;
-                                    if (newQtd >= campanha?.info?.maximo_cota_usuario) {
-                                        setQtd(campanha?.info?.maximo_cota_usuario);
-                                    } else {
-                                        setQtd(newQtd);
-                                    }
-                                }}
-                            >
-                                <ion-icon name="add"></ion-icon>
-                            </button>
-                        </div>
-                        <SpaceBox space={20} />
-                        <div className='responsive-margin button-checkout-parent'>
-                            <Button onClick={handleParticipe} className={'responsive-button'}>
-                                Participar ({Utils.convertNumberToBRL(Number(qtd * campanha?.valor_por_bilhete) || 0)})
-                            </Button>
-                        </div>
-                        {Utils.mobileCheck() ? (
-                            <>
-                                <SpaceBox space={8} />
-                                <div className='responsive-margin button-checkout-parent'>
-                                    <Button onClick={() => { setShowModalCampanhas(true) }} className={'responsive-button btn-bilhetes'}>
-                                        <ion-icon name="ticket-outline" class="text-opacity"></ion-icon>&nbsp;
-                                        <b>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</b>
-                                    </Button>
-                                </div>
-                            </>
-                        ) : (null)}
-                    </>
+                                </>
+                            ) : (null)}
+                        </>) : (null)
                 )}
                 <SpaceBox space={30} />
                 <div className='title-bilhetes'>

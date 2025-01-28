@@ -6,8 +6,9 @@ import Modal from '../Modal';
 import BilhetesUserList from '../BilhetesUserList';
 import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
+import Environment from '../../Environment';
 
-export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) => {
+export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parceiro , logo}) => {
 
     const navigate = useNavigate();
 
@@ -15,9 +16,26 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) =>
     const [showModalCampanhas, setShowModalCampanhas] = useState(false);
     const [pathName, setPathName] = useState(window.location.pathname);
 
+    const [idLogo, setIdLogo] = useState(null);
+    const [color, setColor] = useState(null);
+
     useEffect(() => {
         setPathName(window.location.pathname);
+
+        const checkout = JSON.parse(localStorage.getItem("checkout"));
+
+        if(checkout){
+            const _id = JSON.parse(localStorage.getItem("checkout"))?.campanha?.logo?.id;
+            const _color = JSON.parse(localStorage.getItem("checkout"))?.campanha?.parceiro?.colorPrimary;
+            setIdLogo(_id);
+            setColor(_color);
+        }
+
     }, [window.location.pathname])
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--primary-color', color);
+    }, [color])
 
     const handleToggle = () => {
         setOpen(!open);
@@ -35,13 +53,13 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) =>
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { }} />
+                        <img src={logo ? Environment.API_BASE + `/sorteios/imagem/${logo}` : (pathName == "/") ? '../Logo.png' : '../placeholder-image.png'} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { }} />
                         {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
                             <></>
                         ) : (
                             <>
                                 <div className='button-group'>
-                                    <Button onClick={() => { setShowModalCampanhas(true) }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
+                                    <Button onClick={() => { setShowModalCampanhas(true) }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus pedidos</Button>
                                     <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
                                     <Button style={{ color: 'white', padding: '8px', cursor: 'pointer' }} onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }}><ion-icon size={"large"} name="logo-whatsapp"></ion-icon></Button>
                                 </div>
@@ -54,7 +72,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) =>
                     {open ? (
                         <div className='hader-mobile-menu'>
                             <div className='button-group-mobile'>
-                                <Button onClick={() => { setShowModalCampanhas(true) }} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
+                                <Button onClick={() => { setShowModalCampanhas(true) }} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus pedidos</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="list-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Campanhas</Button>
                                 <Button onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }} style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>
                             </div>
@@ -64,7 +82,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) =>
             ) : headerMode == "PARCEIRO" ? (
                 <div className='header-parceiro' >
                     <div className='header-content-parceiro'>
-                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { navigate("/parceiro") }} />
+                        <img src={'../Logo.png'} width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { navigate("/parceiro") }} />
                         <div className='button-group'>
                             <Button style={{ background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer' }} onClick={() => { }}><ion-icon size={"large"} name="help-circle-outline"></ion-icon></Button>
                             <Button style={{ background: 'rgb(242, 242, 242)', color: 'var(--text-opacity)', padding: '8px', cursor: 'pointer' }} onClick={() => { }}><ion-icon size={"large"} name="notifications-outline"></ion-icon></Button>
@@ -75,7 +93,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) =>
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src='../Logo.png' width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
+                        <img src={idLogo ? Environment.API_BASE + `/sorteios/imagem/${idLogo}` : (logo) ? Environment.API_BASE + `/sorteios/imagem/${logo}` : '../placeholder-image.png'} width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
                         {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
                             <></>
                         ) : (

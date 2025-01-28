@@ -27,11 +27,26 @@ export default () => {
 
     const [taxaCliente, setTaxaCliente] = useState(null);
 
+    const [idLogo, setIdLogo] = useState(null); 
+    const [color, setColor] = useState(null);
+
     useEffect(() => {
         load();
         checkFaturaIsPayed(id_remessa, null);
         let interval = setInterval(() => { checkFaturaIsPayed(id_remessa, interval) }, 3000);
     }, [])
+
+    useEffect(() => {
+        if(campanha){
+            setColor(campanha?.parceiro?.colorPrimary)
+            console.log(campanha?.logo?.id)
+            setIdLogo(campanha?.logo?.id);
+        }
+    }, [campanha])
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--primary-color', color);
+    }, [color])
 
     const load = async () => {
         setLoaded(false);
@@ -79,7 +94,7 @@ export default () => {
     };
 
     return (
-        <FragmentView headerMode={"PAYMENT"} headerPaymentStep={3}>
+        <FragmentView headerMode={"PAYMENT"} headerPaymentStep={3} logo={idLogo}>
             {loaded ? (
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>
                     <div className='checkout-all'>
