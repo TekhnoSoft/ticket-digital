@@ -7,7 +7,7 @@ import BilhetesUserList from '../BilhetesUserList';
 import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
 
-export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
+export default ({ headerMode, headerPaymentStep, user, setUser, modo, info }) => {
 
     const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
                                 <div className='button-group'>
                                     <Button onClick={() => { setShowModalCampanhas(true) }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                                     <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
+                                    <Button style={{ color: 'white', padding: '8px', cursor: 'pointer' }} onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }}><ion-icon size={"large"} name="logo-whatsapp"></ion-icon></Button>
                                 </div>
                                 <div className='menu-toggle' onClick={handleToggle}>
                                     <ion-icon className="menu-toggle-icon" name={`${open ? 'close-outline' : 'menu-outline'}`} size={"large"}></ion-icon>
@@ -55,7 +56,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo }) => {
                             <div className='button-group-mobile'>
                                 <Button onClick={() => { setShowModalCampanhas(true) }} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus {Utils.getModo(modo)?.plural || ""}</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="list-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Campanhas</Button>
-                                <Button style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>
+                                <Button onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }} style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>
                             </div>
                         </div>
                     ) : (null)}

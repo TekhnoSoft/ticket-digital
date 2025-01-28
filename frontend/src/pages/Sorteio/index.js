@@ -205,7 +205,7 @@ export default () => {
     }
 
     return (
-        <FragmentView headerMode={"USER"} modo={campanha?.modo || ""}>
+        <FragmentView headerMode={"USER"} modo={campanha?.modo || ""} info={campanha?.info}>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
                 <BilhetesUserList modo={campanha?.modo || ""} user={user} setUser={setUser} />
             </Modal>

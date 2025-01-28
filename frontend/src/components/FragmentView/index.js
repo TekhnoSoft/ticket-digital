@@ -80,7 +80,7 @@ const Sidebar = ({ pageIndex, setPageIndex }) => {
     );
 };
 
-export default ({ children, headerMode, headerPaymentStep, modo }) => {
+export default ({ children, headerMode, headerPaymentStep, modo, info }) => {
 
     const { user, setUser } = useContext(MainContext);
 
@@ -103,7 +103,7 @@ export default ({ children, headerMode, headerPaymentStep, modo }) => {
 
     return (
         <>
-            <Header modo={modo} user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep} />
+            <Header modo={modo} user={user} setUser={setUser} headerMode={headerMode} headerPaymentStep={headerPaymentStep} info={info} />
             {headerMode == "PARCEIRO" ? (
                 <>
                     <Sidebar pageIndex={pageIndex} setPageIndex={setPageIndex} />
