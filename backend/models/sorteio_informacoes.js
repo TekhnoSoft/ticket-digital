@@ -66,6 +66,10 @@ const SorteioInformacoes = database.define('tb_sorteio_informacoes', {
         type: Sequelize.INTEGER,
         allowNull: true,
     },
+    anuncio_text: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+    }
 });
 
 module.exports = SorteioInformacoes;

@@ -526,7 +526,13 @@ export default () => {
                             ) : (null)}
                         </>) : (null)
                 )}
-                <SpaceBox space={30} />
+                <SpaceBox space={15} />
+                {campanha?.info?.anuncio_text?.trim()?.length > 0 ? (
+                    <div className='anuncio_text responsive-margin'>
+                        {campanha?.info?.anuncio_text}
+                    </div>
+                ) : (null)}
+                <SpaceBox space={15} />
                 <div className='title-bilhetes'>
                     <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <ion-icon className="text-opacity" name="stats-chart-outline" size={"large"}></ion-icon>
@@ -656,7 +662,7 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"responsive-margin"} style={{ padding: '16px' }}>
-                    <TextEditor onChange={(content) => {}} value={campanha?.description} placeholder={"Digite sua descrição/regulamento aqui..."} readOnly={true}/>
+                    <TextEditor onChange={(content) => { }} value={campanha?.description} placeholder={"Digite sua descrição/regulamento aqui..."} readOnly={true} />
                 </Card>
                 <SpaceBox space={40} />
                 {numeros?.length > 0 ? (
