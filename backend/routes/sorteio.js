@@ -16,6 +16,7 @@ const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 const EmailFila = require('../models/email_fila');
 const { validateToken } = require('../middlewares/AuthMiddleware');
+const PagamentoOperadora = require('../models/pagamento_operadoras');
 require('dotenv').config();
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
@@ -604,5 +605,15 @@ router.post('/campanha/update-description', validateToken, async (req, res) => {
         return res.status(500).json(err);
     }
 })
+
+router.get('/campanha/payment-providers', validateToken, async (req, res) => {
+    try {
+        const operadoras = await PagamentoOperadora.findAll({});
+        return res.status(200).json(operadoras);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
 
 module.exports = router;

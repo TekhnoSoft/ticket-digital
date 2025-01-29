@@ -13,7 +13,7 @@ const SorteioImagens = database.define('tb_sorteio_imagens', {
         allowNull: false,
     },
     tipo: {
-        type: Sequelize.ENUM("BANNER", "LOGO", "RODAPE"),
+        type: Sequelize.ENUM("BANNER", "LOGO", "RODAPE", "OPERADORA"),
         allowNull: false,
         defaultValue: "BANNER"
     },

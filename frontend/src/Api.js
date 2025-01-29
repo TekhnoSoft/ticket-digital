@@ -237,6 +237,13 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getPagamentoOperadoras: async ({}) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/payment-providers`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
