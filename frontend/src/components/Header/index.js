@@ -45,7 +45,6 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
         const currentPath = window.location.pathname;
 
         if (currentPath.includes("/fatura-campanha")) {
-            console.log("eae")
             return "../Logo.png";
         }
 

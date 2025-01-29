@@ -55,7 +55,7 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
             attributes: ['id']
         });
-        const sorteioParceiro = await SorteioParceiro.findOne({ 
+        const sorteioParceiro = await SorteioParceiro.findOne({
             where: { user_id: sorteio.user_id },
             attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink', 'enterprise_name', 'colorPrimary']
         });
@@ -451,13 +451,13 @@ router.get('/taxas', validateOrigin, async (req, res) => {
 
 router.get('/campanha/:campanha_id/get-status', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
-    try{
+    try {
         let user_id = req.user.id;
 
-        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id}, attributes: ['id', 'status'] })
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id, user_id: user_id }, attributes: ['id', 'status'] })
         const fatura = await Fatura.findOne({ where: { tipo: 'CAMPANHA', sorteio_id: sorteio?.id }, attributes: ['id_remessa'] })
 
-        if(!sorteio){
+        if (!sorteio) {
             return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
         }
 
@@ -466,7 +466,7 @@ router.get('/campanha/:campanha_id/get-status', validateToken, async (req, res) 
             fatura
         });
 
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -475,12 +475,12 @@ router.get('/campanha/:campanha_id/get-status', validateToken, async (req, res) 
 router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
 
-    try{
+    try {
         let user_id = req.user.id;
 
-        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id, user_id: user_id } })
 
-        if(!sorteio){
+        if (!sorteio) {
             return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
         }
 
@@ -497,7 +497,7 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
             where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
             attributes: ['id']
         });
-        const sorteioParceiro = await SorteioParceiro.findOne({ 
+        const sorteioParceiro = await SorteioParceiro.findOne({
             where: { user_id: sorteio.user_id },
             attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink', 'enterprise_name', 'colorPrimary']
         });
@@ -513,11 +513,14 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
                 status: 'INDISPONIVEL',
             }
         })
+
         const faturas = await Fatura.count({
-            tipo: 'BILHETE',
-            status: { [Op.in]: ["AGUARDANDO_PAGAMENTO", "PAGO", "CANCELADO"] },
-            sorteio_id: sorteio?.id
-        }) 
+            where: {
+                tipo: 'BILHETE',
+                status: { [Op.in]: ["AGUARDANDO_PAGAMENTO", "PAGO", "CANCELADO"] },
+                sorteio_id: sorteio?.id
+            }
+        })
 
         const usuarios = await Fatura.count({
             where: {
@@ -546,7 +549,7 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
             return res.status(404).json(null);
         }
 
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -555,17 +558,17 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
 router.get('/campanha/:campanha_id/get-description', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
 
-    try{
+    try {
         let user_id = req.user.id;
 
-        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id, user_id: user_id } })
 
-        if(!sorteio){
+        if (!sorteio) {
             return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
         }
 
         return res.status(200).json(sorteio?.description);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -573,12 +576,12 @@ router.get('/campanha/:campanha_id/get-description', validateToken, async (req, 
 
 router.post('/campanha/update-description', validateToken, async (req, res) => {
     let { campanha_id, content } = req.body;
-    try{
+    try {
         let user_id = req.user.id;
 
-        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id, user_id: user_id } })
 
-        if(!sorteio){
+        if (!sorteio) {
             return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
         }
 
@@ -595,7 +598,7 @@ router.post('/campanha/update-description', validateToken, async (req, res) => {
         )
 
         return res.status(200).json(true);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
