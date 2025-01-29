@@ -7,8 +7,9 @@ import SpaceBox from '../SpaceBox';
 import Api from '../../Api';
 import Utils from '../../Utils';
 
-export default ({id}) => {
+export default ({ id }) => {
 
+    const [showButtonLoader, setShowButtonLoader] = useState(false);
     const [content, setContent] = useState(null);
 
     useEffect(() => {
@@ -17,12 +18,12 @@ export default ({id}) => {
 
     const load = async () => {
         const { success, data } = await Utils.processRequest(Api.parceiro.getCampanhaDescriptionn, { campanha_id: id });
-        if(success){
+        if (success) {
             setContent(data);
         }
     }
 
-    const handleChange = (newContent) => {};
+    const handleChange = (newContent) => { };
 
     const sanitizeHTML = (input) => {
         return input
@@ -41,14 +42,16 @@ export default ({id}) => {
     };
 
     const handleSave = async () => {
+        setShowButtonLoader(true);
         let _data = window.document.getElementsByTagName('textarea')[1].value;
         let _content = sanitizeHTML(_data);
 
         const { success, data } = await Utils.processRequest(Api.parceiro.editCampanhaDescriptionn, { campanha_id: id, content: _content }, true);
-        if(success){
+        if (success) {
             Utils.notify("success", "Descrição atualizada.")
             load();
         }
+        setShowButtonLoader(false);
     }
 
     return (
@@ -57,7 +60,13 @@ export default ({id}) => {
                 <TextEditor onChange={handleChange} placeholder={"Digite sua descrição/regulamento aqui..."} readOnly={false} value={content} />
             </Card>
             <SpaceBox space={20} />
-            <Button onClick={handleSave} style={{ width: '100%', maxWidth: '1015px' }}>Salvar</Button>
+            <Button disabled={showButtonLoader} onClick={handleSave} style={{ width: '100%', maxWidth: '1015px' }}>
+                {showButtonLoader ? (
+                    <>
+                        &nbsp;<div class="loader"></div>
+                    </>
+                ) : (<>Salvar</>)}
+            </Button>
         </>
     )
 }
