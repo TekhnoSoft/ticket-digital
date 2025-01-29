@@ -1,0 +1,26 @@
+.jodit-container, .jodit-workplace{
+    border: none !important;
+    resize: none;
+    background: transparent;
+}
+
+.jodit-container:not(.jodit_inline) {
+    border: none !important;
+    background: transparent;
+    resize: none;
+}
+
+.jodit-editor__resize{
+    display: none !important;
+    background: transparent;
+}
+
+.jodit-container:not(.jodit_inline) {
+    background: transparent;
+    border: none !important;
+}
+
+.jodit-toolbar__box{
+    border: none !important;
+    background: transparent;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import './style.css';
-import { BilhetesUserList, Button, Card, Countdown, FragmentView, Hr, Input, Modal, Pagination, SpaceBox } from '../../components';
+import { BilhetesUserList, Button, Card, Countdown, FragmentView, Hr, Input, Modal, Pagination, SpaceBox, TextEditor } from '../../components';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import Utils from '../../Utils';
@@ -656,7 +656,7 @@ export default () => {
                 </div>
                 <SpaceBox space={20} />
                 <Card className={"responsive-margin"} style={{ padding: '16px' }}>
-                    <p>{campanha?.description || "Sem descrição."}</p>
+                    <TextEditor onChange={(content) => {}} value={campanha?.description} placeholder={"Digite sua descrição/regulamento aqui..."} readOnly={true}/>
                 </Card>
                 <SpaceBox space={40} />
                 {numeros?.length > 0 ? (

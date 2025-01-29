@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import FragmentView from '../../components/FragmentView';
 import SpaceBox from '../../components/SpaceBox';
-import { Button, CampanhaEditDetails, CampanhaEditImages, CampanhaEditAward, CampanhaEditEbooks, CampanhaEditInfos, CampanhaEditOptions, CampanhaEditSeo, CampanhaEditTicketWinner, Hr } from '../../components';
+import { Button, CampanhaEditDetails, CampanhaEditImages, CampanhaEditAward, CampanhaEditEbooks, CampanhaEditInfos, CampanhaEditOptions, CampanhaEditSeo, CampanhaEditTicketWinner, Hr, CampanhaEditDescription } from '../../components';
 import './style.css';
 
 export default () => {
@@ -10,8 +10,21 @@ export default () => {
     const [abaAtiva, setAbaAtiva] = useState(1); // Definindo a aba ativa inicialmente como 1
 
     const handleClick = (abaId) => {
+        console.log(abaId);
         setAbaAtiva(abaId);
     };
+
+    const conteudos = [
+        <CampanhaEditDetails id={campanha_id} />,
+        <CampanhaEditImages id={campanha_id} />,
+        <CampanhaEditInfos id={campanha_id} />,
+        <CampanhaEditOptions id={campanha_id} />,
+        <CampanhaEditDescription id={campanha_id} />,
+        <CampanhaEditEbooks id={campanha_id} />,
+        <CampanhaEditTicketWinner id={campanha_id} />,
+        <CampanhaEditAward id={campanha_id} />,
+        <CampanhaEditSeo id={campanha_id} />
+    ];
 
     return (
         <FragmentView headerMode={"PARCEIRO"}>
@@ -27,13 +40,13 @@ export default () => {
             </div>
             <SpaceBox space={16} />
             <ul id="abas" className="teste">
-                {['Detalhes', 'Imagens', 'Informações', 'Opções', 'Ebooks', 'Cotas premiadas', 'Prêmios', 'SEO'].map((nome, index) => (
+                {['Detalhes', 'Imagens', 'Informações', 'Opções', 'Descrição', 'Ebooks', 'Cotas premiadas', 'Prêmios', 'SEO'].map((nome, index) => (
                     <li key={index}>
                         <div
                             className={abaAtiva === index + 1 ? 'selecionada' : ''}
                             onClick={() => handleClick(index + 1)}
                         >
-                            <ion-icon name={['timer-outline', 'image-outline', 'pencil-outline', 'options-outline', 'book-outline', 'star-outline', 'trophy-outline', 'search-outline'][index]}></ion-icon>
+                            <ion-icon name={['timer-outline', 'image-outline', 'pencil-outline', 'options-outline', 'chatbox-outline', 'book-outline', 'star-outline', 'trophy-outline', 'search-outline'][index]}></ion-icon>
                             <span>{nome}</span>
                         </div>
                     </li>
@@ -41,25 +54,16 @@ export default () => {
             </ul>
             <SpaceBox space={25} />
             <div id="conteudos">
-                {[...Array([
-                    <CampanhaEditDetails id={0}/>, 
-                    <CampanhaEditImages id={0}/>, 
-                    <CampanhaEditInfos id={0}/>, 
-                    <CampanhaEditOptions id={0}/>, 
-                    <CampanhaEditEbooks id={0}/>, 
-                    <CampanhaEditTicketWinner id={0}/>, 
-                    <CampanhaEditAward id={0}/>, 
-                    <CampanhaEditSeo id={0}/>
-                ])].map((item, index) => (
+                {conteudos.map((item, index) => (
                     <div
                         key={index}
                         id={`conteudo_${index + 1}`}
-                        className={`conteudo ${abaAtiva === index + 1 ? 'visivel' : ''}`}
-                    >
-                        <p>{item}</p>
+                        className={`conteudo ${abaAtiva === index + 1 ? 'visivel' : ''}`}>
+                        {item}
                     </div>
                 ))}
             </div>
+            <SpaceBox space={80} />
         </FragmentView>
     );
 };

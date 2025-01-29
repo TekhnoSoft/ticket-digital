@@ -15,6 +15,7 @@ const { createFatura } = require('../providers/fatura_provider');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 const EmailFila = require('../models/email_fila');
+const { validateToken } = require('../middlewares/AuthMiddleware');
 require('dotenv').config();
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
@@ -442,6 +443,57 @@ router.get('/taxas', validateOrigin, async (req, res) => {
         });
         return res.status(200).json(sorteioPublicacaoPrecos);
     } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+/////////////////////////////////PARCEIRO///////////////////////////////////////////////
+
+router.get('/campanha/:campanha_id/get-description', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+
+    try{
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+
+        if(!sorteio){
+            return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
+        }
+
+        return res.status(200).json(sorteio?.description);
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.post('/campanha/update-description', validateToken, async (req, res) => {
+    let { campanha_id, content } = req.body;
+    try{
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+
+        if(!sorteio){
+            return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
+        }
+
+        await Sorteio.update(
+            {
+                description: content
+            },
+            {
+                where: {
+                    id: campanha_id,
+                    user_id: user_id,
+                }
+            }
+        )
+
+        return res.status(200).json(true);
+    }catch (err) {
+        console.log(err);
         return res.status(500).json(err);
     }
 })

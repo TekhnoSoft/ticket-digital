@@ -24,3 +24,4 @@ export { default as CampanhaEditInfos } from './CampanhaEditInfos';
 export { default as CampanhaEditOptions } from './CampanhaEditOptions';
 export { default as CampanhaEditSeo } from './CampanhaEditSeo';
 export { default as CampanhaEditTicketWinner } from './CampanhaEditTicketWinner';
+export { default as CampanhaEditDescription } from './CampanhaEditDescription';

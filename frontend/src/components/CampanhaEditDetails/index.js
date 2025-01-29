@@ -90,7 +90,6 @@ export default ({ id }) => {
                     </div>
                 </div>
             </Card>
-            <SpaceBox space={80} />
         </>
     )
 }
