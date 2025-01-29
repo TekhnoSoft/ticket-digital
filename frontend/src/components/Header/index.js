@@ -53,7 +53,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
             {headerMode == "USER" ? (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src={logo ? Environment.API_BASE + `/sorteios/imagem/${logo}` : (pathName == "/") ? '../Logo.png' : '../placeholder-image.png'} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { }} />
+                        <img src={logo ? Environment.API_BASE + `/sorteios/imagem/${logo}` : (pathName == "/" || pathName == "/termos-uso" || pathName == "/politica-privacidade") ? '../Logo.png' : '../placeholder-image.png'} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => { }} />
                         {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
                             <></>
                         ) : (

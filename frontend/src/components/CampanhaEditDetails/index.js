@@ -84,7 +84,7 @@ export default ({ id }) => {
                             <b style={{ color: 'black' }}>0</b>
                         </div>
                         <div>
-                            <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Ticket Médio:</div>
+                            <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Ticket médio:</div>
                             <b style={{ color: 'black' }}>0</b>
                         </div>
                     </div>

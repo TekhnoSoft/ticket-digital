@@ -36,7 +36,7 @@ export default () => {
             case "AGUARDANDO_ATIVACAO":
                 return {
                     background: "orange",
-                    status: "Aguardando Ativação"
+                    status: "Aguardando ativação"
                 }
             case "ATIVO":
                 return {
