@@ -55,7 +55,7 @@ export default () => {
                             </div>
                             <SpaceBox space={15} />
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
-                                <Button onClick={() => { window.open(selectedOperadora?.tutorial_cta, 'blank'); }}>Como configurar <ion-icon name="open-outline"></ion-icon></Button>
+                                <Button onClick={() => { window.open(selectedOperadora?.tutorial_cta, 'blank'); }} style={{background: 'rgb(237 237 237)', color: 'black'}}>Como configurar <ion-icon name="open-outline"></ion-icon></Button>
                             </div>
                         </div>
                         <SpaceBox space={15} />
