@@ -449,6 +449,109 @@ router.get('/taxas', validateOrigin, async (req, res) => {
 
 /////////////////////////////////PARCEIRO///////////////////////////////////////////////
 
+router.get('/campanha/:campanha_id/get-status', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+    try{
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id}, attributes: ['id', 'status'] })
+        const fatura = await Fatura.findOne({ where: { tipo: 'CAMPANHA', sorteio_id: sorteio?.id }, attributes: ['id_remessa'] })
+
+        if(!sorteio){
+            return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
+        }
+
+        return res.status(200).json({
+            sorteio,
+            fatura
+        });
+
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+
+    try{
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({ where: {id: campanha_id, user_id: user_id} })
+
+        if(!sorteio){
+            return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
+        }
+
+        const sorteioInformacoes = await SorteioInformacoes.findOne({ where: { sorteio_id: sorteio.id } });
+
+        const sorteioRegras = await SorteioRegras.findAll({
+            where: { id: sorteio.sorteio_regras_id },
+        });
+        const sorteioImagens = await SorteioImagens.findAll({
+            where: { sorteio_id: sorteio.id },
+            attributes: ['id']
+        });
+        const sorteioImagemLogo = await SorteioImagens.findOne({
+            where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
+            attributes: ['id']
+        });
+        const sorteioParceiro = await SorteioParceiro.findOne({ 
+            where: { user_id: sorteio.user_id },
+            attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink', 'enterprise_name', 'colorPrimary']
+        });
+        const bilhetesPagos = await Bilhete.count({
+            where: {
+                sorteio_id: sorteio?.id,
+                status: 'PAGO',
+            }
+        })
+        const bilhetesReservados = await Bilhete.count({
+            where: {
+                sorteio_id: sorteio?.id,
+                status: 'INDISPONIVEL',
+            }
+        })
+        const faturas = await Fatura.count({
+            tipo: 'BILHETE',
+            status: { [Op.in]: ["AGUARDANDO_PAGAMENTO", "PAGO", "CANCELADO"] },
+            sorteio_id: sorteio?.id
+        }) 
+
+        const usuarios = await Fatura.count({
+            where: {
+                tipo: 'BILHETE',
+                status: { [Op.in]: ["AGUARDANDO_PAGAMENTO", "PAGO", "CANCELADO"] },
+                sorteio_id: sorteio?.id
+            },
+            distinct: true,
+            col: 'user_id'
+        });
+
+        if (sorteioInformacoes) {
+            const sorteioPlano = sorteio.toJSON();
+            sorteioPlano.info = sorteioInformacoes;
+            sorteioPlano.imagens = sorteioImagens;
+            sorteioPlano.regra = sorteioRegras[0];
+            sorteioPlano.parceiro = sorteioParceiro;
+            sorteioPlano.logo = sorteioImagemLogo;
+            sorteioPlano.pagos = Number(bilhetesPagos);
+            sorteioPlano.reservas = Number(bilhetesReservados);
+            sorteioPlano.nFaturas = Number(faturas);
+            sorteioPlano.usuarios = Number(usuarios);
+
+            return res.status(200).json(sorteioPlano);
+        } else {
+            return res.status(404).json(null);
+        }
+
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
 router.get('/campanha/:campanha_id/get-description', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
 

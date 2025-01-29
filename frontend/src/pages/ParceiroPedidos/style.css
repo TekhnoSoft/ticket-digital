@@ -106,6 +106,10 @@
     background-color: #e74c3c; /* Vermelho para cancelado */
 }
 
+.status-bubble-p.finalizado {
+    background-color: gray; /* Vermelho para cancelado */
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .sales-table-p th,

@@ -210,15 +210,29 @@ const Api = {
                 return err;
             });
         },
-        editCampanhaDescriptionn: async ({ campanha_id, content }) => {
+        editCampanhaDescription: async ({ campanha_id, content }) => {
             return await axios.post(`${API_BASE}/sorteios/campanha/update-description`, { campanha_id, content }, Environment.HEADERS).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;
             });
         },
-        getCampanhaDescriptionn: async ({ campanha_id }) => {
+        getCampanhaDescription: async ({ campanha_id }) => {
             return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-description`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getCampanhaDetails: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-details`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getCampanhaStatus: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-status`, Environment.HEADERS).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;

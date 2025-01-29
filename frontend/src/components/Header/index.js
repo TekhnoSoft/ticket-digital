@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
 import Environment from '../../Environment';
 
-export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parceiro , logo}) => {
+export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parceiro, logo }) => {
 
     const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
 
         const checkout = JSON.parse(localStorage.getItem("checkout"));
 
-        if(checkout){
+        if (checkout) {
             const _id = JSON.parse(localStorage.getItem("checkout"))?.campanha?.logo?.id;
             const _color = JSON.parse(localStorage.getItem("checkout"))?.campanha?.parceiro?.colorPrimary;
             setIdLogo(_id);
@@ -40,6 +40,27 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
     const handleToggle = () => {
         setOpen(!open);
     }
+
+    const getLogoHeaderPayment = (idLogo, logo, pathName) => {
+        const currentPath = window.location.pathname;
+
+        if (currentPath.includes("/fatura-campanha")) {
+            console.log("eae")
+            return "../Logo.png";
+        }
+
+        if (idLogo) {
+            return `${Environment.API_BASE}/sorteios/imagem/${idLogo}`;
+        }
+
+        if (logo) {
+            return pathName === "parceiro"
+                ? `${Environment.API_BASE}/sorteios/imagem/${logo}`
+                : "../Logo.png";
+        }
+
+        return pathName === "parceiro" ? "../Logo.png" : "../placeholder-image.png";
+    };
 
     const onCloseModalCampanhasCallback = () => {
 
@@ -93,7 +114,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
             ) : (
                 <div className='header'>
                     <div className='header-content'>
-                        <img src={idLogo ? Environment.API_BASE + `/sorteios/imagem/${idLogo}` : (logo) ? pathName == "parceiro" ? Environment.API_BASE + `/sorteios/imagem/${logo}` : '../Logo.png' : pathName == "parceiro" ? '../Logo.png' : '../placeholder-image.png'} width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
+                        <img src={getLogoHeaderPayment(idLogo, logo, pathName)} width={"100px"} className='header-logo' style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
                         {pathName == "/politica-privacidade" || pathName == "/termos-uso" || pathName == "/" ? (
                             <></>
                         ) : (

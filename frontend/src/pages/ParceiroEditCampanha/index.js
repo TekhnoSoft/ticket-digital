@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import FragmentView from '../../components/FragmentView';
 import SpaceBox from '../../components/SpaceBox';
 import { Button, CampanhaEditDetails, CampanhaEditImages, CampanhaEditAward, CampanhaEditEbooks, CampanhaEditInfos, CampanhaEditOptions, CampanhaEditSeo, CampanhaEditTicketWinner, Hr, CampanhaEditDescription } from '../../components';
 import './style.css';
+import Api from '../../Api';
+import Utils from '../../Utils';
 
 export default () => {
     const { campanha_id } = useParams();
-    const [abaAtiva, setAbaAtiva] = useState(1); // Definindo a aba ativa inicialmente como 1
+    const navigate = useNavigate();
+
+    const [abaAtiva, setAbaAtiva] = useState(1); 
+    const [campanha, setCampanha] = useState(null);
+
+    useEffect(() => {
+        load();
+    }, [])
+
+    const load = async () => {
+        const { success, data } = await Utils.processRequest(Api.parceiro.getCampanhaStatus, { campanha_id: campanha_id });
+        if (success) {
+            setCampanha(data);
+        }
+    }
 
     const handleClick = (abaId) => {
-        console.log(abaId);
         setAbaAtiva(abaId);
     };
 
@@ -29,16 +44,20 @@ export default () => {
     return (
         <FragmentView headerMode={"PARCEIRO"}>
             <SpaceBox space={8} />
-            <div style={{ padding: '10px', display: 'flex', alignItems: 'center' }}>
-                <div>
-                    <h2>Ative sua campanha</h2>
-                    <SpaceBox space={10} />
-                    <p>Clique no botão abaixo para ativar a sua campanha e começar a faturar com ela!</p>
-                    <SpaceBox space={10} />
-                    <Button><ion-icon name="checkmark"></ion-icon> Ativar campanha</Button>
-                </div>
-            </div>
-            <SpaceBox space={16} />
+            {campanha?.sorteio?.status == "AGUARDANDO_ATIVACAO" ? (
+                <>
+                    <div style={{ padding: '10px', display: 'flex', alignItems: 'center' }}>
+                        <div>
+                            <h2>Ative sua campanha</h2>
+                            <SpaceBox space={10} />
+                            <p>Clique no botão abaixo para ativar a sua campanha e começar a faturar com ela!</p>
+                            <SpaceBox space={10} />
+                            <Button onClick={() => {navigate(`/fatura-campanha/${campanha?.fatura?.id_remessa}`);}}><ion-icon name="checkmark"></ion-icon> Ativar campanha</Button>
+                        </div>
+                    </div>
+                    <SpaceBox space={16} />
+                </> 
+            ) : (null)}
             <ul id="abas" className="teste">
                 {['Detalhes', 'Imagens', 'Informações', 'Opções', 'Descrição', 'Ebooks', 'Cotas premiadas', 'Prêmios', 'SEO'].map((nome, index) => (
                     <li key={index}>

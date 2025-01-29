@@ -17,7 +17,7 @@ export default ({ id }) => {
     }, [])
 
     const load = async () => {
-        const { success, data } = await Utils.processRequest(Api.parceiro.getCampanhaDescriptionn, { campanha_id: id });
+        const { success, data } = await Utils.processRequest(Api.parceiro.getCampanhaDescription, { campanha_id: id });
         if (success) {
             setContent(data);
         }
@@ -46,7 +46,7 @@ export default ({ id }) => {
         let _data = window.document.getElementsByTagName('textarea')[1].value;
         let _content = sanitizeHTML(_data);
 
-        const { success, data } = await Utils.processRequest(Api.parceiro.editCampanhaDescriptionn, { campanha_id: id, content: _content }, true);
+        const { success, data } = await Utils.processRequest(Api.parceiro.editCampanhaDescription, { campanha_id: id, content: _content }, true);
         if (success) {
             Utils.notify("success", "Descrição atualizada.")
             load();
