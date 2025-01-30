@@ -244,6 +244,20 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        updatePagamentoOperadora: async ({ operadora, operadoraAccessToken, operadoraPublicKey, operadoraClientKey, operadoraSecretKey }) => {
+            return await axios.put(`${API_BASE}/users/parceiro/update-payment-provider`, { operadora, operadoraAccessToken, operadoraPublicKey, operadoraClientKey, operadoraSecretKey }, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getPagamentoOperadora: async ({}) => {
+            return await axios.get(`${API_BASE}/users/parceiro/get-payment-provider`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

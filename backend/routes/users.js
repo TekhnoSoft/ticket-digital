@@ -722,4 +722,49 @@ router.post('/parceiro/create-campanha', validateToken, async (req, res) => {
     }
 })
 
+router.put('/parceiro/update-payment-provider', validateToken, async (req, res) => {
+    const { operadora, operadoraAccessToken, operadoraPublicKey, operadoraClientKey, operadoraSecretKey } = req.body;
+    try{
+        let user_id = req.user.id;
+
+        await SorteioParceiro.update(
+            {
+                operadora,
+                operadoraAccessToken,
+                operadoraPublicKey,
+                operadoraClientKey,
+                operadoraSecretKey,
+                selecionado: true,
+            },
+            {
+                where: { user_id }
+            }
+        )
+
+        return res.status(200).json(true);
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+router.get('/parceiro/get-payment-provider', validateToken, async (req, res) => {
+    const { operadoraAccessToken, operadoraPublicKey, operadoraClientKey, operadoraSecretKey } = req.body;
+    try{
+        let user_id = req.user.id;
+
+        const sorteioParceiro = await SorteioParceiro.findOne({
+            where: {
+                user_id,
+            }
+        })
+
+        return res.status(200).json(sorteioParceiro);
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno: ' + err });
+    }
+})
+
+
 module.exports = router;

@@ -29,6 +29,18 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
         type: Sequelize.TEXT,
         allowNull: true
     },
+    operadoraPublicKey:{
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    operadoraClientKey:{
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    operadoraSecretKey:{
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
     enterprise_name: {
         type: Sequelize.TEXT,
         allowNull: true

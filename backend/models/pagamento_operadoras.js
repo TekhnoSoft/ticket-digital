@@ -33,6 +33,11 @@ const PagamentoOperadora = database.define('tb_pagamento_operadoras', {
         allowNull: false,
         defaultValue: true,
     },
+    selecionado: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
     tutorial_text:{
         type: Sequelize.TEXT,
         allowNull: true,
