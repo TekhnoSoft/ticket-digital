@@ -151,6 +151,14 @@ class Utils {
         const faixa = taxas.find(faixa => valor >= faixa.min && valor <= faixa.max);
         return faixa ? faixa.price : null;
     }
+    static convertNumberToBRL (number) {
+        let n = Number(number);
+
+        return n.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        });
+    }
 }
 
 module.exports = Utils;

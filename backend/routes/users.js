@@ -681,6 +681,8 @@ router.post('/parceiro/create-campanha', validateToken, async (req, res) => {
             data_sorteio: campanha?.data,
             minimo_cota_usuario: 5,
             maximo_cota_usuario: 25,
+            seo_title: campanha?.nome,
+            seo_description: `Participe a partir de ${Utils.convertNumberToBRL(campanha?.valor)}`
         })
 
         await Sorteio.update(
