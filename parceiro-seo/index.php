@@ -76,7 +76,7 @@ if (isset($_GET['keybind'])) {
     <body style="background: #f5f5f5">
         <div style="text-align: center; margin-top: -100px;">
             <img style="width: 100px; border-radius: 50%; border: solid 3px #fff;" src="https://api.ticketdigital.app.br/sorteios/imagem/<?php echo $seoImage; ?>" /><br/>
-            <b><?php echo $nomeParceiro; ?></b>
+            <b><?php echo $seoTitle; ?></b>
         </div>
     </body>
     <script>
