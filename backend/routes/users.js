@@ -149,6 +149,12 @@ router.post('/register', validateOrigin, async (req, res) => {
             },
         );
 
+        await SorteioParceiro.create({
+            user_id: newUser?.id,
+            taxa_cliente: 0,
+            operadora: '',
+        })
+
         return res.status(201).json(true);
     } catch (error) {
         console.log(error);

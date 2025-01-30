@@ -18,12 +18,13 @@ const SorteioParceiro = database.define('tb_sorteio_parceiros', {
     },
     operadora: {
         type: Sequelize.ENUM(
+            "",
             "ASAAS", 
             "MERCADOPAGO",
             "PAGGUE",
         ),
         allowNull: true,
-        defaultValue: "MERCADOPAGO"
+        defaultValue: ""
     },
     operadoraAccessToken: {
         type: Sequelize.TEXT,
