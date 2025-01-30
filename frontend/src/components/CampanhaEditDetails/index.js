@@ -102,7 +102,7 @@ export default ({ id }) => {
                     <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Progresso:</div>
                     <div className="progress-c">
                         <div className="progress-bar-c" style={{ width: `${((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0)}%` }}>
-                            <span className="progress-text-c">{((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0)}%</span>
+                            <span className="progress-text-c">{((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0).toFixed(2)}%</span>
                         </div>
                     </div>
                 </div>

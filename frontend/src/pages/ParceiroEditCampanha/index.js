@@ -22,6 +22,8 @@ export default () => {
         const { success, data } = await Utils.processRequest(Api.parceiro.getCampanhaStatus, { campanha_id: campanha_id });
         if (success) {
             setCampanha(data);
+        }else{
+            navigate("/parceiro");
         }
     }
 

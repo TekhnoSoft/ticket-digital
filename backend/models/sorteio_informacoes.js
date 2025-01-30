@@ -69,6 +69,14 @@ const SorteioInformacoes = database.define('tb_sorteio_informacoes', {
     anuncio_text: {
         type: Sequelize.TEXT,
         allowNull: true,
+    },
+    seo_title: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+    },
+    seo_description: {
+        type: Sequelize.TEXT,
+        allowNull: true,
     }
 });
 
