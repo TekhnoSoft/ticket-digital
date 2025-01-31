@@ -41,7 +41,7 @@ if (isset($_GET['keybind'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo $seoTitle; ?></title>
-        <meta property="og:image" content="https://campanha.ebookdasorte.com/sorteios/imagem/<?php echo $seoImage; ?>"/>
+        <meta property="og:image" content="https://api.ebookdasorte.com/sorteios/imagem/<?php echo $seoImage; ?>"/>
         <meta name="title" content="<?php echo $seoTitle; ?>">
         <meta name="description" content="<?php echo $seoDescription; ?>">
         <meta name="keywords" content="">
