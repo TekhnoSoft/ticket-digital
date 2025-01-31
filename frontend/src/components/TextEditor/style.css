@@ -4,6 +4,10 @@
     background: transparent;
 }
 
+.jodit-container{
+    background: transparent !important;
+}
+
 .jodit-container:not(.jodit_inline) {
     border: none !important;
     background: transparent;
