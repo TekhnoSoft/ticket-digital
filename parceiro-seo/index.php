@@ -100,7 +100,9 @@ if (isset($_GET['keybind'])) {
     </body>
     <script>
         let timeout = setTimeout(() => {
-            window.location = "https://ebookdasorte.com/campanha/<?php echo $keybind ?>"
+            $uri = "https://ebookdasorte.com/campanha/<?php echo $keybind ?>";
+            print($uri);
+            window.location = $uri;
         }, 1000);
     </script>
 </html>
