@@ -10,28 +10,47 @@ $seoTitle = "";
 $seoDescription = "";
 
 if (isset($_GET['keybind'])) {
-    $keybind = $_GET['keybind'];
+    try {
+        // Validação do valor de keybind
+        $keybind = trim($_GET['keybind']); // Remover espaços extras
+        if (empty($keybind)) {
+            echo "Parâmetro 'keybind' vazio.";
+            header("Location: https://api.ebookdasorte.com/");
+            exit();
+        }
 
-    $stmt = $conn->prepare("SELECT A.keybind, A.user_id, B.seo_title, B.seo_description, C.id AS id_image FROM tb_sorteios AS A INNER JOIN tb_sorteio_informacoes AS B ON A.id=B.sorteio_id LEFT JOIN tb_sorteio_imagens AS C ON C.sorteio_id=A.id WHERE C.tipo='BANNER' AND A.keybind = ?");
-    $stmt->bind_param('s', $keybind);
-    $stmt->execute();
+        // Preparação da consulta
+        $stmt = $conn->prepare("SELECT A.keybind, A.user_id, B.seo_title, B.seo_description, C.id AS id_image 
+                                FROM tb_sorteios AS A 
+                                INNER JOIN tb_sorteio_informacoes AS B ON A.id = B.sorteio_id 
+                                LEFT JOIN tb_sorteio_imagens AS C ON C.sorteio_id = A.id 
+                                WHERE C.tipo = 'BANNER' AND A.keybind = ?");
+        $stmt->bind_param('s', $keybind);
+        $stmt->execute();
 
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
 
-        $keybind = htmlspecialchars($row['keybind']);
-        $seoImage = htmlspecialchars($row['id_image']);
-        $seoTitle = htmlspecialchars($row['seo_title']);
-        $seoDescription = htmlspecialchars($row['seo_description']);
-    } else {
-        echo "Parceiro não encontrado.";
-        header("Location: https://ticketdigital.app.br");
+            $keybind = htmlspecialchars($row['keybind']);
+            $seoImage = htmlspecialchars($row['id_image']);
+            $seoTitle = htmlspecialchars($row['seo_title']);
+            $seoDescription = htmlspecialchars($row['seo_description']);
+        } else {
+            echo "Parceiro não encontrado.";
+            header("Location: https://api.ebookdasorte.com/");
+            exit(); // Importante para parar a execução após o redirecionamento
+        }
+        $stmt->close();
+    } catch (Exception $erro) {
+        echo "Erro: " . $erro->getMessage();
+        header("Location: https://api.ebookdasorte.com/");
+        exit(); // Também parar a execução após erro
     }
-    $stmt->close();
 } else {
-    echo "Parâmetro 'parceiro' não fornecido.";
-    header("Location: https://ticketdigital.app.br");
+    echo "Parâmetro 'keybind' não fornecido.";
+    header("Location: https://api.ebookdasorte.com/");
+    exit();
 }
 ?>
 
