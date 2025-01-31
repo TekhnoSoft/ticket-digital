@@ -94,7 +94,7 @@ if (isset($_GET['keybind'])) {
     </head>
     <body style="background: #f5f5f5">
         <div style="text-align: center; margin-top: -100px;">
-            <img style="width: 100px; height: 100px; object-fit: 'cover'; border-radius: 50%; border: solid 3px #fff;" src="https://api.ebookdasorte.com/sorteios/imagem/<?php echo $seoImage; ?>" /><br/>
+            <img style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: solid 3px #fff;" src="https://api.ebookdasorte.com/sorteios/imagem/<?php echo $seoImage; ?>" /><br/>
             <b><?php echo $seoTitle; ?></b>
         </div>
     </body>
