@@ -94,7 +94,7 @@ const emailThread = () => {
                                 <!-- Rodapé -->
                                 <div class="footer">
                                     <p>&copy; ${new Date().getFullYear()} Todos os direitos reservados.</p>
-                                    <p><a href="mailto:noreply@ticketdigital.app.br">não responda este e-mail</a></p>
+                                    <p><a href="mailto:noreply@ebookdasorte.com">não responda este e-mail</a></p>
                                 </div>
                             </div>
                         </body>
