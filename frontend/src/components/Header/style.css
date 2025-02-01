@@ -106,6 +106,10 @@
     background-color: rgb(223, 223, 223) !important;
 }
 
+.header-logo{
+    border-radius: 8px;
+}
+
 @media (min-width:320px) {
     .header-logo{
         width: 60px;
@@ -174,7 +178,7 @@
 
 @media (min-width:961px) {
     .header-logo{
-        width: 100px;
+        width: 60px;
     }
     .header {
         height: 80px;
@@ -196,7 +200,7 @@
 
 @media (min-width:1025px) {
     .header-logo{
-        width: 100px;
+        width: 60px;
     }
     .header {
         height: 80px;
@@ -218,7 +222,7 @@
 
 @media (min-width:1281px) {
     .header-logo{
-        width: 100px;
+        width: 60px;
     }
     .header {
         height: 80px;
