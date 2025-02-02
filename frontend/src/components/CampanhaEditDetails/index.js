@@ -53,7 +53,7 @@ export default ({ id }) => {
     return (
         <>
             <Card title={"Detalhes"} icon={<ion-icon name="timer-outline"></ion-icon>} style={{ maxWidth: '1000px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px' }}>
                     <img src={campanha?.imagens[0]?.id ? Environment.API_BASE + `/sorteios/imagem/${campanha?.imagens[0].id}` : `../placeholder-image.png`} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
                     <div>
                         <div>
