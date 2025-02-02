@@ -100,18 +100,23 @@ export default () => {
                                             }}>
                                                 <ion-icon name="eye-outline"></ion-icon> Visualizar
                                             </div>
-                                            {/*<div className="menu-item-c" onClick={(event) => {
+                                            <div className="menu-item-c" onClick={(event) => {
                                                 event.stopPropagation();
+                                                navigator.clipboard.writeText(`https://campanha.ebookdasorte.com/?keybind=${campanha?.keybind}`).then(() => {
+                                                    Utils.notify("success", "Link copiado com sucesso.");
+                                                }).catch((error) => {
+                                                    Utils.notify("error", "Erro ao copiar para o clipboard.");
+                                                });
                                             }}>
-                                                <ion-icon name="copy-outline"></ion-icon> Duplicar
-                                            </div>*/}
+                                                <ion-icon name="copy-outline"></ion-icon> Link
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 {campanha?.status == "ATIVO" || campanha?.status == "FINALIZADO" ? (
                                     <>
                                         <SpaceBox space={15} />
-                                        <label style={{fontSize: '12px', color: 'var(--text-opacity)'}}>Progresso:</label>
+                                        <label style={{ fontSize: '12px', color: 'var(--text-opacity)' }}>Progresso:</label>
                                         <div className="progress-c">
                                             <div className="progress-bar-c" style={{ width: `${campanha?.progresso || 0}%` }}>
                                                 <span className="progress-text-c">{campanha?.progresso || 0}%</span>
