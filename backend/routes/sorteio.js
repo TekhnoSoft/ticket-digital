@@ -378,7 +378,7 @@ router.get('/campanhas', validateOrigin, async (req, res) => {
                     WHERE B.sorteio_id = A.id 
                     LIMIT 1) AS id_imagem
             FROM ticketdigital.tb_sorteios AS A
-            WHERE A.status = 'ATIVO';
+            WHERE A.status = 'ATIVO' AND A.ocultar = 0;
         `;
 
         const resultados = await database.query(query, {

@@ -30,7 +30,7 @@ export default () => {
         <FragmentView headerMode={"USER"}>
             <div className='responsive-margin'>
                 <SpaceBox space={20} />
-                <h2 className='text-opacity'>Campanhas ativas ({campanhas?.length || 0})</h2>
+                <h2 className='text-opacity'>Catálogo de ebooks</h2>
                 <SpaceBox space={20} />
                 {!loaded ? (
                     <>
@@ -42,7 +42,7 @@ export default () => {
                 {loaded && campanhas?.length <= 0 ? (
                     <>
                         <SpaceBox space={10} />
-                        <center><b>Não há campanhas ativas no momento :(</b></center>
+                        <center><b>Não há ebooks no momento :(</b></center>
                         <SpaceBox space={10} />
                     </>
                 ) : (null)}

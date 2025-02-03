@@ -60,6 +60,11 @@ const Sorteio = database.define('tb_sorteios', {
         allowNull: true,
         defaultValue: "BILHETE"
     },
+    ocultar:{
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+    },
     user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
