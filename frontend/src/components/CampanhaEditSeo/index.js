@@ -28,7 +28,11 @@ export default ({ id }) => {
             setTitle(data?.seo_title);
             setDescription(data?.seo_description);
             setKeybind(data?.link);
-            setImg(Environment.API_BASE + `/sorteios/imagem/${data?.id_image}`)
+            if(data?.id_image){
+                setImg(Environment.API_BASE + `/sorteios/imagem/${data?.id_image}`)
+            }else{
+                setImg('../placeholder-image.png');
+            }
         }
         setLoaded(true);
     }
