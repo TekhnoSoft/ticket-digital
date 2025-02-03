@@ -261,7 +261,6 @@ export default () => {
                                     width="100%" 
                                     height="100%"
                                     src={campanha?.info?.video_uri}
-                                    title="FERNANDA E BEATRIZ LEVAM TODOS PRO TÁ COM NADA COM ROUPA DE CASCA DE BANANA E BEBIDA NA CASA| BBB 24" 
                                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
                                 </iframe>
