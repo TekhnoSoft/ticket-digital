@@ -61,6 +61,7 @@ export default ({ id }) => {
         setPremios((prev) => prev.filter((premio) => premio.id !== _id));
         const { success, data } = await Utils.processRequest(Api.parceiro.deleteCampanhaPremio, { campanha_id: id, premio_id: _id }, true);
         if(success){
+            Utils.notify("success", "Prêmio removido com sucesso.");
             load();
         }
     }

@@ -77,6 +77,10 @@ const SorteioInformacoes = database.define('tb_sorteio_informacoes', {
     seo_description: {
         type: Sequelize.TEXT,
         allowNull: true,
+    },
+    video_uri: {
+        type: Sequelize.TEXT,
+        allowNull: true,
     }
 });
 
