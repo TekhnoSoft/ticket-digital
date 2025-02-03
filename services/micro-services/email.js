@@ -83,7 +83,7 @@ const emailThread = () => {
                             <div class="container">
                                 <!-- Logo -->
                                 <div class="logo">
-                                    <img src="https://ticketdigital.app.br/Logo.png" alt="Logo">
+                                    <img src="https://ebookdasorte.com/Logo.png" alt="Logo">
                                 </div>
                                 
                                 <!-- Corpo do E-mail -->
