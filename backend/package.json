@@ -17,6 +17,7 @@
     "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "image-size": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mercadopago": "^2.2.0",
     "moment-timezone": "^0.5.46",
@@ -25,7 +26,6 @@
     "node-cron": "^3.0.3",
     "nodemon": "^3.1.9",
     "redis": "^4.7.0",
-    "sequelize": "^6.37.5",
-    "sharp": "^0.33.5"
+    "sequelize": "^6.37.5"
   }
 }

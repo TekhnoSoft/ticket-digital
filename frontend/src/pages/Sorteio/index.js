@@ -168,6 +168,11 @@ export default () => {
     }
 
     const handleParticipe = () => {
+        if(campanha?.status != "ATIVO"){
+            Utils.notify("error", "Esta campanha não está ativa.");
+            return;
+        }
+
         switch (viewMode) {
             case "USUARIO_ESCOLHE":
                 if (numeros?.length < campanha?.info?.minimo_cota_usuario) {

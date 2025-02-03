@@ -33,7 +33,7 @@ const upload = multer({
     }
 });
 
-const sharp = require('sharp');
+const sizeOf = require('image-size');
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
     const { id_remessa } = req.params;
@@ -660,15 +660,12 @@ router.put('/campanha/save-images', validateToken, upload.array('images[]'), asy
         const savedImages = [];
 
         for (const file of files) {
-            const compressedBuffer = await sharp(file.buffer)
-                .resize(800)
-                .jpeg({ quality: 80 })
-                .toBuffer();
+            const dimensions = sizeOf(file.buffer);
 
             const imageRecord = await SorteioImagens.create({
                 sorteio_id: campanha_id,
                 tipo: 'BANNER',
-                payload: compressedBuffer,
+                payload: file.buffer,
             });
             savedImages.push(imageRecord);
         }
