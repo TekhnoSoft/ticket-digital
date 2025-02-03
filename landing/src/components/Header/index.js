@@ -41,7 +41,7 @@ const HeaderMobile = () => {
                 <div className="header-container">
                     <div className="header-container-child-1">
                         <a className='header-container-logo'>
-                            <img src='../favicon.ico' width="70px"/>    
+                            <img src='../new_favicon.ico' width="70px"/>    
                         </a>
                         <div className='menu-button-btn'>
                             <ion-icon name="reorder-three-outline" style={{color: 'gray'}} size={"large"}></ion-icon>
