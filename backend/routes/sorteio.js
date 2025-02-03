@@ -33,6 +33,8 @@ const upload = multer({
     }
 });
 
+const sharp = require('sharp');
+
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
     const { id_remessa } = req.params;
     try {
@@ -658,10 +660,15 @@ router.put('/campanha/save-images', validateToken, upload.array('images[]'), asy
         const savedImages = [];
 
         for (const file of files) {
+            const compressedBuffer = await sharp(file.buffer)
+                .resize(800)
+                .jpeg({ quality: 80 })
+                .toBuffer();
+
             const imageRecord = await SorteioImagens.create({
                 sorteio_id: campanha_id,
                 tipo: 'BANNER',
-                payload: file.buffer,
+                payload: compressedBuffer,
             });
             savedImages.push(imageRecord);
         }
@@ -702,5 +709,78 @@ router.delete('/campanha/:campanha_id/delete-image/:image_id', validateToken, as
         return res.status(500).json({ error: 'Erro ao processar a exclusão da imagem. Tente novamente.' });
     }
 });
+
+router.get('/campanha/seo/:campanha_id', validateToken, async (req, res) => {
+    const { campanha_id } = req.params;
+    try{
+
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({
+            where: { 
+                id: campanha_id,
+                user_id: user_id,
+            },
+            attributes: ['keybind']
+        })
+
+        if (!sorteio) {
+            return res.status(404).json({ message: "Essa campanha não pertence ao usuário." });
+        }
+
+        const sorteioInformacoes = await SorteioInformacoes.findOne({
+            attributes: ['seo_title', 'seo_description', 'link'],
+            where: {
+                sorteio_id: campanha_id
+            }
+        })
+
+        const image = await SorteioImagens.findOne({
+            where: { sorteio_id: campanha_id, tipo: 'BANNER'},
+            attributes: ['id']
+        })
+
+        let obj = {
+            seo_title: sorteioInformacoes?.seo_title,
+            seo_description: sorteioInformacoes?.seo_description,
+            link: sorteio?.keybind,
+            id_image: image?.id,
+        }
+
+        return res.status(200).json(obj);
+
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.put('/campanha/update-seo', validateToken, async (req, res) => {
+    const {campanha_id, title, description} = req.body;
+    try{
+
+        if(!campanha_id || !title || !description){
+            return res.status(404).json({ message: "Sorteio não encontrado." });
+        }
+
+        await SorteioInformacoes.update(
+            {
+                seo_title: title,
+                seo_description: description,
+            },
+            {
+                where: {
+                    sorteio_id: campanha_id
+                }
+            }
+        )
+
+        return res.status(200).json(true);
+
+    }catch (err) {
+        console.error(err);
+        return res.status(500).json(err);
+    }
+})
 
 module.exports = router;

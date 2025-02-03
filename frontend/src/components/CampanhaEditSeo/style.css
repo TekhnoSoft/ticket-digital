@@ -1,0 +1,152 @@
+.whatsapp-content{
+    max-width: 512px;
+    border: 1px solid rgb(209, 213, 219);
+    background-color: rgb(208, 254, 207);
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.whatsapp-content-image{
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.whatsapp-content-image img {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    height: auto;
+    object-fit: cover;
+}
+
+.whatsapp-content-text{
+    position: relative;
+    padding: 10px 12px;
+    background-color: rgb(206, 244, 203);
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.whatsapp-content-text-title{
+    position: relative;
+    display: block;
+    color: rgb(48, 58, 49);
+    line-height: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.whatsapp-content-text-description{
+    position: relative;
+    display: block;
+    color: rgb(122, 146, 122);
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.whatsapp-content-text-link{
+    position: relative;
+    display: block;
+    color: rgb(122, 146, 122);
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 300;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.whatsapp-content-text-link-bottom{
+    position: relative;
+    display: block;
+    color: rgb(27, 135, 85);
+    padding: 8px;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: underline;
+}
+
+.facebook-content{
+    max-width: 518px;
+    width: 100%;
+    border: 1px solid rgb(229, 231, 235);
+}
+
+.facebook-content-div{
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: #fafafa;
+}
+
+.facebook-content-div img{
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    height: auto;
+    object-fit: cover;
+}
+
+.facebook-content-text{
+    padding: 10px 12px;
+    background-color: rgb(242, 243, 245);
+}
+
+.facebook-content-link{
+    position: relative;
+    display: block;
+    color: rgb(96, 103, 112);
+    line-height: 11px;
+    text-transform: uppercase;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: Helvetica;
+}
+
+.facebook-content-title{
+    position: relative;
+    display: block;
+    color: rgb(29, 33, 41);
+    line-height: 20px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: Helvetica;
+}
+
+.facebook-content-description{
+    position: relative;
+    display: block;
+    color: rgb(96, 103, 112);
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 3px;
+    font-family: Helvetica;
+}

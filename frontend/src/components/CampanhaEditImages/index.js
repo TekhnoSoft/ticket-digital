@@ -6,6 +6,7 @@ import Hr from '../Hr';
 import Api from '../../Api';
 import Utils from '../../Utils';
 import Button from '../Button';
+import Modal from '../Modal';
 
 export default ({ id }) => {
 
@@ -14,6 +15,8 @@ export default ({ id }) => {
     const [loaded, setLoaded] = useState(false);
     const [images, setImages] = useState([]);
     const [showButtonLoader, setShowButtonLoader] = useState(false);
+    const [modalPreview, setModalPreview] = useState(false);
+    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
         load();
@@ -102,8 +105,20 @@ export default ({ id }) => {
         }
     }
 
+    const handlePreview = (src) => {
+        setPreview(src);
+        setModalPreview(true);
+    }
+
+    const onCloseModalPreviewCallback = () => {
+        setPreview(null);
+    }
+
     return (
         <>
+            <Modal setShow={setModalPreview} show={modalPreview} onCloseCallback={onCloseModalPreviewCallback}>
+                <img src={preview} style={{width: '100%'}}/>
+            </Modal>
             <Card title={"Imagens"} icon={<ion-icon name="image-outline"></ion-icon>} style={{ maxWidth: '1000px' }}>
                 <SpaceBox space={10} />
 
@@ -132,7 +147,7 @@ export default ({ id }) => {
                                     margin: '0 auto'
                                 }}>
                                     +
-                                    <input type="file" capture accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
                                 </label>
                                 {images.map((src, index) => (
                                     <div key={index} style={{
@@ -143,7 +158,7 @@ export default ({ id }) => {
                                         overflow: 'hidden',
                                         margin: '0 auto'
                                     }}>
-                                        <img src={src?.image} alt={`image-${src?.id}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <img src={src?.image} onClick={() => {handlePreview(src?.image)}} alt={`image-${src?.id}`} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} />
                                         <button onClick={() => removeImage(src?.id)} style={{
                                             position: 'absolute',
                                             top: '5px',
@@ -184,7 +199,7 @@ export default ({ id }) => {
                                     margin: '0 auto'
                                 }}>
                                     +
-                                    <input type="file" capture accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
                                 </label>
                             </div>
                         </>

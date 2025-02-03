@@ -293,6 +293,20 @@ const Api = {
             }catch (err) {
                 return err;
             }
+        },
+        getCampanhaSeo: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/seo/${campanha_id}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        updateCampanhaSeo: async ({ campanha_id, title, description }) => {
+            return await axios.put(`${API_BASE}/sorteios/campanha/update-seo`, {campanha_id, title, description}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
