@@ -266,6 +266,15 @@ const Utils = {
                 .replace(/\./g, '')  // Remove os pontos dos milhares
                 .replace(',', '.')   // Substitui a vírgula decimal por ponto
         ) || 0;
+    },
+    makeid: (length = 50) => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const charactersLength = characters.length;
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 }
 

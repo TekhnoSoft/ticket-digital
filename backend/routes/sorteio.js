@@ -19,6 +19,20 @@ const { validateToken } = require('../middlewares/AuthMiddleware');
 const PagamentoOperadora = require('../models/pagamento_operadoras');
 require('dotenv').config();
 
+const multer = require('multer');
+const upload = multer({
+    storage: multer.memoryStorage(), // Store files in memory as buffers
+    limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);  // Accept the file
+        } else {
+            cb(new Error('Formato de arquivo não permitido. Aceitos: PNG, JPG, JPEG.'));
+        }
+    }
+});
+
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
     const { id_remessa } = req.params;
     try {
@@ -613,6 +627,79 @@ router.get('/campanha/payment-providers', validateToken, async (req, res) => {
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
+    }
+});
+
+router.get('/campanha/images/:campanha_id', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+    try{
+        const images = await SorteioImagens.findAll({
+            where: { 
+                sorteio_id: campanha_id,
+                tipo: 'BANNER'
+            }
+        })
+        return res.status(200).json(images);
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.put('/campanha/save-images', validateToken, upload.array('images[]'), async (req, res) => {
+    try {
+        const { campanha_id } = req.body;
+        const files = req.files;
+
+        if (!files || files.length === 0) {
+            return res.status(400).json({ error: 'Nenhuma imagem foi enviada.' });
+        }
+
+        const savedImages = [];
+
+        for (const file of files) {
+            const imageRecord = await SorteioImagens.create({
+                sorteio_id: campanha_id,
+                tipo: 'BANNER',
+                payload: file.buffer,
+            });
+            savedImages.push(imageRecord);
+        }
+
+        return res.status(200).json({ success: true, data: savedImages });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao processar as imagens. Tente novamente.' });
+    }
+});
+
+router.delete('/campanha/:campanha_id/delete-image/:image_id', validateToken, async (req, res) => {
+    const { campanha_id, image_id } = req.params;
+
+    try {
+
+        const image = await SorteioImagens.findOne({
+            where: {
+                id: image_id,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        if (!image) {
+            return res.status(404).json({ error: 'Imagem não encontrada ou não pertence a esta campanha.' });
+        }
+
+        await SorteioImagens.destroy({
+            where: {
+                id: image_id,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        return res.status(200).json(true);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao processar a exclusão da imagem. Tente novamente.' });
     }
 });
 

@@ -258,6 +258,41 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getCampanhaImages: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/images/${campanha_id}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        saveSorteioImages: async ({ formData }) => {
+            try {
+                const response = await axios.put(
+                    `${API_BASE}/sorteios/campanha/save-images`,
+                    formData,
+                    { 
+                        headers: {
+                            ...Environment.HEADERS.headers,
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                return response.data;
+            } catch (err) {
+                return err;
+            }
+        },
+        removeSorteioImages: async ({ campanha_id, image_id }) => {
+            try{
+                return await axios.delete(`${API_BASE}/sorteios/campanha/${campanha_id}/delete-image/${image_id}`, Environment.HEADERS).then(async (response) => {
+                    return await response;
+                }).catch(err => {
+                    return err;
+                });
+            }catch (err) {
+                return err;
+            }
         }
     }
 }
