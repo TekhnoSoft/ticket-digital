@@ -14,6 +14,7 @@ const SorteioInformacoes = require('../models/sorteio_informacoes');
 const { createFatura } = require('../providers/fatura_provider');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const SorteioParceiro = require('../models/sorteio_parceiro');
+const SorteioPremio = require('../models/sorteio_premio');
 const EmailFila = require('../models/email_fila');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const PagamentoOperadora = require('../models/pagamento_operadoras');
@@ -65,7 +66,7 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             where: { id: sorteio.sorteio_regras_id },
         });
         const sorteioImagens = await SorteioImagens.findAll({
-            where: { sorteio_id: sorteio.id },
+            where: { sorteio_id: sorteio.id, tipo: 'BANNER' },
             attributes: ['id']
         });
         const sorteioImagemLogo = await SorteioImagens.findOne({
@@ -779,5 +780,107 @@ router.put('/campanha/update-seo', validateToken, async (req, res) => {
         return res.status(500).json(err);
     }
 })
+
+
+router.get('/campanha/premios/:campanha_id', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+    try{
+        const premios = await SorteioPremio.findAll({
+            where: { 
+                sorteio_id: campanha_id,
+            }
+        })
+        return res.status(200).json(premios);
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.delete('/campanha/:campanha_id/premio-delete/:premio_id', validateToken, async (req, res) => {
+    let { campanha_id, premio_id } = req.params;
+    try {
+        const premio = await SorteioPremio.findOne({
+            where: { 
+                id: premio_id,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        if (!premio) {
+            return res.status(404).json({ message: "Prêmio não encontrado." });
+        }
+
+        if (premio?.bilhete_id || premio?.ganhador_id) {
+            return res.status(404).json({ message: "Esse prêmio não pode ser removido, pois o mesmo já foi contemplado." });
+        }
+
+        await SorteioPremio.destroy({
+            where: {
+                id: premio_id,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        const premiosSubsequentes = await SorteioPremio.findAll({
+            where: {
+                sorteio_id: campanha_id,
+                colocacao: { [Op.gt]: premio.colocacao }
+            },
+            order: [['colocacao', 'ASC']]
+        });
+
+        for (let i = 0; i < premiosSubsequentes.length; i++) {
+            const premioSubsequente = premiosSubsequentes[i];
+            await SorteioPremio.update(
+                { colocacao: premioSubsequente.colocacao - 1 },
+                { where: { id: premioSubsequente.id } }
+            );
+        }
+
+        return res.status(200).json(true);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
+
+router.post('/campanha/premio-create', validateToken, async (req, res) => {
+    const { campanha_id, premio } = req.body;
+    try {
+        if (!campanha_id || !premio) {
+            return res.status(404).json({ message: "Dados inválidos." });
+        }
+
+        const premios = await SorteioPremio.findAll({
+            where: { sorteio_id: campanha_id },
+            order: [['colocacao', 'ASC']]
+        });
+
+        let colocacao = premios.length + 1;
+
+        for (let i = 0; i < premios.length; i++) {
+            const premioAtual = premios[i];
+            if (premioAtual.colocacao !== i + 1) {
+                await SorteioPremio.update(
+                    { colocacao: i + 1 },
+                    { where: { id: premioAtual.id } }
+                );
+            }
+        }
+
+        await SorteioPremio.create({
+            name: premio?.name,
+            description: premio?.description,
+            sorteio_id: campanha_id,
+            colocacao: colocacao,
+        });
+
+        return res.status(200).json(true);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
 
 module.exports = router;

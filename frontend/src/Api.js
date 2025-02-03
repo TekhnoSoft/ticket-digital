@@ -307,6 +307,27 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getCampanhaPremios: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/premios/${campanha_id}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        deleteCampanhaPremio: async ({ campanha_id, premio_id }) => {
+            return await axios.delete(`${API_BASE}/sorteios/campanha/${campanha_id}/premio-delete/${premio_id}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        newCampanhaPremio: async ({ campanha_id, premio }) => {
+            return await axios.post(`${API_BASE}/sorteios/campanha/premio-create`, {campanha_id, premio}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
