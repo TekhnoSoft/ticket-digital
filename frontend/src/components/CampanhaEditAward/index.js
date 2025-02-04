@@ -7,6 +7,7 @@ import Input from '../Input';
 import Utils from '../../Utils';
 import Button from '../Button';
 import Api from '../../Api';
+import ModalConfirm from '../ModalConfirm';
 
 export default ({ id }) => {
 
@@ -16,6 +17,8 @@ export default ({ id }) => {
     const [premios, setPremios] = useState([]);
     const [tituloPremio, setTituloPremio] = useState("");
     const [descricaoPremio, setDescricaoPremio] = useState("");
+    const [showModalDeletePremio, setShowModalDeletePremio] = useState(false);
+    const [selectedPremio, setSelectedPremio] = useState(null);
 
     useEffect(() => {
         load();
@@ -44,9 +47,9 @@ export default ({ id }) => {
             return;
         }
 
-        const { success, data } = await Utils.processRequest(Api.parceiro.newCampanhaPremio, { campanha_id: id, premio: {name: novoPremio?.name, description: novoPremio?.description} }, true);
-        
-        if(success){
+        const { success, data } = await Utils.processRequest(Api.parceiro.newCampanhaPremio, { campanha_id: id, premio: { name: novoPremio?.name, description: novoPremio?.description } }, true);
+
+        if (success) {
             Utils.notify("success", "Prêmio adicionado com sucesso.");
             load();
         }
@@ -58,11 +61,24 @@ export default ({ id }) => {
     }
 
     const handleRemove = async (_id) => {
-        setPremios((prev) => prev.filter((premio) => premio.id !== _id));
-        const { success, data } = await Utils.processRequest(Api.parceiro.deleteCampanhaPremio, { campanha_id: id, premio_id: _id }, true);
-        if(success){
+        let _premio = premios.filter(p => {return p.id == _id})[0];
+        setShowModalDeletePremio(true);
+        setSelectedPremio(_premio);
+    }
+
+    const onCancelPremioDelete = () => {
+        setShowModalDeletePremio(false);
+        setSelectedPremio(null);
+    }
+
+    const onConfirmPremioDelete = async () => {
+        setPremios((prev) => prev.filter((premio) => premio.id !== selectedPremio?.id));
+        setShowModalDeletePremio(false);
+        const { success, data } = await Utils.processRequest(Api.parceiro.deleteCampanhaPremio, { campanha_id: id, premio_id: selectedPremio?.id }, true);
+        if (success) {
             Utils.notify("success", "Prêmio removido com sucesso.");
             load();
+            onCancelPremioDelete();
         }
     }
 
@@ -83,9 +99,16 @@ export default ({ id }) => {
                     <Button style={{ width: '100%' }} onClick={() => handleAdd({ id: Date.now(), name: tituloPremio, description: descricaoPremio })}>Adicionar</Button>
                 </div>
             </Modal>
-
-            <div style={{ width: '100%', textAlign: premios?.length > 0 ? 'left' : 'center', maxWidth: '1000px'}}>
-                <SpaceBox space={20} />
+            <ModalConfirm setShow={setShowModalDeletePremio} show={showModalDeletePremio} onCancel={onCancelPremioDelete} onConfirm={onConfirmPremioDelete}>
+                <div className="card-header">
+                    <div className="icon-circle">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </div>
+                    <b>Confirmar remoção do prêmio?</b>
+                </div>
+            </ModalConfirm>
+            <div style={{ width: '100%', textAlign: premios?.length > 0 ? 'left' : 'center', maxWidth: '1000px' }}>
+                <SpaceBox space={premios?.length <= 0 ? 20 : 0} />
                 <h2>Prêmio(s)</h2>
                 <span style={{ color: 'var(--text-opacity)', fontSize: '14px' }}>Insira um ou mais prêmios que os ganhadores serão contemplados:</span>
                 {premios?.length <= 0 ? (

@@ -35,6 +35,7 @@ const upload = multer({
 });
 
 const sizeOf = require('image-size');
+const BilhetePremiado = require('../models/bilhete_premiado');
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
     const { id_remessa } = req.params;
@@ -889,5 +890,150 @@ router.post('/campanha/premio-create', validateToken, async (req, res) => {
         return res.status(500).json(err);
     }
 });
+
+router.get('/campanha/:campanha_id/cotas-premiadas', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+    try{
+
+        const query = `
+            SELECT 
+                A.id,
+                A.name,
+                A.numero,
+                D.valor,
+                S.prazo_compra,
+                U.name AS winner
+            FROM tb_bilhete_premiados AS A 
+            LEFT JOIN tb_sorteios AS C ON A.sorteio_id = C.id
+            LEFT JOIN tb_sorteio_regras AS D ON C.sorteio_regras_id = D.id
+            LEFT JOIN tb_bilhetes AS S ON A.numero=S.numero AND A.sorteio_id=S.sorteio_id
+            left JOIN tb_users AS U ON U.id=S.user_id
+            WHERE A.sorteio_id = :sorteio_id;
+
+        `;
+
+        const resultados = await database.query(query, {
+            replacements: {
+                sorteio_id: campanha_id,
+            },
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const cotas = [];
+
+        resultados.forEach((row) => {
+            let obj = {
+                id: row.id,
+                name: row.name,
+                numero: row.numero,
+                valor: row.valor,
+                winner: row?.winner,
+                data_compra: row?.prazo_compra
+            }
+            cotas.push(obj);
+        })
+
+        return res.status(200).json(cotas);
+
+
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.post('/campanha/save-cotas-premiadas', validateToken, async (req, res) => {
+    const { campanha_id, numero, premio } = req.body;
+    try{
+
+        if(!campanha_id || !numero || !premio){
+            return res.status(404).json({ message: "Dados inválidos." });
+        }
+
+
+        const has = await Bilhete.findOne({
+            where:{
+                sorteio_id: campanha_id,
+                numero: numero,
+            }
+        })
+
+        if(has){
+            return res.status(404).json({ message: "Não é possível vincular a premiação em uma cota já paga." });
+        }
+
+        const sorteio = await Sorteio.findOne({
+            where: {
+                id: campanha_id,
+            },
+            attributes: ['id', 'sorteio_regras_id']
+        })
+
+        const regra = await SorteioRegras.findOne({
+            where:{
+                id: sorteio?.sorteio_regras_id
+            }
+        })
+
+        if(Number(numero) > regra?.valor){
+            return res.status(404).json({ message: `O limite máximo dessa campanha é ${regra?.valor} cotas.` });
+        }
+
+        if(Number(numero) < 0){
+            return res.status(404).json({ message: `O limite mínimo dessa campanha não pode ser menor que 0.` });
+        }
+
+        const exists = await BilhetePremiado.findOne({
+            where: {
+                sorteio_id: campanha_id,
+                numero: numero,
+            }
+        })
+
+        if(exists){
+            return res.status(404).json({ message: "Já existe uma cota premiada com esse número." });
+        }
+
+        await BilhetePremiado.create({
+            name: premio,
+            numero: numero,
+            sorteio_id: campanha_id,
+        })
+
+        return res.status(201).json(true);
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.delete('/campanha/:campanha_id/cota-premiada-delete/:cota_id/:numero', validateToken, async (req, res) => {
+    let { campanha_id, cota_id, numero } = req.params;
+    try{
+
+        const hasWinner = await Bilhete.findOne({
+            where:{
+                sorteio_id: campanha_id,
+                numero: numero,
+            }
+        })
+
+        if(hasWinner){
+            return res.status(404).json({ message: "Não é possível excluir uma cota já contemplada." });
+        }
+
+        await BilhetePremiado.destroy({
+            where: {
+                id: cota_id,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        return res.status(200).json(true);
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
 
 module.exports = router;

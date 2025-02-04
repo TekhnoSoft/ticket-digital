@@ -328,6 +328,27 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getCotasPremiadas: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/cotas-premiadas`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        saveCotaPremiada: async ({ campanha_id, numero, premio }) => {
+            return await axios.post(`${API_BASE}/sorteios/campanha/save-cotas-premiadas`, {campanha_id, numero, premio}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        deleteCampanhaCotaPremiada: async ({ campanha_id, cota_id, numero }) => {
+            return await axios.delete(`${API_BASE}/sorteios/campanha/${campanha_id}/cota-premiada-delete/${cota_id}/${numero}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }
