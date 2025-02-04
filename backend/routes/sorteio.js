@@ -77,6 +77,12 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             where: { user_id: sorteio.user_id },
             attributes: ['whatsappLink', 'facebookLink', 'youtubeLink', 'instagramLink', 'tiktokLink', 'telegramLink', 'enterprise_name', 'colorPrimary']
         });
+        const bilhetesPagos = await Bilhete.count({
+            where: {
+                sorteio_id: sorteio?.id,
+                status: 'PAGO',
+            }
+        })
 
         if (sorteioInformacoes) {
             const sorteioPlano = sorteio.toJSON();
@@ -85,6 +91,7 @@ router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
             sorteioPlano.regra = sorteioRegras[0];
             sorteioPlano.parceiro = sorteioParceiro;
             sorteioPlano.logo = sorteioImagemLogo;
+            sorteioPlano.pagos = bilhetesPagos;
 
             return res.status(200).json(sorteioPlano);
         } else {

@@ -257,11 +257,11 @@ export default () => {
 
                         {campanha?.info?.video_uri ? (
                             <div className='image-slide'>
-                                <iframe 
-                                    width="100%" 
+                                <iframe
+                                    width="100%"
                                     height="100%"
                                     src={campanha?.info?.video_uri}
-                                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
                                 </iframe>
                             </div>
@@ -288,13 +288,17 @@ export default () => {
                         {loaded ? campanha?.name?.toLocaleUpperCase() || '...' : '...'}
                     </b>
                     <SpaceBox space={8} />
-                    <div className='info-oferta' style={{ display: 'flex', alignItems: 'center' }}>
-                        <label className='text-opacity'>Por apenas</label>&nbsp;&nbsp;
-                        <div style={{ background: 'var(--primary-color)', borderRadius: '4px', padding: '4px 8px' }}>
-                            <b className='oferta-valor text-opacity' style={{ color: 'white' }}>{loaded ? Utils.convertNumberToBRL(campanha?.valor_por_bilhete) : 0}</b>
-                        </div>
-                    </div>
-                    <SpaceBox space={15} />
+                    {loaded ? (
+                        <>
+                            <div className='info-oferta' style={{ display: loaded ? 'flex' : 'none', alignItems: 'center' }}>
+                                <label className='text-opacity'>Por apenas</label>&nbsp;&nbsp;
+                                <div style={{ background: 'var(--primary-color)', borderRadius: '4px', padding: '4px 8px' }}>
+                                    <b className='oferta-valor text-opacity' style={{ color: 'white' }}>{loaded ? Utils.convertNumberToBRL(campanha?.valor_por_bilhete) : 0}</b>
+                                </div>
+                            </div>
+                            <SpaceBox space={15} />
+                        </>
+                    ) : (null)}
                     {loaded && !Utils.stringIsNullOrEmpty(campanha?.info?.data_sorteio) ? (
                         <>
                             <Hr elevation={1} />
@@ -304,48 +308,69 @@ export default () => {
                             <Countdown data_sorteio={campanha?.info?.data_sorteio} />
                         </>
                     ) : (null)}
-                    <SpaceBox space={15} />
-                    <Hr elevation={1} />
-                    <SpaceBox space={15} />
-                    <label className='text-opacity'>Redes sociais:</label>&nbsp;&nbsp;
-                    <SpaceBox space={4} />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.whatsappLink) && (
-                            <div onClick={() => { window.open(campanha?.parceiro?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
-                                <ion-icon name="logo-whatsapp"></ion-icon>
+                    {loaded && campanha?.info?.show_progress ? (
+                        <>
+                            <SpaceBox space={15} />
+                            <Hr elevation={1} />
+                            <SpaceBox space={15} />
+                            <div style={{}}>
+                                <span className='text-opacity'>Progresso: <label style={{ fontSize: '12px', fontWeight: 'bold' }}>{((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0).toFixed(2)}%</label></span>&nbsp;&nbsp;
+                                <SpaceBox space={4} />
+                                <div className="progress-c">
+                                    <div className="progress-bar-c" style={{ width: `${((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0)}%` }}>
+                                        <span className="progress-text-c">{((Number(campanha?.pagos) / Number(campanha?.regra?.valor)) * 100 || 0).toFixed(2)}%</span>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        </>
+                    ) : (null)}
 
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.facebookLink) && (
-                            <div onClick={() => { window.open(campanha?.parceiro?.facebookLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
-                                <ion-icon name="logo-facebook"></ion-icon>
-                            </div>
-                        )}
+                    {loaded ? (
+                        <>
+                            <SpaceBox space={15} />
+                            <Hr elevation={1} />
+                            <SpaceBox space={15} />
+                            <label className='text-opacity'>Redes sociais:</label>&nbsp;&nbsp;
+                            <SpaceBox space={4} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.whatsappLink) && (
+                                    <div onClick={() => { window.open(campanha?.parceiro?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(30, 195, 92)', color: 'white' }}>
+                                        <ion-icon name="logo-whatsapp"></ion-icon>
+                                    </div>
+                                )}
 
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.youtubeLink) && (
-                            <div onClick={() => { window.open(campanha?.parceiro?.youtubeLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
-                                <ion-icon name="logo-youtube"></ion-icon>
-                            </div>
-                        )}
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.facebookLink) && (
+                                    <div onClick={() => { window.open(campanha?.parceiro?.facebookLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(24, 119, 242)', color: 'white' }}>
+                                        <ion-icon name="logo-facebook"></ion-icon>
+                                    </div>
+                                )}
 
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.instagramLink) && (
-                            <div onClick={() => { window.open(campanha?.parceiro?.instagramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
-                                <ion-icon name="logo-instagram"></ion-icon>
-                            </div>
-                        )}
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.youtubeLink) && (
+                                    <div onClick={() => { window.open(campanha?.parceiro?.youtubeLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'red', color: 'white' }}>
+                                        <ion-icon name="logo-youtube"></ion-icon>
+                                    </div>
+                                )}
 
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.tiktokLink) && (
-                            <div onClick={() => { window.open(campanha?.tiktokLink?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
-                                <ion-icon name="logo-tiktok"></ion-icon>
-                            </div>
-                        )}
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.instagramLink) && (
+                                    <div onClick={() => { window.open(campanha?.parceiro?.instagramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(45deg, #feda75, #d62d2f, #962fbf, #4f5bd5, #00bfff)', color: 'white' }}>
+                                        <ion-icon name="logo-instagram"></ion-icon>
+                                    </div>
+                                )}
 
-                        {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.telegramLink) && (
-                            <div onClick={() => { window.open(campanha?.parceiro?.telegramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0, 136, 204)', color: 'white' }}>
-                                <ion-icon name="paper-plane"></ion-icon>
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.tiktokLink) && (
+                                    <div onClick={() => { window.open(campanha?.tiktokLink?.whatsappLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', color: 'white' }}>
+                                        <ion-icon name="logo-tiktok"></ion-icon>
+                                    </div>
+                                )}
+
+                                {!Utils.stringIsNullOrEmpty(campanha?.parceiro?.telegramLink) && (
+                                    <div onClick={() => { window.open(campanha?.parceiro?.telegramLink, 'blank') }} style={{ cursor: 'pointer', width: '38px', height: '38px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0, 136, 204)', color: 'white' }}>
+                                        <ion-icon name="paper-plane"></ion-icon>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </>
+                    ) : (null)}
                 </Card>
                 <SpaceBox space={30} />
                 <div className='title-bilhetes'>

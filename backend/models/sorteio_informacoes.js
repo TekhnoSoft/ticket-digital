@@ -81,6 +81,11 @@ const SorteioInformacoes = database.define('tb_sorteio_informacoes', {
     video_uri: {
         type: Sequelize.TEXT,
         allowNull: true,
+    },
+    show_progress: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
     }
 });
 
