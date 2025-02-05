@@ -17,6 +17,10 @@ export default ({ id }) => {
     const [premio, setPremio] = useState("");
     const [showButtonLoader, setShowButtonLoader] = useState(false);
     const [showModalDeleteCota, setShowModalDeleteCota] = useState(false);
+    const [showModalModoCota, setShowModalModoCota] = useState(false);
+    const [showModalCotasRandom, setShowModalCotasRandom] = useState(false);
+    const [showModalNumeroAleatorio, setShowModalNumeroAleatorio] = useState(false);
+    const [numeroAleatorio, setNumeroAleatorio] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
@@ -33,12 +37,12 @@ export default ({ id }) => {
     }
 
     const getStatusProps = (winner) => {
-        if(winner){
+        if (winner) {
             return {
                 status: "finalizado",
                 text: "Indisponível"
             }
-        }else{
+        } else {
             return {
                 status: "pago",
                 text: "Disponível"
@@ -56,11 +60,13 @@ export default ({ id }) => {
 
         if (Utils.stringIsNullOrEmpty(numero)) {
             Utils.notify("error", "Informe o numero da cota.");
+            setShowButtonLoader(false);
             return;
         }
 
         if (Utils.stringIsNullOrEmpty(premio)) {
             Utils.notify("error", "Informe o nome do prêmio.");
+            setShowButtonLoader(false);
             return;
         }
 
@@ -69,6 +75,29 @@ export default ({ id }) => {
         if (success) {
             Utils.notify("success", "Cota premiada adicionada.")
             setShowModalCotas(false);
+            onCloseCotasCallback();
+            load();
+        }
+
+        setShowButtonLoader(false);
+    }
+
+    const handleAddRandom = async () => {
+        setShowButtonLoader(true);
+
+        if (Utils.stringIsNullOrEmpty(premio)) {
+            Utils.notify("error", "Informe o nome do prêmio.");
+            setShowButtonLoader(false);
+            return;
+        }
+
+        const { success, data } = await Utils.processRequest(Api.parceiro.saveCotaPremiadaAleatoria, { campanha_id: id, premio }, true);
+
+        if (success) {
+            Utils.notify("success", "Cota premiada adicionada.")
+            setNumeroAleatorio(data);
+            setShowModalCotasRandom(false);
+            setShowModalNumeroAleatorio(true);
             onCloseCotasCallback();
             load();
         }
@@ -87,7 +116,7 @@ export default ({ id }) => {
     }
 
     const onConfirmCotaDelete = async () => {
-        if(!selectedItem?.winner){
+        if (!selectedItem?.winner) {
             setBilhetes((prev) => prev.filter((b) => b.id !== selectedItem?.id));
         }
         setShowModalDeleteCota(false);
@@ -98,6 +127,12 @@ export default ({ id }) => {
             onCancelCotaDelete();
         }
 
+    }
+
+    const onCloseCotaModoCallback = async () => { }
+
+    const onCloseAleatorioCallback = async () => {
+        setNumeroAleatorio(null);
     }
 
     return (
@@ -123,6 +158,37 @@ export default ({ id }) => {
                     </Button>
                 </div>
             </Modal>
+            <Modal onCloseCallback={onCloseCotasCallback} show={showModalCotasRandom} setShow={setShowModalCotasRandom}>
+                <div>
+                    <div className="card-header">
+                        <div className="icon-circle">
+                            <ion-icon name="star-outline"></ion-icon>
+                        </div>
+                        <h3>Adicionar cota premiada</h3>
+                    </div>
+                    <SpaceBox space={8} />
+                    <Input type={"text"} label={"Nome do prêmio"} setValue={setPremio} value={premio} />
+                    <SpaceBox space={8} />
+                    <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={handleAddRandom}>
+                        {showButtonLoader ? (
+                            <>
+                                &nbsp;<div class="loader"></div>
+                            </>
+                        ) : (<>Adicionar</>)}
+                    </Button>
+                </div>
+            </Modal>
+            <Modal setShow={setShowModalNumeroAleatorio} show={showModalNumeroAleatorio} onCloseCallback={onCloseAleatorioCallback}>
+                <div className="card-header">
+                    <div className="icon-circle">
+                        <ion-icon name="star-outline"></ion-icon>
+                    </div>
+                    <h3>Numero premiado</h3>
+                </div>
+                <SpaceBox space={20}/>
+                <center><h1 style={{padding: '10px', border: 'dashed 1px #ddd', borderRadius: '8px', color: 'var(--text-opacity)'}}>{Utils.formatNumberToTicket(Number(numeroAleatorio), bilhetes[0]?.valor)}</h1></center>
+                <SpaceBox space={0}/>
+            </Modal>
             <ModalConfirm setShow={setShowModalDeleteCota} show={showModalDeleteCota} onCancel={onCancelCotaDelete} onConfirm={onConfirmCotaDelete}>
                 <div className="card-header">
                     <div className="icon-circle">
@@ -131,10 +197,32 @@ export default ({ id }) => {
                     <b>Confirmar remoção da cota premiada?</b>
                 </div>
             </ModalConfirm>
+            <Modal setShow={setShowModalModoCota} show={showModalModoCota} onCloseCallback={onCloseCotaModoCallback}>
+                <div className="card-header">
+                    <div className="icon-circle">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </div>
+                    <b>Como deseja adicionar a cota?</b>
+                </div>
+                <SpaceBox space={20} />
+                <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={() => {
+                    setShowModalModoCota(false);
+                    setShowModalCotasRandom(true);
+                }}>
+                    Aleatoriamente
+                </Button>
+                <SpaceBox space={8} />
+                <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={() => {
+                    setShowModalModoCota(false);
+                    setShowModalCotas(true);
+                }}>
+                    Manualmente
+                </Button>
+            </Modal>
             <div style={{ width: '100%', textAlign: 'left', maxWidth: '1000px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <h2>Cota(s) premiadas</h2>
-                    <Button onClick={() => { setShowModalCotas(true) }}>+ Adicionar</Button>
+                    <Button onClick={() => { setShowModalModoCota(true) }}>+ Adicionar</Button>
                 </div>
                 <SpaceBox space={10} />
                 {loaded ? (
@@ -161,7 +249,7 @@ export default ({ id }) => {
                                             <td>{item?.name}</td>
                                             <td>{item?.winner || "(nenhum ganhador)"}</td>
                                             <td>{item?.data_compra ? Utils.formatDateTime(item?.data_compra)?.split(" ")?.[0] : "(não há dados)"}</td>
-                                            <td style={{display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: "center"}}>
+                                            <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: "center" }}>
                                                 <ion-icon onClick={() => { handleRemove(item) }} name="trash-outline" size={"large"} style={{ cursor: 'pointer', color: 'rgb(82, 82, 82)' }}></ion-icon>
                                             </td>
                                         </tr>

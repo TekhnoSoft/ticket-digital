@@ -12,8 +12,6 @@ export default ({ id }) => {
     const [titulo, setTitulo] = useState("");
     const [contato, setContato] = useState("");
     const [categoria, setCategoria] = useState("");
-    const [quantidade, setQuantidade] = useState("");
-    const [valor, setValor] = useState("R$ 0,00");
 
     const [tipo, setTipo] = useState(0);
 
@@ -31,23 +29,13 @@ export default ({ id }) => {
             <Card title={"Dados básicos"} icon={<ion-icon name="pencil-outline"></ion-icon>} style={{ maxWidth: '1000px' }}>
                 <Input type={"text"} label={"Título da campanha"} setValue={setTitulo} value={titulo} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Input style={{ width: '100%' }} type={"celular"} label={"Celular público"} setValue={setContato} value={contato} />
-                    <Select width={"100%"} label={"Categoria"} setValue={setCategoria} value={categoria}>
+                    <Input style={{ width: '100%' }} hideInputBoxMargin type={"celular"} label={"Celular público"} setValue={setContato} value={contato} />
+                    <Select width={"100%"} label={"Categoria"} hideInputBoxMargin setValue={setCategoria} value={categoria}>
                         <Option value={""}>Selecionar...</Option>
                         {categorias?.map(c => (
                             <Option value={c?.id}>{c?.nome}</Option>
                         ))}
                     </Select>
-                </div>
-                <SpaceBox space={8} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Select hideInputBoxMargin width={"100%"} label={"Nº Cotas"} setValue={setQuantidade} value={quantidade}>
-                        <Option value={""}>Selecionar...</Option>
-                        {nCotas?.map(c => (
-                            <Option value={c?.id}>{c?.name}</Option>
-                        ))}
-                    </Select>
-                    <Input hideInputBoxMargin style={{ width: '100%'}} type={"moeda"} label={"Valor por cota"} setValue={setValor} value={valor} />
                 </div>
             </Card>
             <SpaceBox space={20} />

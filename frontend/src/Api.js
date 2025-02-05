@@ -343,8 +343,47 @@ const Api = {
                 return err;
             });
         },
+        saveCotaPremiadaAleatoria: async ({ campanha_id, premio  }) => {
+            return await axios.post(`${API_BASE}/sorteios/campanha/save-cotas-premiadas-aleatoria`, {campanha_id, premio}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
         deleteCampanhaCotaPremiada: async ({ campanha_id, cota_id, numero }) => {
             return await axios.delete(`${API_BASE}/sorteios/campanha/${campanha_id}/cota-premiada-delete/${cota_id}/${numero}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        getEbooks: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-ebooks`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        saveEbook: async (formData) => {
+            try {
+                const response = await axios.post(
+                    `${API_BASE}/sorteios/campanha/save-ebook`,
+                    formData,
+                    {
+                        headers: {
+                            ...Environment.HEADERS.headers,
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                return response.data;
+            } catch (err) {
+                console.error("Erro ao salvar o eBook:", err);
+                return { success: false, error: "Erro ao salvar o eBook" };
+            }
+        },
+        deleteEbook: async ({ campanha_id, id_ebook }) => {
+            return await axios.delete(`${API_BASE}/sorteios/campanha/${campanha_id}/ebook-delete/${id_ebook}`, Environment.HEADERS).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;

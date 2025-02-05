@@ -15,9 +15,11 @@ const { createFatura } = require('../providers/fatura_provider');
 const SorteioPublicacaoPrecos = require('../models/sorteio_publicacao_precos');
 const SorteioParceiro = require('../models/sorteio_parceiro');
 const SorteioPremio = require('../models/sorteio_premio');
-const EmailFila = require('../models/email_fila');
+const Ebook = require('../models/ebook');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const PagamentoOperadora = require('../models/pagamento_operadoras');
+const BilhetePremiado = require('../models/bilhete_premiado');
+const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
 const multer = require('multer');
@@ -25,7 +27,7 @@ const upload = multer({
     storage: multer.memoryStorage(), // Store files in memory as buffers
     limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);  // Accept the file
         } else {
@@ -35,7 +37,7 @@ const upload = multer({
 });
 
 const sizeOf = require('image-size');
-const BilhetePremiado = require('../models/bilhete_premiado');
+const { compressImageFromBuffer } = require('../providers/tinify_compress');
 
 router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res) => {
     const { id_remessa } = req.params;
@@ -52,7 +54,7 @@ router.get('/get-fatura-by-remessa/:id_remessa', validateOrigin, async (req, res
     }
 })
 
-router.get('/get-by-keybind/:keybind', validateOrigin, async (req, res) => {
+router.get('/get-by-keybind/:keybind', async (req, res) => {
     const { keybind } = req.params;
 
     try {
@@ -643,15 +645,15 @@ router.get('/campanha/payment-providers', validateToken, async (req, res) => {
 
 router.get('/campanha/images/:campanha_id', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
-    try{
+    try {
         const images = await SorteioImagens.findAll({
-            where: { 
+            where: {
                 sorteio_id: campanha_id,
                 tipo: 'BANNER'
             }
         })
         return res.status(200).json(images);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -669,12 +671,12 @@ router.put('/campanha/save-images', validateToken, upload.array('images[]'), asy
         const savedImages = [];
 
         for (const file of files) {
-            const dimensions = sizeOf(file.buffer);
+            const compressedImageBuffer = await compressImageFromBuffer(file.buffer);
 
             const imageRecord = await SorteioImagens.create({
                 sorteio_id: campanha_id,
                 tipo: 'BANNER',
-                payload: file.buffer,
+                payload: compressedImageBuffer,
             });
             savedImages.push(imageRecord);
         }
@@ -718,12 +720,12 @@ router.delete('/campanha/:campanha_id/delete-image/:image_id', validateToken, as
 
 router.get('/campanha/seo/:campanha_id', validateToken, async (req, res) => {
     const { campanha_id } = req.params;
-    try{
+    try {
 
         let user_id = req.user.id;
 
         const sorteio = await Sorteio.findOne({
-            where: { 
+            where: {
                 id: campanha_id,
                 user_id: user_id,
             },
@@ -742,7 +744,7 @@ router.get('/campanha/seo/:campanha_id', validateToken, async (req, res) => {
         })
 
         const image = await SorteioImagens.findOne({
-            where: { sorteio_id: campanha_id, tipo: 'BANNER'},
+            where: { sorteio_id: campanha_id, tipo: 'BANNER' },
             attributes: ['id']
         })
 
@@ -755,17 +757,17 @@ router.get('/campanha/seo/:campanha_id', validateToken, async (req, res) => {
 
         return res.status(200).json(obj);
 
-    }catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json(err);
     }
 })
 
 router.put('/campanha/update-seo', validateToken, async (req, res) => {
-    const {campanha_id, title, description} = req.body;
-    try{
+    const { campanha_id, title, description } = req.body;
+    try {
 
-        if(!campanha_id || !title || !description){
+        if (!campanha_id || !title || !description) {
             return res.status(404).json({ message: "Sorteio não encontrado." });
         }
 
@@ -783,7 +785,7 @@ router.put('/campanha/update-seo', validateToken, async (req, res) => {
 
         return res.status(200).json(true);
 
-    }catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json(err);
     }
@@ -792,14 +794,14 @@ router.put('/campanha/update-seo', validateToken, async (req, res) => {
 
 router.get('/campanha/premios/:campanha_id', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
-    try{
+    try {
         const premios = await SorteioPremio.findAll({
-            where: { 
+            where: {
                 sorteio_id: campanha_id,
             }
         })
         return res.status(200).json(premios);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -809,7 +811,7 @@ router.delete('/campanha/:campanha_id/premio-delete/:premio_id', validateToken, 
     let { campanha_id, premio_id } = req.params;
     try {
         const premio = await SorteioPremio.findOne({
-            where: { 
+            where: {
                 id: premio_id,
                 sorteio_id: campanha_id,
             }
@@ -893,7 +895,7 @@ router.post('/campanha/premio-create', validateToken, async (req, res) => {
 
 router.get('/campanha/:campanha_id/cotas-premiadas', validateToken, async (req, res) => {
     let { campanha_id } = req.params;
-    try{
+    try {
 
         const query = `
             SELECT 
@@ -936,7 +938,7 @@ router.get('/campanha/:campanha_id/cotas-premiadas', validateToken, async (req, 
         return res.status(200).json(cotas);
 
 
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
@@ -944,21 +946,21 @@ router.get('/campanha/:campanha_id/cotas-premiadas', validateToken, async (req, 
 
 router.post('/campanha/save-cotas-premiadas', validateToken, async (req, res) => {
     const { campanha_id, numero, premio } = req.body;
-    try{
+    try {
 
-        if(!campanha_id || !numero || !premio){
+        if (!campanha_id || !numero || !premio) {
             return res.status(404).json({ message: "Dados inválidos." });
         }
 
 
         const has = await Bilhete.findOne({
-            where:{
+            where: {
                 sorteio_id: campanha_id,
                 numero: numero,
             }
         })
 
-        if(has){
+        if (has) {
             return res.status(404).json({ message: "Não é possível vincular a premiação em uma cota já paga." });
         }
 
@@ -970,16 +972,16 @@ router.post('/campanha/save-cotas-premiadas', validateToken, async (req, res) =>
         })
 
         const regra = await SorteioRegras.findOne({
-            where:{
+            where: {
                 id: sorteio?.sorteio_regras_id
             }
         })
 
-        if(Number(numero) > regra?.valor){
+        if (Number(numero) > regra?.valor) {
             return res.status(404).json({ message: `O limite máximo dessa campanha é ${regra?.valor} cotas.` });
         }
 
-        if(Number(numero) < 0){
+        if (Number(numero) < 0) {
             return res.status(404).json({ message: `O limite mínimo dessa campanha não pode ser menor que 0.` });
         }
 
@@ -990,7 +992,7 @@ router.post('/campanha/save-cotas-premiadas', validateToken, async (req, res) =>
             }
         })
 
-        if(exists){
+        if (exists) {
             return res.status(404).json({ message: "Já existe uma cota premiada com esse número." });
         }
 
@@ -1001,24 +1003,93 @@ router.post('/campanha/save-cotas-premiadas', validateToken, async (req, res) =>
         })
 
         return res.status(201).json(true);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
     }
 })
 
+router.post('/campanha/save-cotas-premiadas-aleatoria', validateToken, async (req, res) => {
+    const { campanha_id, premio } = req.body;
+    try {
+
+        if (!campanha_id || !premio) {
+            return res.status(404).json({ message: "Dados inválidos." });
+        }
+
+        const sorteio = await Sorteio.findOne({
+            where: {
+                id: campanha_id,
+            },
+            attributes: ['id', 'sorteio_regras_id']
+        });
+
+        if (!sorteio) {
+            return res.status(404).json({ message: "Sorteio não encontrado." });
+        }
+
+        const regra = await SorteioRegras.findOne({
+            where: {
+                id: sorteio.sorteio_regras_id
+            }
+        });
+
+        if (!regra) {
+            return res.status(404).json({ message: "Regras do sorteio não encontradas." });
+        }
+
+        let min = 0;
+        let max = regra.valor;
+
+        const gerarNumeroAleatorio = () => {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        const numeroValido = async () => {
+            let numero;
+            let exists;
+
+            do {
+                numero = gerarNumeroAleatorio();
+                exists = await BilhetePremiado.findOne({
+                    where: {
+                        sorteio_id: campanha_id,
+                        numero: numero,
+                    }
+                });
+            } while (exists);
+
+            return numero;
+        }
+
+        const numeroPremiado = await numeroValido();
+
+        await BilhetePremiado.create({
+            sorteio_id: campanha_id,
+            numero: numeroPremiado,
+            name: premio
+        });
+
+        return res.status(201).json(numeroPremiado);
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Erro interno", error: err });
+    }
+});
+
 router.delete('/campanha/:campanha_id/cota-premiada-delete/:cota_id/:numero', validateToken, async (req, res) => {
     let { campanha_id, cota_id, numero } = req.params;
-    try{
+    try {
 
         const hasWinner = await Bilhete.findOne({
-            where:{
+            where: {
                 sorteio_id: campanha_id,
                 numero: numero,
             }
         })
 
-        if(hasWinner){
+        if (hasWinner) {
             return res.status(404).json({ message: "Não é possível excluir uma cota já contemplada." });
         }
 
@@ -1030,9 +1101,93 @@ router.delete('/campanha/:campanha_id/cota-premiada-delete/:cota_id/:numero', va
         });
 
         return res.status(200).json(true);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json(err);
+    }
+})
+
+router.get('/campanha/:campanha_id/get-ebooks', validateToken, async (req, res) => {
+    let { campanha_id } = req.params;
+    try {
+
+        const ebooks = await Ebook.findAll({
+            where: {
+                sorteio_id: campanha_id,
+            },
+            attributes: ['id', 'name', 'description', 'sorteio_id', 'createdAt']
+        })
+
+        return res.status(200).json(ebooks);
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.post('/campanha/save-ebook', validateToken,
+    upload.fields([{ name: 'thumb', maxCount: 1 }, { name: 'payload', maxCount: 1 }]),
+    async (req, res) => {
+        try {
+            const { name, description, campanha_id } = req.body;
+            const thumb = req.files?.thumb ? req.files.thumb[0] : null;
+            const payload = req.files?.payload ? req.files.payload[0] : null;
+
+            if (!thumb || !payload) {
+                return res.status(400).json({ error: 'É necessário enviar a capa (thumb) e o arquivo PDF (payload).' });
+            }
+
+            const compressedThumbBuffer = await compressImageFromBuffer(thumb.buffer);
+
+            const pdfDoc = await PDFDocument.load(payload.buffer);
+            const compressedPdfBytes = await pdfDoc.save();
+
+            const ebookRecord = await Ebook.create({
+                name,
+                description,
+                thumb: compressedThumbBuffer,
+                payload: compressedPdfBytes,
+                sorteio_id: campanha_id,
+            });
+
+            return res.status(200).json({ success: true, data: ebookRecord });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Erro ao processar o eBook. Tente novamente.' });
+        }
+    }
+);
+
+router.delete('/campanha/:campanha_id/ebook-delete/:id_ebook', validateToken, async (req, res) => {
+    let {campanha_id, id_ebook} = req.params;
+    try {
+
+        let id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({
+            where: {
+                id: campanha_id,
+                user_id: id,
+            }
+        })
+
+        if(!sorteio){
+            return res.status(404).json({ message: "Esse sorteio não pertence a você." });
+        }
+
+        await Ebook.destroy({
+            where: {
+                id: id_ebook,
+                sorteio_id: campanha_id,
+            }
+        });
+
+        return res.status(200).json(true);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao processar o eBook. Tente novamente.' });
     }
 })
 

@@ -16,10 +16,12 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 const usersRoute = require('./routes/users');
 const sorteiosRoute = require('./routes/sorteio');
 const paymentRoute = require('./routes/payment');
+const ebookviewerRoute = require('./routes/ebookviewer');
 
 app.use('/users', usersRoute);
 app.use('/sorteios', sorteiosRoute);
 app.use('/payment', paymentRoute);
+app.use('/ebookviewer', ebookviewerRoute);
 
 /*(async () => {
     try {
