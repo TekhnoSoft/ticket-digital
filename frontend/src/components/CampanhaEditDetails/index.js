@@ -125,8 +125,8 @@ export default ({ id }) => {
                             <b style={{ color: 'black' }}>{campanha?.nFaturas}</b>
                         </div>
                         <div>
-                            <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Usuários:</div>
-                            <b style={{ color: 'black' }}>{campanha?.usuarios}</b>
+                            <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Total estimado:</div>
+                            <b style={{ color: 'black' }}>{Utils.convertNumberToBRL((Number(campanha?.regra?.valor) * campanha?.valor_por_bilhete) || 0)}</b>
                         </div>
                         <div>
                             <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Ticket médio:</div>
