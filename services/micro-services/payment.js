@@ -6,6 +6,8 @@ const SorteioParceiro = require('../models/sorteio_parceiro');
 const { Op } = require('sequelize');
 
 var axios = require("axios");
+const User = require('../models/users');
+const EmailFila = require('../models/email_fila');
 
 const paymentThread = () => {
     // A cada 10 segundos, consultar pagamento de fatura pendente.
@@ -13,7 +15,7 @@ const paymentThread = () => {
         try {
 
             const faturas = await Fatura.findAll({
-                attributes: ['sorteio_id', 'id_payment_response', 'id_remessa', 'tipo'],
+                attributes: ['sorteio_id', 'id_payment_response', 'id_remessa', 'tipo', 'user_id'],
                 where: {
                     status: "AGUARDANDO_PAGAMENTO",
                     id_payment_response: {
@@ -48,6 +50,7 @@ const paymentThread = () => {
                         },
                     );
                     if(fatura?.tipo == "BILHETE"){
+
                         await Bilhete.update(
                             {
                                 status: "PAGO",
@@ -56,6 +59,29 @@ const paymentThread = () => {
                                 where: { id_remessa: fatura?.id_remessa }
                             },
                         );
+
+                        const user = await User.findOne({
+                            where:{
+                                id: fatura?.user_id
+                            }
+                        })
+
+                        let numeros = await Bilhete.findAll({
+                            where: {
+                                id_remessa: fatura?.id_remessa,
+                                status: "PAGO"
+                            },
+                            attributes: ['numero']
+                        });
+
+                        await EmailFila.create({
+                            from: 'server',
+                            to: user?.email,
+                            subject: 'Ebook da Sorte - Seu ebook chegou! 🔥',
+                            content: '<b>Seus números:</b> <br/>' + numeros?.map(b => b.numero).join(', ') + 
+                                     '<br/><b>Acesse o ebook:</b> <a href="https://drive.google.com/file/d/18qmNenBoM8luKXjyId6-Anr7-e5uNfz-/view?usp=sharing">https://drive.google.com/file/d/18qmNenBoM8luKXjyId6-Anr7-e5uNfz-/view?usp=sharing</a>'
+                        })
+
                     }else if(fatura?.tipo == "CAMPANHA"){
                         await Sorteio.update(
                             {
