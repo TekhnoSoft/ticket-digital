@@ -222,7 +222,7 @@ export default () => {
             </Modal>
             <Modal onCloseCallback={onCloseModalUserCallback} setShow={setShowModalUser} show={showModalUser}>
                 <div>
-                    <h3>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</h3>
+                    <h3>{Utils.getModo(campanha?.modo)?.pertence || ""} {Utils.getModo(campanha?.modo)?.plural || ""}</h3>
                 </div>
                 <div>
                     <SpaceBox space={10} />
@@ -255,7 +255,7 @@ export default () => {
                         dotListClass="custom-dot-list-style"
                         itemClass="carousel-item-padding-40-px">
 
-                        {campanha?.info?.video_uri ? (
+                        {/*!Utils.stringIsNullOrEmpty(campanha?.info?.video_uri) ? (
                             <div className='image-slide'>
                                 <iframe
                                     width="100%"
@@ -265,7 +265,7 @@ export default () => {
                                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
                                 </iframe>
                             </div>
-                        ) : (null)}
+                        ) : (null)*/}
 
                         {loaded ? (
                             campanha?.imagens?.map(imagem => {
@@ -409,7 +409,7 @@ export default () => {
                                 </span>
                                 <span onClick={() => { setShowModalCampanhas(true) }} className='filter-button' style={{ background: 'var(--primary-color)', alignSelf: 'center' }}>
                                     <ion-icon name="ticket"></ion-icon>&nbsp;
-                                    <span>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</span>
+                                    <span>{Utils.getModo(campanha?.modo)?.pertence || ""} {Utils.getModo(campanha?.modo)?.plural || ""}</span>
                                 </span>
                             </div>
                             <SpaceBox space={15} />
@@ -562,7 +562,7 @@ export default () => {
                                     <div className='responsive-margin button-checkout-parent'>
                                         <Button onClick={() => { setShowModalCampanhas(true) }} className={'responsive-button btn-bilhetes'}>
                                             <ion-icon name="ticket-outline" class="text-opacity"></ion-icon>&nbsp;
-                                            <b>Meus {Utils.getModo(campanha?.modo)?.plural || ""}</b>
+                                            <b>{Utils.getModo(campanha?.modo)?.pertence || ""} {Utils.getModo(campanha?.modo)?.plural || ""}</b>
                                         </Button>
                                     </div>
                                 </>
