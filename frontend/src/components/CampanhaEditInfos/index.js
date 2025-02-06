@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
 import SpaceBox from '../../components/SpaceBox';
 import Card from '../Card';
@@ -6,23 +6,108 @@ import Input from '../Input';
 import Select from '../Select';
 import Option from '../Option';
 import Switch from '../Switch';
+import Button from '../Button';
+import Utils from '../../Utils';
+import Api from '../../Api';
 
 export default ({ id }) => {
+
+    const [campanha, setCampanha] = useState(null);
 
     const [titulo, setTitulo] = useState("");
     const [contato, setContato] = useState("");
     const [categoria, setCategoria] = useState("");
-
     const [tipo, setTipo] = useState(0);
-
     const [flgDataSorteio, setFlgDataSorteio] = useState(false);
     const [dataSorteio, setDataSorteio] = useState("");
     const [expiracaoPagamento, setExpiracaoPagamento] = useState("");
 
-    const [nCotas, setNCotas] = useState([]);
     const [categorias, setCategorias] = useState([]);
 
-    const [arrecadacao, setArrecadacao] = useState("");
+    const [showButtonLoader, setShowButtonLoader] = useState(false);
+
+    useEffect(() => {
+        load();
+    }, [])
+
+    const load = async () => {
+        const { success: successCampanhaInfos, data: dataCampanhaInfos } = await Utils.processRequest(Api.parceiro.getCampanhaInfos, { campanha_id: id });
+        const { success: successCategorias, data: dataCategorias } = await Utils.processRequest(Api.geral.getSorteioCategorias, {});
+        if (successCategorias && successCampanhaInfos) {
+            setCategorias(dataCategorias);
+            setCampanha(dataCampanhaInfos);
+            setFormData(dataCampanhaInfos);
+        }
+    }
+
+    const setFormData = (data) => {
+        setTitulo(data?.name);
+        setContato(Utils.formatToCelular(data?.info?.telefone_contato));
+        setCategoria(data?.sorteio_categoria_id);
+        setTipo(data?.tipo == "SISTEMA_ESCOLHE" ? 0 : 1);
+        if(data?.info?.data_sorteio){
+            setFlgDataSorteio(true);
+            setDataSorteio(data?.info?.data_sorteio);
+        }else{
+            setFlgDataSorteio(false);
+            setDataSorteio(null);
+        }
+        setExpiracaoPagamento(data?.prazo_pagamento);
+    }
+
+    const handleSave = async () => {
+        setShowButtonLoader(true);
+
+        if (Utils.stringIsNullOrEmpty(titulo)) {
+            Utils.notify("error", "Digite o título da campanha.");
+            setShowButtonLoader(false);
+            return false;
+        }
+        if (Utils.stringIsNullOrEmpty(contato)) {
+            Utils.notify("error", "Digite o número de contato.");
+            setShowButtonLoader(false);
+            return false;
+        }
+        if (!Utils.validarCelular(contato)) {
+            Utils.notify("error", "Digite um contato válido.");
+            setShowButtonLoader(false);
+            return false;
+        }
+        if (categoria == "") {
+            Utils.notify("error", "Selecione a categoria da campanha.");
+            setShowButtonLoader(false);
+            return false;
+        }
+        if (flgDataSorteio && Utils.stringIsNullOrEmpty(dataSorteio)) {
+            Utils.notify("error", "Informe a data do sorteio.");
+            setShowButtonLoader(false);
+            return false;
+        }
+        if (Utils.stringIsNullOrEmpty(expiracaoPagamento)) {
+            Utils.notify("error", "Selecione o prazo de expiração de pagamento das cotas.");
+            setShowButtonLoader(false);
+            return false;
+        }
+
+        let infos = {
+            campanha_id: id,
+            name: titulo, 
+            sorteio_categoria_id: categoria, 
+            telefone_contato: Utils.replaceMaskPhone(contato), 
+            tipo: tipo == 0 ? "SISTEMA_ESCOLHE" : "USUARIO_ESCOLHE", 
+            prazo_pagamento: expiracaoPagamento, 
+            data_sorteio: flgDataSorteio ? dataSorteio : null
+        }
+
+        const { success, data } = await Utils.processRequest(Api.parceiro.saveCampanhaInfos, {infos }, true);
+
+        if(success){
+            Utils.notify("success", "Informações salvas com sucesso.");
+            load();
+        }
+
+        setShowButtonLoader(false);
+    }   
 
     return (
         <>
@@ -91,6 +176,13 @@ export default ({ id }) => {
                 </Select>
             </Card>
             <SpaceBox space={20} />
+            <Button disabled={showButtonLoader} onClick={handleSave} style={{ width: '100%', maxWidth: '1015px' }}>
+                {showButtonLoader ? (
+                    <>
+                        &nbsp;<div class="loader"></div>
+                    </>
+                ) : (<>Salvar</>)}
+            </Button>
         </>
     )
 }

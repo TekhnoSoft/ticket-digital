@@ -124,18 +124,34 @@ export default () => {
                                         </div>
                                     </>
                                 ) : (null)}
-                                <SpaceBox space={2} />
-                                <div class="status-c">
-                                    <span class="status-dot-c" style={{ background: getStatusProps(campanha?.status).background }}></span>
-                                    <span class="status-text-c">{getStatusProps(campanha?.status).status}</span>
-                                </div>
                                 {campanha?.status == "AGUARDANDO_ATIVACAO" ? (
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
-                                        <Button onClick={(event) => {
-                                            event.stopPropagation();
-                                            navigate(`/fatura-campanha/${campanha?.id_remessa}`);
-                                        }}>Ativar</Button>
-                                    </div>
+                                    <>
+                                        <SpaceBox space={Utils.mobileCheck() ? 10 : 60} />
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div class="status-c">
+                                                <span class="status-dot-c" style={{ background: getStatusProps(campanha?.status).background }}></span>
+                                                <span class="status-text-c">{getStatusProps(campanha?.status).status}</span>
+                                            </div>
+                                            <Button onClick={(event) => {
+                                                event.stopPropagation();
+                                                navigate(`/fatura-campanha/${campanha?.id_remessa}`);
+                                            }}>Ativar</Button>
+                                        </div>
+                                    </>
+                                ) : campanha?.status == "ATIVO" ? (
+                                    <>
+                                        <SpaceBox space={10} />
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div class="status-c">
+                                                <span class="status-dot-c" style={{ background: getStatusProps(campanha?.status).background }}></span>
+                                                <span class="status-text-c">{getStatusProps(campanha?.status).status}</span>
+                                            </div>
+                                            <Button onClick={(event) => {
+                                                event.stopPropagation();
+                                                //contemplar
+                                            }}>Informar contemplado</Button>
+                                        </div>
+                                    </>
                                 ) : (null)}
                             </div>
                         ))}

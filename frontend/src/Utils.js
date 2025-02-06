@@ -127,6 +127,9 @@ const Utils = {
         return regexEmail.test(email);
     },
     formatToCelular: (numero) => {
+        if(!numero || numero == null || numero == undefined){
+            return "(não informado)"
+        }
         // Remove todos os caracteres não numéricos
         let numeroLimpo = numero?.replace(/\D/g, '');
 
@@ -180,6 +183,9 @@ const Utils = {
         return true;
     },
     formatCpf: (cpf) => {
+        if(!cpf || cpf == null || cpf == undefined){
+            return "(não informado)"
+        }
         // Remove todos os caracteres não numéricos
         let cpfLimpo = cpf?.replace(/\D/g, '');
 
@@ -231,7 +237,7 @@ const Utils = {
         return diff;
     },
     stringIsNullOrEmpty: (str) => {
-        return !str || str.trim() === "";
+        return !str || str?.trim() === "" || str == null || str == undefined;
     },
     getModo: (modo) => {
         switch (modo) {

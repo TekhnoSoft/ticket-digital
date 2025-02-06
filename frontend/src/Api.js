@@ -388,6 +388,20 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getCampanhaInfos: async ({ campanha_id }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-campanha-info`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        saveCampanhaInfos: async ({ infos }) => {
+            return await axios.put(`${API_BASE}/sorteios/campanha/save-campanha-info`, {infos}, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

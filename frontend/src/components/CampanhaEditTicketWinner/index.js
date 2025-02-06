@@ -7,6 +7,7 @@ import Api from '../../Api';
 import Modal from '../Modal';
 import Input from '../Input';
 import ModalConfirm from '../ModalConfirm';
+import Hr from '../Hr';
 
 export default ({ id }) => {
 
@@ -183,7 +184,7 @@ export default ({ id }) => {
                     <div className="icon-circle">
                         <ion-icon name="star-outline"></ion-icon>
                     </div>
-                    <h3>Numero premiado</h3>
+                    <h3>Número premiado:</h3>
                 </div>
                 <SpaceBox space={20}/>
                 <center><h1 style={{padding: '10px', border: 'dashed 1px #ddd', borderRadius: '8px', color: 'var(--text-opacity)'}}>{Utils.formatNumberToTicket(Number(numeroAleatorio), bilhetes[0]?.valor)}</h1></center>
@@ -211,6 +212,8 @@ export default ({ id }) => {
                 }}>
                     Aleatoriamente
                 </Button>
+                <SpaceBox space={8} />
+                <Hr elevation={1}/>
                 <SpaceBox space={8} />
                 <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={() => {
                     setShowModalModoCota(false);

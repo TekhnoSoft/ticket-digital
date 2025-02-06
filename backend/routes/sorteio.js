@@ -1162,7 +1162,6 @@ router.post('/campanha/save-ebook', validateToken,
 router.delete('/campanha/:campanha_id/ebook-delete/:id_ebook', validateToken, async (req, res) => {
     let {campanha_id, id_ebook} = req.params;
     try {
-
         let id = req.user.id;
 
         const sorteio = await Sorteio.findOne({
@@ -1188,6 +1187,75 @@ router.delete('/campanha/:campanha_id/ebook-delete/:id_ebook', validateToken, as
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao processar o eBook. Tente novamente.' });
+    }
+})
+
+router.get('/campanha/:campanha_id/get-campanha-info', validateToken, async (req, res) => {
+    const { campanha_id } = req.params;
+    try {
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id } });
+
+        if (!sorteio) {
+            return res.status(404).json(null);
+        }
+
+        const sorteioInformacoes = await SorteioInformacoes.findOne({ where: { sorteio_id: sorteio.id } });
+
+        if (sorteioInformacoes) {
+            const sorteioPlano = sorteio.toJSON();
+            sorteioPlano.info = sorteioInformacoes;
+            return res.status(200).json(sorteioPlano);
+        } else {
+            return res.status(404).json(null);
+        }
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+});
+
+router.put('/campanha/save-campanha-info', validateToken, async (req, res) => {
+    const { campanha_id, name, sorteio_categoria_id, telefone_contato, tipo, prazo_pagamento, data_sorteio } = req.body.infos;
+    try{
+
+        let user_id = req.user.id;
+
+        const sorteio = await Sorteio.findOne({ where: { id: campanha_id } });
+
+        if (!sorteio) {
+            return res.status(404).json(null);
+        }
+        
+        await Sorteio.update(
+            {
+                name: name,
+                sorteio_categoria_id: sorteio_categoria_id,
+                tipo: tipo,
+                prazo_pagamento: prazo_pagamento,
+            },
+            {
+                where: {
+                    id: campanha_id,
+                    user_id: user_id,
+                }
+            }
+        )
+
+        await SorteioInformacoes.update(
+            {
+                telefone_contato: telefone_contato,
+                data_sorteio: data_sorteio
+            },
+            {
+                where:{
+                    sorteio_id: sorteio?.id,
+                    id: sorteio?.sorteio_informacoes_id
+                }
+            }
+        )
+
+        return res.status(200).json(true);
+    }catch (err) {
+        return res.status(500).json(err);
     }
 })
 
