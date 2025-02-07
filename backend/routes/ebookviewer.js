@@ -57,7 +57,24 @@ router.get('/view-thumb/:id', async (req, res) => {
             return res.status(404).json({ error: 'Capa do eBook não encontrada.' });
         }
 
+        // Definir cabeçalhos de cache
         res.setHeader('Content-Type', 'image/jpeg');
+
+        // Cache por 1 hora
+        res.setHeader('Cache-Control', 'public, max-age=3600');  // 1 hora (3600 segundos)
+        
+        // Opcional: Definir data de expiração para o cache (por exemplo, 1 hora a partir de agora)
+        res.setHeader('Expires', new Date(Date.now() + 3600 * 1000).toUTCString());
+
+        // Opcional: Usar ETag para cache condicional (se o conteúdo mudar, um novo ETag será gerado)
+        const etag = ebook.thumb.length; // Você pode usar outra abordagem para calcular um ETag, se necessário
+        res.setHeader('ETag', etag);
+
+        // Verificar se a imagem no cache do cliente ainda é válida
+        if (req.headers['if-none-match'] === etag) {
+            return res.status(304).end(); // Retornar status 304 se a imagem não mudou
+        }
+
         res.send(ebook.thumb);
 
     } catch (error) {
@@ -65,5 +82,6 @@ router.get('/view-thumb/:id', async (req, res) => {
         return res.status(500).json({ error: 'Erro ao carregar a capa do eBook.' });
     }
 });
+
 
 module.exports = router;
