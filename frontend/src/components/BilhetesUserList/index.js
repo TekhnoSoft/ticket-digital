@@ -173,22 +173,22 @@ export default ({ user, setUser, modo }) => {
                         <div style={{ overflowY: 'auto', maxHeight: '300px' }}>
                             {!loaded ? (
                                 <>
-                                    <SpaceBox space={10}/>
+                                    <SpaceBox space={10} />
                                     <center><b>Carregando...</b></center>
-                                    <SpaceBox space={10}/>
+                                    <SpaceBox space={10} />
                                 </>
                             ) : (null)}
                             {loaded && faturas?.length <= 0 ? (
                                 <>
-                                    <SpaceBox space={10}/>
+                                    <SpaceBox space={10} />
                                     <center><b>Não há faturas.</b></center>
-                                    <SpaceBox space={10}/>
+                                    <SpaceBox space={10} />
                                 </>
                             ) : (null)}
                             {faturas?.map(fatura => (
                                 <Card style={{ marginBottom: '8px', border: 'solid 1px #ddd' }}>
                                     {fatura?.fatura_status == "AGUARDANDO_PAGAMENTO" ? (
-                                        <div style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => {navigate(`/fatura/${fatura?.id_remessa}`)}}>
+                                        <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => { navigate(`/fatura/${fatura?.id_remessa}`) }}>
                                             <div style={{ width: '15px', height: '15px', borderRadius: '8px', background: 'gray', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '6px' }}>
                                                 <ion-icon name="time-outline"></ion-icon>
                                             </div>
@@ -211,13 +211,26 @@ export default ({ user, setUser, modo }) => {
                                         </div>
                                     ) : (null)}
                                     <SpaceBox space={8} />
-                                    <label><b>{fatura?.nome_sorteio}</b></label>
-                                    <SpaceBox space={8} />
-                                    <div style={{ display: 'flex', gap: '2px', width: '100%', overflowX: 'auto', paddingBottom: '5px' }}>
-                                        {fatura?.bilhetes?.map(bilhete => (
-                                            <label style={{ background: '#ddd', padding: '2px 4px', borderRadius: '4px', fontSize: '12px' }}>{Utils.formatNumberToTicket(bilhete?.numero, 1000000)}</label>
-                                        ))}
+                                    {fatura?.fatura_status == "PAGO" ? (
+                                        <>
+                                            <SpaceBox space={8} />
+                                            <div style={{ fontWeight: 'bold', color: 'var(--text-opacity)', fontSize: '14px' }}><p>* enviamos seu eBook por email</p></div>
+                                            <SpaceBox space={8} />
+                                        </>
+                                    ) : (null)}
+                                    <div>
+                                        <p style={{ fontSize: '12px', ontWeight: 'bold' }}><p>{fatura?.nome_sorteio}</p></p>
                                     </div>
+                                    {fatura?.fatura_status == "CANCELADO" ? (null) : (
+                                        <>
+                                            <SpaceBox space={8} />
+                                            <div style={{ display: 'flex', gap: '2px', width: '100%', overflowX: 'auto', paddingBottom: '5px' }}>
+                                                {fatura?.bilhetes?.map(bilhete => (
+                                                    <label style={{ background: '#ddd', padding: '2px 4px', borderRadius: '4px', fontSize: '12px' }}>{Utils.formatNumberToTicket(bilhete?.numero, 1000000)}</label>
+                                                ))}
+                                            </div>
+                                        </>
+                                    )}
                                     <SpaceBox space={8} />
                                     <div>
                                         <span style={{ color: 'black', fontSize: '14PX' }}><b>{Utils.convertNumberToBRL(fatura?.total + fatura?.taxa_cliente)}</b> · {Utils.formatDateSimple(fatura?.data_compra)}</span>
