@@ -667,9 +667,11 @@ router.post('/parceiro/create-campanha', validateToken, async (req, res) => {
     try {
         let user_id = req.user.id;
 
+        let makedId = Utils.makeid(6).toLocaleLowerCase();
+
         const sorteio = await Sorteio.create({
             name: campanha?.nome,
-            keybind: Utils.formatarParaLink(campanha?.nome) +"-"+ Utils.makeid(4).toLocaleLowerCase(),
+            keybind: Utils.formatarParaLink(campanha?.nome) +"-"+ makedId,
             tipo: campanha?.tipo == 0 ? "SISTEMA_ESCOLHE" : "USUARIO_ESCOLHE",
             sorteio_regras_id: campanha?.regra,
             valor_por_bilhete: campanha?.valor,
@@ -682,7 +684,7 @@ router.post('/parceiro/create-campanha', validateToken, async (req, res) => {
 
         const info = await SorteioInformacoes.create({
             sorteio_id: sorteio?.id,
-            link: Utils.formatarParaLink(campanha?.nome) +"-"+ Utils.makeid(4).toLocaleLowerCase(),
+            link: Utils.formatarParaLink(campanha?.nome) +"-"+ makedId,
             telefone_contato: Utils.replaceMaskPhone(campanha?.contato),
             data_sorteio: campanha?.data,
             minimo_cota_usuario: 5,
