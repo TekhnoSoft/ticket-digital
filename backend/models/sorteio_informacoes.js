@@ -86,7 +86,12 @@ const SorteioInformacoes = database.define('tb_sorteio_informacoes', {
         type: Sequelize.BOOLEAN,
         allowNull: true,
         defaultValue: true,
-    }
+    },
+    show_rank_buyers: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
+    },
 });
 
 module.exports = SorteioInformacoes;

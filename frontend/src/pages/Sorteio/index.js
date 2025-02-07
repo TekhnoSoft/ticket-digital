@@ -575,37 +575,41 @@ export default () => {
                         {campanha?.info?.anuncio_text}
                     </div>
                 ) : (null)}
-                <SpaceBox space={15} />
-                <div className='title-bilhetes'>
-                    <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ion-icon className="text-opacity" name="stats-chart-outline" size={"large"}></ion-icon>
-                    </div>&nbsp;&nbsp;
-                    <div>
-                        <b className='b-text'>Maiores compradores</b>
-                    </div>
-                </div>
-                <SpaceBox space={20} />
-                <Card className={"responsive-margin"}>
-                    {rankBuyers?.length <= 0 ? (
-                        <>
-                            <SpaceBox space={10} />
-                            <center><b>Não há compradores, pode ser você ;)</b></center>
-                            <SpaceBox space={10} />
-                        </>
-                    ) : (null)}
-                    {rankBuyers?.map((r, index) => (
-                        <>
-                            {index != 0 ? (<Hr elevation={1} />) : (null)}
-                            <div className='winner-content'>
-                                <b className='winner-position'>{(index + 1)}º</b>
-                                <div className='winner-info'>
-                                    <div>🏆<b>{r?.name}</b></div>
-                                    <div className='text-opacity'>{Utils.getModo(campanha?.modo)?.plural || ""}: <b>{r?.qtd}</b></div>
-                                </div>
+                {campanha?.info?.show_rank_buyers ? (
+                    <>
+                        <SpaceBox space={15} />
+                        <div className='title-bilhetes'>
+                            <div style={{ width: '50px', height: '50px', background: 'rgb(213 213 213)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <ion-icon className="text-opacity" name="stats-chart-outline" size={"large"}></ion-icon>
+                            </div>&nbsp;&nbsp;
+                            <div>
+                                <b className='b-text'>Maiores compradores</b>
                             </div>
-                        </>
-                    ))}
-                </Card>
+                        </div>
+                        <SpaceBox space={20} />
+                        <Card className={"responsive-margin"}>
+                            {rankBuyers?.length <= 0 ? (
+                                <>
+                                    <SpaceBox space={10} />
+                                    <center><b>Não há compradores, pode ser você ;)</b></center>
+                                    <SpaceBox space={10} />
+                                </>
+                            ) : (null)}
+                            {rankBuyers?.map((r, index) => (
+                                <>
+                                    {index != 0 ? (<Hr elevation={1} />) : (null)}
+                                    <div className='winner-content'>
+                                        <b className='winner-position'>{(index + 1)}º</b>
+                                        <div className='winner-info'>
+                                            <div>🏆<b>{r?.name}</b></div>
+                                            <div className='text-opacity'>{Utils.getModo(campanha?.modo)?.plural || ""}: <b>{r?.qtd}</b></div>
+                                        </div>
+                                    </div>
+                                </>
+                            ))}
+                        </Card>
+                    </>
+                ) : (null)}
                 {bilhetesPremiados?.length > 0 ? (
                     <>
                         <SpaceBox space={30} />
