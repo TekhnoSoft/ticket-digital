@@ -21,7 +21,7 @@ const EmailFila = database.define('tb_email_fila', {
         allowNull: false,
     },
     content: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
     },
     sended: {
