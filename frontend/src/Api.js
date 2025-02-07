@@ -5,6 +5,13 @@ const API_BASE = Environment.API_BASE;
 
 const Api = {
     geral: {
+        getEbooks: async ({}) => {
+            return await axios.get(`${API_BASE}/ebookviewer/all`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
         getCampanha: async ({keybind}) => {
             return await axios.get(`${API_BASE}/sorteios/get-by-keybind/${keybind}`).then(async (response) => {
                 return await response;

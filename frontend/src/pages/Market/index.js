@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, FragmentView, SpaceBox } from '../../components';
+import { Button, Card, FragmentView, SpaceBox } from '../../components';
 import './style.css';
 import Utils from '../../Utils';
 import Api from '../../Api';
@@ -11,7 +11,7 @@ export default () => {
     const navigate = useNavigate();
 
     const [loaded, setLoaded] = useState(false);
-    const [campanhas, setCampanhas] = useState([]);
+    const [ebooks, setEbooks] = useState([]);
 
     useEffect(() => {
         load();
@@ -19,18 +19,26 @@ export default () => {
 
     const load = async () => {
         setLoaded(false);
-        const { success: campanhaSuccess, data: dataCampanhas } = await Utils.processRequest(Api.geral.getCampanhas, {});
-        if (campanhaSuccess) {
-            setCampanhas(dataCampanhas);
+        const { success: ebooksSuccess, data: dataEbooks } = await Utils.processRequest(Api.geral.getEbooks, {});
+        if (ebooksSuccess) {
+            setEbooks(dataEbooks);
         }
         setLoaded(true);
+    }
+
+    const handleContact = (item) => {
+        if(item?.telefone_contato){
+            window.open(`https://api.whatsapp.com/send/?phone=${item?.telefone_contato}&text=Ol%C3%A1%20gostaria%20de%20adquirir%20o%20ebook%20${item?.name}&type=phone_number&app_absent=0`, 'blank')
+        }else{
+            window.open(`https://api.whatsapp.com/send/?phone=61981147957&text=Ol%C3%A1%20gostaria%20de%20adquirir%20o%20ebook%20${item?.name}&type=phone_number&app_absent=0`, 'blank')
+        }
     }
 
     return (
         <FragmentView headerMode={"USER"}>
             <div className='responsive-margin'>
                 <SpaceBox space={20} />
-                <h2 className='text-opacity'>Catálogo de ebooks</h2>
+                <h2 className='text-opacity'>Catálogo de eBooks</h2>
                 <SpaceBox space={20} />
                 {!loaded ? (
                     <>
@@ -39,32 +47,47 @@ export default () => {
                         <SpaceBox space={10} />
                     </>
                 ) : (null)}
-                {loaded && campanhas?.length <= 0 ? (
+                {loaded && ebooks?.length <= 0 ? (
                     <>
                         <SpaceBox space={10} />
                         <center><b>Não há ebooks no momento :(</b></center>
                         <SpaceBox space={10} />
                     </>
                 ) : (null)}
+                <img style={{width: '100%'}} src='../bannner_ebook_2.png'/>
+                <SpaceBox space={40} />
                 <div className="grid-container">
-                    {campanhas?.map((campanha) => (
-                        <Card key={campanha.id} style={{ cursor: 'pointer' }} onClick={() => {navigate(`/campanha/${campanha?.keybind}`)}}>
-                            <img src={Environment.API_BASE + `/sorteios/imagem/${campanha?.id_imagem}` || `../placeholder-image.png`} alt={campanha.name} className="card-img" />
-
-                            <b className='b-text' style={{ fontWeight: 'bold', fontSize: '16px' }}>
-                                {campanha?.name?.toLocaleUpperCase() || '...'}
-                            </b>
+                    {ebooks?.map(item => (
+                        <Card style={{ width: '145px' }}>
+                            <img
+                                style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '4px' }}
+                                src={Environment.API_BASE + '/ebookviewer/view-thumb/' + item?.id}
+                            />
+                            <SpaceBox space={4} />
+                            <p
+                                style={{
+                                    fontSize: '12px',
+                                    whiteSpace: 'nowrap', // Evita quebra de linha
+                                    overflow: 'hidden', // Oculta o texto que excede o limite
+                                    textOverflow: 'ellipsis', // Adiciona '...' no final do texto
+                                    width: '100%', // Garante que o p ocupe todo o espaço disponível
+                                    display: 'block' // Garante que o p se comporte como um bloco
+                                }}
+                            >
+                                {item?.name}
+                            </p>
                             <SpaceBox space={8} />
-                            <div className='info-oferta' style={{ display: 'flex', alignItems: 'center' }}>
-                                <label className='text-opacity'>Por apenas</label>&nbsp;&nbsp;
-                                <div style={{ background: 'var(--primary-color)', borderRadius: '4px', padding: '4px 8px' }}>
-                                    <b className='oferta-valor text-opacity' style={{ color: 'white' }}>{Utils.convertNumberToBRL(campanha?.valor_por_bilhete)}</b>
-                                </div>
-                            </div>
-
+                            <Button
+                                style={{ height: '40px', width: '100%', borderRadius: '8px' }}
+                                onClick={() => { handleContact(item) }}
+                            >
+                                Comprar
+                            </Button>
                         </Card>
                     ))}
                 </div>
+                <SpaceBox space={40} />
+                <img style={{width: '100%'}} src='../bannner_ebook_1.png'/>
                 <SpaceBox space={40} />
             </div>
         </FragmentView>
