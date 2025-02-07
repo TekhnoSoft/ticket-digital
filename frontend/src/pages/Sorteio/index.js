@@ -506,7 +506,7 @@ export default () => {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        setQtd(0);
+                                        setQtd(campanha?.info?.minimo_cota_usuario);
                                     }}
                                     style={{
                                         backgroundColor: 'var(--primary-color)',
