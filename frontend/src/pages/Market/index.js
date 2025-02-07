@@ -34,12 +34,17 @@ export default () => {
         }
     }
 
+    const handleCampanha = (item) => {
+        navigate(`/campanha/${item?.keybind}`)
+    }
+
     return (
         <FragmentView headerMode={"USER"}>
             <div className='responsive-margin'>
                 <SpaceBox space={20} />
                 <h2 className='text-opacity'>Catálogo de eBooks</h2>
                 <SpaceBox space={20} />
+                <img style={{width: '100%'}} src='../bannner_ebook_2.png'/>
                 {!loaded ? (
                     <>
                         <SpaceBox space={10} />
@@ -54,7 +59,6 @@ export default () => {
                         <SpaceBox space={10} />
                     </>
                 ) : (null)}
-                <img style={{width: '100%'}} src='../bannner_ebook_2.png'/>
                 <SpaceBox space={40} />
                 <div className="grid-container">
                     {ebooks?.map(item => (
@@ -77,6 +81,15 @@ export default () => {
                                 {item?.name}
                             </p>
                             <SpaceBox space={8} />
+                            {item?.sorteio_id > 0? (
+                                <>
+                                    <div className='acao-promocional' onClick={() => {handleCampanha(item)}}>
+                                        <span>ação promocional</span>
+                                        <ion-icon name="open-outline"></ion-icon>
+                                    </div>
+                                    <SpaceBox space={8} /> 
+                                </>
+                            ) : (null)}
                             <Button
                                 style={{ height: '40px', width: '100%', borderRadius: '8px' }}
                                 onClick={() => { handleContact(item) }}

@@ -13,9 +13,11 @@ router.get('/all', async (req, res) => {
                 A.name, 
                 A.description, 
                 A.sorteio_id,
-                B.telefone_contato
+                B.telefone_contato,
+                C.keybind
             FROM tb_ebooks as A
-            LEFT JOIN tb_sorteio_informacoes AS B ON A.sorteio_id=B.sorteio_id;
+            LEFT JOIN tb_sorteio_informacoes AS B ON A.sorteio_id=B.sorteio_id
+            LEFT JOIN tb_sorteios AS C ON C.id = A.sorteio_id;
         `;
 
         const resultados = await database.query(query, {
@@ -30,7 +32,9 @@ router.get('/all', async (req, res) => {
                 id: row.id,
                 name: row.name,
                 description: row.description,
-                telefone_contato: row?.telefone_contato
+                telefone_contato: row?.telefone_contato,
+                sorteio_id: row?.sorteio_id,
+                keybind: row?.keybind
             }
             ebooks.push(obj);
         })
