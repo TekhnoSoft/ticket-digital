@@ -20,11 +20,21 @@ if (isset($_GET['keybind'])) {
         }
 
         // Preparação da consulta
-        $stmt = $conn->prepare("SELECT A.keybind, A.user_id, B.seo_title, B.seo_description, C.id AS id_image 
-                                FROM tb_sorteios AS A 
-                                INNER JOIN tb_sorteio_informacoes AS B ON A.id = B.sorteio_id 
-                                LEFT JOIN tb_sorteio_imagens AS C ON C.sorteio_id = A.id 
-                                WHERE C.tipo = 'BANNER' AND A.keybind = ?");
+        $stmt = $conn->prepare("
+            SELECT 
+                A.keybind, 
+                A.user_id, 
+                B.seo_title, 
+                B.seo_description, 
+                CASE 
+                WHEN C.tipo = 'BANNER' THEN C.id
+                ELSE NULL
+            END AS id_image
+            FROM tb_sorteios AS A 
+            INNER JOIN tb_sorteio_informacoes AS B ON A.id = B.sorteio_id 
+            LEFT JOIN tb_sorteio_imagens AS C ON C.sorteio_id = A.id
+            WHERE A.keybind = ?
+        ");
         $stmt->bind_param('s', $keybind);
         $stmt->execute();
 
