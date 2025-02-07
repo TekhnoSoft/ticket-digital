@@ -15,7 +15,7 @@ if (isset($_GET['keybind'])) {
         $keybind = trim($_GET['keybind']); // Remover espaços extras
         if (empty($keybind)) {
             echo "Parâmetro 'keybind' vazio.";
-            header("Location: https://api.ebookdasorte.com/");
+            header("Location: https://ebookdasorte.com/");
             exit();
         }
 
@@ -36,20 +36,25 @@ if (isset($_GET['keybind'])) {
             $seoImage = htmlspecialchars($row['id_image']);
             $seoTitle = htmlspecialchars($row['seo_title']);
             $seoDescription = htmlspecialchars($row['seo_description']);
+
+            if (empty($seoImage)) {
+                $seoImage = 'https://ebookdasorte.com/placeholder-image.png';
+            }
+
         } else {
             echo "Parceiro não encontrado.";
-            header("Location: https://api.ebookdasorte.com/");
+            header("Location: https://ebookdasorte.com/");
             exit(); // Importante para parar a execução após o redirecionamento
         }
         $stmt->close();
     } catch (Exception $erro) {
         echo "Erro: " . $erro->getMessage();
-        header("Location: https://api.ebookdasorte.com/");
+        header("Location: https://ebookdasorte.com/");
         exit(); // Também parar a execução após erro
     }
 } else {
     echo "Parâmetro 'keybind' não fornecido.";
-    header("Location: https://api.ebookdasorte.com/");
+    header("Location: https://ebookdasorte.com/");
     exit();
 }
 ?>

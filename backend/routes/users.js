@@ -558,7 +558,7 @@ router.get('/parceiro/campanhas', validateToken, async (req, res) => {
             SELECT A.*, 
                 (SELECT B.id 
                     FROM tb_sorteio_imagens AS B 
-                    WHERE B.sorteio_id = A.id 
+                    WHERE B.sorteio_id = A.id AND B.tipo = 'BANNER'
                     LIMIT 1) AS id_imagem,
                 (COUNT(C.id) / CAST(D.valor AS FLOAT)) * 100 AS progresso,
                 (SELECT id_remessa FROM tb_faturas WHERE sorteio_id = A.id AND tipo='CAMPANHA') as id_remessa
