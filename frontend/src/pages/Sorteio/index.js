@@ -487,8 +487,8 @@ export default () => {
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '50%',
-                                        width: '40px',
-                                        height: '40px',
+                                        width: '60px',
+                                        height: '60px',
                                         fontSize: '20px',
                                         cursor: 'pointer',
                                         display: 'flex',
@@ -502,7 +502,7 @@ export default () => {
                                         }
                                     }}
                                 >
-                                    <ion-icon name="remove"></ion-icon>
+                                    <ion-icon name="remove" size={"large"}></ion-icon>
                                 </button>
                                 <input
                                     type="tel"
@@ -514,6 +514,7 @@ export default () => {
                                         border: '1px solid #ccc',
                                         borderRadius: '5px',
                                     }}
+                                    readOnly
                                     value={qtd}
                                     onChange={(e) => {
                                         let v = e.target.value;
@@ -530,8 +531,8 @@ export default () => {
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '50%',
-                                        width: '40px',
-                                        height: '40px',
+                                        width: '60px',
+                                        height: '60px',
                                         fontSize: '20px',
                                         cursor: 'pointer',
                                         display: 'flex',
@@ -547,7 +548,7 @@ export default () => {
                                         }
                                     }}
                                 >
-                                    <ion-icon name="add"></ion-icon>
+                                    <ion-icon name="add" size={"large"}></ion-icon>
                                 </button>
                             </div>
                             <SpaceBox space={20} />
