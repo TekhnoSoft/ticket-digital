@@ -16,6 +16,9 @@ export default () => {
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('');
     const [campanha, setCampanha] = useState('');
+    const [filterVisible, setFilterVisible] = useState(false);
+
+    const isMobile = Utils.mobileCheck();
 
     useEffect(() => {
         load();
@@ -59,6 +62,10 @@ export default () => {
         setCampanha('');
     }
 
+    const toggleFilterVisibility = () => {
+        setFilterVisible(!filterVisible);
+    }
+
     return (
         <FragmentView headerMode={"PARCEIRO"}>
             <SpaceBox space={8} />
@@ -66,23 +73,30 @@ export default () => {
             <SpaceBox space={15} />
 
             <Card title={"Filtros"} icon={<ion-icon name="filter-outline"></ion-icon>}>
-                <div className="filter-container-p">
-                    <Select hideInputBoxMargin value={campanha} setValue={setCampanha}>
-                        <Option value={""}>(Campanha)</Option>
-                        {campanhas?.map(c => (
-                            <Option value={c?.name}>{c?.name}</Option>
-                        ))}
-                    </Select>
-                    <Input hideInputBoxMargin type={"text"} label={"Filtrar por nome"} value={name} setValue={setName} />
-                    <Input hideInputBoxMargin type={"date"} value={date} setValue={setDate} />
-                    <Select hideInputBoxMargin value={status} setValue={setStatus}>
-                        <Option value={""}>(Status)</Option>
-                        <Option value={"AGUARDANDO_PAGAMENTO"}>Pendente</Option>
-                        <Option value={"PAGO"}>Pago</Option>
-                        <Option value={"CANCELADO"}>Cancelado</Option>
-                    </Select>
-                    <Button onClick={handleClearFilter}>Limpar filtro</Button>
-                </div>
+                {isMobile && (
+                    <div className="filter-toggle" onClick={toggleFilterVisibility} style={{display: 'flex', justifyContent: 'end'}}>
+                        <ion-icon name={filterVisible ? "chevron-up-outline" : "chevron-down-outline"} style={{color: 'var(--text-opacity)', position: 'absolute', marginTop: '-30px', fontSize: '28px'}}></ion-icon>
+                    </div>
+                )}
+                {(filterVisible || !isMobile) && (
+                    <div className="filter-container-p">
+                        <Select hideInputBoxMargin value={campanha} setValue={setCampanha}>
+                            <Option value={""}>(Campanha)</Option>
+                            {campanhas?.map(c => (
+                                <Option value={c?.name} key={c?.name}>{c?.name}</Option>
+                            ))}
+                        </Select>
+                        <Input hideInputBoxMargin type={"text"} label={"Filtrar por nome"} value={name} setValue={setName} />
+                        <Input hideInputBoxMargin type={"date"} value={date} setValue={setDate} />
+                        <Select hideInputBoxMargin value={status} setValue={setStatus}>
+                            <Option value={""}>(Status)</Option>
+                            <Option value={"AGUARDANDO_PAGAMENTO"}>Pendente</Option>
+                            <Option value={"PAGO"}>Pago</Option>
+                            <Option value={"CANCELADO"}>Cancelado</Option>
+                        </Select>
+                        <Button onClick={handleClearFilter}>Limpar filtro</Button>
+                    </div>
+                )}
             </Card>
 
             {loaded ? (
@@ -91,7 +105,7 @@ export default () => {
                         <table className="sales-table-p">
                             <thead>
                                 <tr>
-                                    <th>Status</th>
+                                    <th style={{textAlign: 'left'}}>Status</th>
                                     <th>Total</th>
                                     <th>Quantidade</th>
                                     <th>Campanha</th>
@@ -105,7 +119,7 @@ export default () => {
                             <tbody>
                                 {filteredData.map((item, index) => (
                                     <tr key={index}>
-                                        <td>
+                                        <td style={{textAlign: 'left'}}>
                                             <span className={`status-bubble-p ${getStatusProps(item.status)}`}></span>&nbsp;{getStatusProps(item.status)}
                                         </td>
                                         <td>{Utils.convertNumberToBRL(item.total)}</td>

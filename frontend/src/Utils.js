@@ -246,24 +246,28 @@ const Utils = {
                     singular: "bilhete",
                     plural: "bilhetes",
                     title: "Bilhetes",
+                    pertence: "Meus"
                 }
             case "EBOOK":
                 return {
                     singular: "e-book",
                     plural: "e-books",
-                    title: "E-books/Números"
+                    title: "E-books/Números",
+                    pertence: "Meus"
                 }
             case "COTA":
                 return {
                     singular: "cota",
                     plural: "Cotas",
-                    title: "E-books/Cotas"
+                    title: "E-books/Cotas",
+                    pertence: "Minhas"
                 }
             default:
                 return {
                     singular: "...",
                     plural: "...",
                     title: "...",
+                    pertence: "",
                 }
         }
     },
