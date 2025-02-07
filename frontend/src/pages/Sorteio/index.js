@@ -504,10 +504,30 @@ export default () => {
                                 >
                                     <ion-icon name="remove" size={"large"}></ion-icon>
                                 </button>
+                                <button
+                                    onClick={() => {
+                                        setQtd(0);
+                                    }}
+                                    style={{
+                                        backgroundColor: 'var(--primary-color)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '50px',
+                                        height: '50px',
+                                        fontSize: '20px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <ion-icon name="refresh-outline"></ion-icon>
+                                </button>
                                 <input
                                     type="tel"
                                     style={{
-                                        width: '200px',
+                                        maxWidth: '115px',
                                         height: '40px',
                                         textAlign: 'center',
                                         fontSize: '16px',
