@@ -19,6 +19,7 @@ const Ebook = require('../models/ebook');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const PagamentoOperadora = require('../models/pagamento_operadoras');
 const BilhetePremiado = require('../models/bilhete_premiado');
+const Socio = require('../models/socios');
 const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
@@ -27,7 +28,7 @@ const upload = multer({
     storage: multer.memoryStorage(), // Store files in memory as buffers
     limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
+        const allowedTypes = ['image/heic', 'image/webp', 'image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);  // Accept the file
         } else {
@@ -70,7 +71,7 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
         });
         const sorteioImagens = await SorteioImagens.findAll({
             where: { sorteio_id: sorteio.id, tipo: 'BANNER' },
-            attributes: ['id']
+            attributes: ['id', 'tipo']
         });
         const sorteioImagemLogo = await SorteioImagens.findOne({
             where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
@@ -520,11 +521,11 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
         });
         const sorteioImagens = await SorteioImagens.findAll({
             where: { sorteio_id: sorteio.id },
-            attributes: ['id']
+            attributes: ['id', 'tipo']
         });
         const sorteioImagemLogo = await SorteioImagens.findOne({
             where: { sorteio_id: sorteio.id, tipo: 'LOGO' },
-            attributes: ['id']
+            attributes: ['id', 'tipo']
         });
         const sorteioParceiro = await SorteioParceiro.findOne({
             where: { user_id: sorteio.user_id },
