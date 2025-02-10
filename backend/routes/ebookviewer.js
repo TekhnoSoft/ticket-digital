@@ -14,7 +14,8 @@ router.get('/all', async (req, res) => {
                 A.description, 
                 A.sorteio_id,
                 B.telefone_contato,
-                C.keybind
+                C.keybind,
+                C.status
             FROM tb_ebooks as A
             LEFT JOIN tb_sorteio_informacoes AS B ON A.sorteio_id=B.sorteio_id
             LEFT JOIN tb_sorteios AS C ON C.id = A.sorteio_id;
@@ -34,7 +35,8 @@ router.get('/all', async (req, res) => {
                 description: row.description,
                 telefone_contato: row?.telefone_contato,
                 sorteio_id: row?.sorteio_id,
-                keybind: row?.keybind
+                keybind: row?.keybind,
+                status: row?.status
             }
             ebooks.push(obj);
         })

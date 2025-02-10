@@ -26,7 +26,7 @@ require('dotenv').config();
 const multer = require('multer');
 const upload = multer({
     storage: multer.memoryStorage(), // Store files in memory as buffers
-    limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
+    limits: { fileSize: 15 * 1024 * 1024 }, // Max file size: 15MB
     fileFilter: (req, file, cb) => {
         const allowedTypes = ['image/heic', 'image/webp', 'image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
         if (allowedTypes.includes(file.mimetype)) {
