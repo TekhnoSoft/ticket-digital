@@ -33,7 +33,7 @@ if (isset($_GET['keybind'])) {
             FROM tb_sorteios AS A 
             INNER JOIN tb_sorteio_informacoes AS B ON A.id = B.sorteio_id 
             LEFT JOIN tb_sorteio_imagens AS C ON C.sorteio_id = A.id
-            WHERE A.keybind = ?
+            WHERE A.keybind = ? ORDER BY C.tipo ASC
         ");
         $stmt->bind_param('s', $keybind);
         $stmt->execute();
