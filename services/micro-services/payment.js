@@ -78,7 +78,8 @@ const paymentThread = () => {
                         const ebook = await Ebook.findOne({
                             where:{
                                 sorteio_id: sorteio?.id
-                            }
+                            },
+                            attributes: ['link']
                         })
 
                         let link = ebook ? ebook?.link : "";

@@ -1116,7 +1116,7 @@ router.get('/campanha/:campanha_id/get-ebooks', validateToken, async (req, res) 
             where: {
                 sorteio_id: campanha_id,
             },
-            attributes: ['id', 'name', 'description', 'sorteio_id', 'createdAt']
+            attributes: ['id', 'name', 'link', 'description', 'sorteio_id', 'createdAt']
         })
 
         return res.status(200).json(ebooks);
@@ -1128,27 +1128,23 @@ router.get('/campanha/:campanha_id/get-ebooks', validateToken, async (req, res) 
 })
 
 router.post('/campanha/save-ebook', validateToken,
-    upload.fields([{ name: 'thumb', maxCount: 1 }, { name: 'payload', maxCount: 1 }]),
+    upload.fields([{ name: 'thumb', maxCount: 1 }]),
     async (req, res) => {
         try {
-            const { name, description, campanha_id } = req.body;
+            const { name, link, description, campanha_id } = req.body;
             const thumb = req.files?.thumb ? req.files.thumb[0] : null;
-            const payload = req.files?.payload ? req.files.payload[0] : null;
 
-            if (!thumb || !payload) {
-                return res.status(400).json({ error: 'É necessário enviar a capa (thumb) e o arquivo PDF (payload).' });
+            if (!thumb) {
+                return res.status(400).json({ error: 'É necessário enviar a capa (thumb).' });
             }
 
             const compressedThumbBuffer = await compressImageFromBuffer(thumb.buffer);
 
-            const pdfDoc = await PDFDocument.load(payload.buffer);
-            const compressedPdfBytes = await pdfDoc.save();
-
             const ebookRecord = await Ebook.create({
                 name,
                 description,
+                link,
                 thumb: compressedThumbBuffer,
-                payload: compressedPdfBytes,
                 sorteio_id: campanha_id,
             });
 

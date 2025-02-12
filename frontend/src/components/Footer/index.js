@@ -49,11 +49,12 @@ export default function Footer({footerMode, parceiro, logo}) {
                     </div>
                 </div>
 
-                {/* Rodapé */}
                 <div className="footer-bottom">
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                         <span>&copy; {new Date().getFullYear()} Todos os direitos reservados</span>&nbsp;&nbsp;
-                        <img src={logo ? Environment.API_BASE + `/sorteios/imagem/${logo}` : '../placeholder-image.png'} alt="Logo" />
+                        {logo ? (
+                            <img src={Environment.API_BASE + `/sorteios/imagem/${logo}`} alt="Logo" />
+                        ) : (null)}
                     </div>
                     <button className="scroll-to-top" onClick={scrollToTop} style={{ marginTop: '10px' }}>
                         <ion-icon name="chevron-up-outline"></ion-icon>

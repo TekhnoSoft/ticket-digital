@@ -16,8 +16,8 @@ export default ({ id }) => {
 
     const [titulo, setTitulo] = useState("");
     const [description, setDescription] = useState("");
+    const [link, setLink] = useState("");
     const [thumb, setThumb] = useState(null);
-    const [file, setFile] = useState(null);
 
     const [showButtonLoader, setShowButtonLoader] = useState(false);
     const [showModalEbook, setShowModalEbook] = useState(false);
@@ -40,49 +40,53 @@ export default ({ id }) => {
 
     const onCloseEbookCallback = () => {
         setTitulo("");
+        setLink("");
         setDescription("");
         setThumb(null);
-        setFile(null);
     }
 
     const handleAddEbook = async () => {
         setShowButtonLoader(true);
-    
+
         if (Utils.stringIsNullOrEmpty(titulo)) {
             Utils.notify("error", "Informe o título do eBook.");
             setShowButtonLoader(false);
             return;
         }
-    
+
+        if (Utils.stringIsNullOrEmpty(link)) {
+            Utils.notify("error", "Informe o link do eBook.");
+            setShowButtonLoader(false);
+            return;
+        }
+        
+        if(!validateLink(link)){
+            Utils.notify("error", "Informe o link válido.");
+            setShowButtonLoader(false);
+            return;
+        }
+
         if (Utils.stringIsNullOrEmpty(description)) {
             Utils.notify("error", "Informe a descrição do eBook.");
             setShowButtonLoader(false);
             return;
         }
-    
+
         if (!thumb) {
             Utils.notify("error", "Selecione a capa do eBook.");
             setShowButtonLoader(false);
             return;
         }
-    
-        if (!file) {
-            Utils.notify("error", "Selecione o eBook (arquivo PDF).");
-            setShowButtonLoader(false);
-            return;
-        }
-    
-        // Criação do FormData para enviar os dados
+
         const formData = new FormData();
-        formData.append('thumb', thumb);  // A capa do eBook
-        formData.append('payload', file); // O arquivo PDF do eBook
-        formData.append('name', titulo);  // Nome do eBook
-        formData.append('description', description); // Descrição do eBook
-        formData.append('campanha_id', id); // ID da campanha
-    
-        // Chama a função saveEbook passando formData diretamente
+        formData.append('thumb', thumb);
+        formData.append('name', titulo);
+        formData.append('link', link);
+        formData.append('description', description);
+        formData.append('campanha_id', id);
+
         const { success, data } = await Api.parceiro.saveEbook(formData);
-    
+
         if (success) {
             Utils.notify("success", "Ebook adicionado com sucesso.");
             setShowModalEbook(false);
@@ -91,7 +95,7 @@ export default ({ id }) => {
         } else {
             Utils.notify("error", "Erro ao adicionar o eBook.");
         }
-    
+
         setShowButtonLoader(false);
     }
 
@@ -116,6 +120,21 @@ export default ({ id }) => {
         }
     }
 
+    const handleView = (item) => {
+        let absoluteUrl = item?.link;
+
+        if (!/^https?:\/\//i.test(item?.link)) {
+            absoluteUrl = new URL(item?.link, window.location.origin).href;
+        }
+
+        window.open(absoluteUrl, '_blank');
+    }
+
+    const validateLink = (url) => {
+        const regex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+        return regex.test(url);
+    }
+
     return (
         <>
             <Modal onCloseCallback={onCloseEbookCallback} setShow={setShowModalEbook} show={showModalEbook}>
@@ -128,22 +147,15 @@ export default ({ id }) => {
                     </div>
                     <SpaceBox space={8} />
                     <Input type={"text"} label={"Título do eBook"} setValue={setTitulo} value={titulo} />
+                    <Input type={"text"} label={"Link do eBook (Google Drive, Docs, etc.)"} setValue={setLink} value={link} />
                     <Input type={"textarea"} label={"Descrição do eBook"} setValue={setDescription} value={description} />
                     <label htmlFor='capa'>
-                        <div style={{width: '100%', background: '#f5f5f5', borderRadius: '8px', border: 'dashed #ddd 1px', paddingTop: '15px', paddingBottom: '15px', fontSize: '16px', display: 'flex', alignItems: 'center', fontWeight: 'bold', color: 'var(--text-opacity)', cursor: 'pointer'}}>
+                        <div style={{ width: '100%', background: '#f5f5f5', borderRadius: '8px', border: 'dashed #ddd 1px', paddingTop: '15px', paddingBottom: '15px', fontSize: '16px', display: 'flex', alignItems: 'center', fontWeight: 'bold', color: 'var(--text-opacity)', cursor: 'pointer' }}>
                             &nbsp;&nbsp;&nbsp;<ion-icon name="image-outline"></ion-icon>&nbsp;
                             &nbsp;<span>{thumb ? `${thumb?.name?.substring(0, 25)}...` : `(Selecionar capa)`}</span>
                         </div>
                     </label>
                     <input id='capa' hidden type="file" label="Capa do eBook" onChange={e => setThumb(e.target.files[0])} />
-                    <SpaceBox space={10}/>
-                    <label htmlFor='ebook'>
-                        <div style={{width: '100%', background: '#f5f5f5', borderRadius: '8px', border: 'dashed #ddd 1px', paddingTop: '15px', paddingBottom: '15px', fontSize: '16px', display: 'flex', alignItems: 'center', fontWeight: 'bold', color: 'var(--text-opacity)', cursor: 'pointer'}}>
-                            &nbsp;&nbsp;&nbsp;<ion-icon name="book-outline"></ion-icon>&nbsp;
-                            &nbsp;<span>{file ? `${file?.name?.substring(0, 25)}...` : `(Selecionar ebook)`}</span>
-                        </div>
-                    </label>
-                    <input type="file" hidden id='ebook' label="Arquivo PDF do eBook" onChange={e => setFile(e.target.files[0])} />
 
                     <SpaceBox space={15} />
                     <Button disabled={showButtonLoader} style={{ width: '100%' }} onClick={handleAddEbook}>
@@ -180,6 +192,7 @@ export default ({ id }) => {
                                         <th>Capa</th>
                                         <th>Título</th>
                                         <th>Data</th>
+                                        <th>Ver</th>
                                         <th>Ação</th>
                                     </tr>
                                 </thead>
@@ -187,11 +200,14 @@ export default ({ id }) => {
                                     {ebooks.map((item, index) => (
                                         <tr key={index}>
                                             <td>
-                                                <img style={{width: '40px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} src={Environment.API_BASE + '/ebookviewer/view-thumb/' + item?.id}/>
+                                                <img style={{ width: '40px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} src={Environment.API_BASE + '/ebookviewer/view-thumb/' + item?.id} />
                                             </td>
                                             <td>{item?.name}</td>
                                             <td>{Utils.formatDateNoTime(item?.createdAt)}</td>
-                                            <td style={{textAlign: "center" }}>
+                                            <td style={{ textAlign: "center" }}>
+                                                <ion-icon onClick={() => { handleView(item) }} name="eye-outline" size={"large"} style={{ cursor: 'pointer', color: 'rgb(82, 82, 82)' }}></ion-icon>
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>
                                                 <ion-icon onClick={() => { handleRemove(item) }} name="trash-outline" size={"large"} style={{ cursor: 'pointer', color: 'rgb(82, 82, 82)' }}></ion-icon>
                                             </td>
                                         </tr>
