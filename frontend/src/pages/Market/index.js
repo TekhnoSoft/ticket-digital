@@ -44,7 +44,7 @@ export default () => {
                 <SpaceBox space={20} />
                 <h2 className='text-opacity'>Catálogo de eBooks</h2>
                 <SpaceBox space={20} />
-                <img style={{width: '100%'}} src='../bannner_ebook_2.png'/>
+                <img style={{width: '100%'}} src='../banner_topo.png'/>
                 {!loaded ? (
                     <>
                         <SpaceBox space={10} />
@@ -71,17 +71,17 @@ export default () => {
                             <p
                                 style={{
                                     fontSize: '12px',
-                                    whiteSpace: 'nowrap', // Evita quebra de linha
-                                    overflow: 'hidden', // Oculta o texto que excede o limite
-                                    textOverflow: 'ellipsis', // Adiciona '...' no final do texto
-                                    width: '100%', // Garante que o p ocupe todo o espaço disponível
-                                    display: 'block' // Garante que o p se comporte como um bloco
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    width: '100%',
+                                    display: 'block'
                                 }}
                             >
                                 {item?.name}
                             </p>
                             <SpaceBox space={8} />
-                            {item?.sorteio_id > 0 && item?.status == 'ATIVO'? (
+                            {item?.sorteio_id > 0 && item?.status == 'ATIVOr'? (
                                 <>
                                     <div className='acao-promocional' onClick={() => {handleCampanha(item)}}>
                                         <span>ação promocional</span>
@@ -100,7 +100,7 @@ export default () => {
                     ))}
                 </div>
                 <SpaceBox space={40} />
-                <img style={{width: '100%'}} src='../bannner_ebook_1.png'/>
+                <img style={{width: '100%'}} src='../banner_baixo.png'/>
                 <SpaceBox space={40} />
             </div>
         </FragmentView>

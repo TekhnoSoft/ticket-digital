@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 var axios = require("axios");
 const User = require('../models/users');
 const EmailFila = require('../models/email_fila');
+const Ebook = require('../models/ebook');
 
 const paymentThread = () => {
     // A cada 10 segundos, consultar pagamento de fatura pendente.
@@ -66,7 +67,7 @@ const paymentThread = () => {
                             }
                         })
 
-                        let numeros = await Bilhete.findAll({
+                        const numeros = await Bilhete.findAll({
                             where: {
                                 id_remessa: fatura?.id_remessa,
                                 status: "PAGO"
@@ -74,12 +75,20 @@ const paymentThread = () => {
                             attributes: ['numero']
                         });
 
+                        const ebook = await Ebook.findOne({
+                            where:{
+                                sorteio_id: sorteio?.id
+                            }
+                        })
+
+                        let link = ebook ? ebook?.link : "";
+
                         await EmailFila.create({
                             from: 'server',
                             to: user?.email,
                             subject: 'Ebook da Sorte - Seu ebook chegou! 🔥',
                             content: '<b>Seus números:</b> <br/>' + numeros?.map(b => b.numero).join(', ') + 
-                                     '<br/><b>Acesse o ebook:</b> <a href="https://drive.google.com/file/d/18qmNenBoM8luKXjyId6-Anr7-e5uNfz-/view?usp=sharing">https://drive.google.com/file/d/18qmNenBoM8luKXjyId6-Anr7-e5uNfz-/view?usp=sharing</a>'
+                                     '<br/><b>Acesse o ebook:</b> <a href="'+link+'">acessar ebook</a>'
                         })
 
                     }else if(fatura?.tipo == "CAMPANHA"){

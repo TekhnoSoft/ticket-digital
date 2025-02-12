@@ -20,9 +20,13 @@ const Ebook = database.define('tb_ebooks', {
         type: Sequelize.BLOB("long"),
         allowNull: false,
     },
+    link: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+    },
     payload: {
         type: Sequelize.BLOB("long"),
-        allowNull: false,
+        allowNull: true,
     },
     sorteio_id: {
         type: Sequelize.INTEGER,
