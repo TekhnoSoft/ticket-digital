@@ -152,7 +152,11 @@ export default () => {
             }
             setBtnsQtd(_qtdBtns);
 
-            setQtd(campanhaData?.info?.minimo_cota_usuario);
+            if (campanhaData?.info?.minimo_cota_usuario >= campanhaData?.cotasDisponiveis) {
+                setQtd(campanhaData?.cotasDisponiveis);
+            } else {
+                setQtd(campanhaData?.info?.minimo_cota_usuario);
+            }
 
             window.document.title = campanhaData?.name;
 
@@ -443,10 +447,15 @@ export default () => {
                                         }}
                                         onClick={() => {
                                             let newQtd = qtd + item?.qtd;
-                                            if (newQtd >= campanha?.info?.maximo_cota_usuario) {
-                                                setQtd(campanha?.info?.maximo_cota_usuario);
+                                            if (newQtd >= campanha?.cotasDisponiveis) {
+                                                setQtd(campanha?.cotasDisponiveis);
                                             } else {
-                                                setQtd(newQtd);
+
+                                                if (newQtd >= campanha?.info?.maximo_cota_usuario) {
+                                                    setQtd(campanha?.info?.maximo_cota_usuario);
+                                                } else {
+                                                    setQtd(newQtd);
+                                                }
                                             }
                                         }}
                                     >
@@ -506,7 +515,16 @@ export default () => {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        setQtd(campanha?.info?.minimo_cota_usuario);
+                                        const cotasDisponiveis = campanha?.cotasDisponiveis || 0;  // Garante que cotasDisponiveis tenha um valor válido
+                                        const minimoCotaUsuario = campanha?.info?.minimo_cota_usuario || 0;  // Garante que minimo_cota_usuario tenha um valor válido
+
+                                        if (qtd > cotasDisponiveis) {
+                                            setQtd(cotasDisponiveis);
+                                        } else if (qtd < minimoCotaUsuario && cotasDisponiveis >= minimoCotaUsuario) {
+                                            setQtd(minimoCotaUsuario);
+                                        }else if (cotasDisponiveis > 0){
+                                            setQtd(minimoCotaUsuario);
+                                        }
                                     }}
                                     style={{
                                         backgroundColor: 'var(--primary-color)',

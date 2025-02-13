@@ -96,6 +96,8 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
             }
         })
 
+        let cotasDisponiveis = Number(sorteioRegras[0]?.valor - bilhetesReservadosPagos);
+
         if (sorteioInformacoes) {
             const sorteioPlano = sorteio.toJSON();
             sorteioPlano.info = sorteioInformacoes;
@@ -104,7 +106,7 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
             sorteioPlano.parceiro = sorteioParceiro;
             sorteioPlano.logo = sorteioImagemLogo;
             sorteioPlano.pagos = bilhetesPagos;
-            sorteioPlano.cotasDisponiveis = Number(sorteioRegras[0]?.valor - bilhetesReservadosPagos)
+            sorteioPlano.cotasDisponiveis = cotasDisponiveis > 0 ? cotasDisponiveis : 0
 
             return res.status(200).json(sorteioPlano);
         } else {
