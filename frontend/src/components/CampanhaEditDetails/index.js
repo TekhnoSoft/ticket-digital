@@ -180,7 +180,7 @@ export default ({ id }) => {
                                                 Ganhos Estimados
                                             </th>
                                             <th style={{ fontSize: '12px' }}>
-                                                Valor
+                                                Parte
                                             </th>
                                             <th style={{ fontSize: '12px', textAlign: 'right' }}>
                                                 Tag
