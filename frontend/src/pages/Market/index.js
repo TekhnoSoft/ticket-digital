@@ -81,7 +81,7 @@ export default () => {
                                 {item?.name}
                             </p>
                             <SpaceBox space={8} />
-                            {item?.sorteio_id > 0 && item?.status == 'ATIVOr'? (
+                            {item?.sorteio_id > 0 && item?.status == 'ATIVO'? (
                                 <>
                                     <div className='acao-promocional' onClick={() => {handleCampanha(item)}}>
                                         <span>ação promocional</span>

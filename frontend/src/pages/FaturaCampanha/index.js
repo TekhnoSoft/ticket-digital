@@ -300,7 +300,7 @@ export default () => {
                             <div className="product-summary">
                                 <img
                                     className="product-img"
-                                    src={campanha?.imagem ? Environment.API_BASE + `/sorteios/imagem/${campanha?.imagem}` : `../placeholder-image.png`}
+                                    src={campanha?.imagem ? Environment.API_BASE + `/sorteios/imagem/${campanha?.imagem}` : `../hero.png`}
                                     alt="Produto"
                                 />
                                 <div>

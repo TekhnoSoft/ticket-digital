@@ -536,14 +536,6 @@ export default () => {
                                     }}
                                     readOnly
                                     value={qtd}
-                                    onChange={(e) => {
-                                        let v = e.target.value;
-                                        if (v >= campanha?.info.maximo_cota_usuario) {
-                                            setQtd(campanha?.info.maximo_cota_usuario)
-                                        } else {
-                                            setQtd(e.target.value)
-                                        }
-                                    }}
                                 />
                                 <button
                                     style={{
@@ -561,10 +553,14 @@ export default () => {
                                     }}
                                     onClick={() => {
                                         let newQtd = qtd + 1;
-                                        if (newQtd >= campanha?.info?.maximo_cota_usuario) {
-                                            setQtd(campanha?.info?.maximo_cota_usuario);
+                                        if (newQtd >= campanha?.cotasDisponiveis) {
+                                            setQtd(campanha?.cotasDisponiveis);
                                         } else {
-                                            setQtd(newQtd);
+                                            if (newQtd >= campanha?.info?.maximo_cota_usuario) {
+                                                setQtd(campanha?.info?.maximo_cota_usuario);
+                                            } else {
+                                                setQtd(newQtd);
+                                            }
                                         }
                                     }}
                                 >

@@ -89,6 +89,13 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
             }
         })
 
+        const bilhetesReservadosPagos = await Bilhete.count({
+            where: {
+                sorteio_id: sorteio?.id,
+                status: { [Op.in]: ["PAGO", "INDISPONIVEL"] }
+            }
+        })
+
         if (sorteioInformacoes) {
             const sorteioPlano = sorteio.toJSON();
             sorteioPlano.info = sorteioInformacoes;
@@ -97,6 +104,7 @@ router.get('/get-by-keybind/:keybind', async (req, res) => {
             sorteioPlano.parceiro = sorteioParceiro;
             sorteioPlano.logo = sorteioImagemLogo;
             sorteioPlano.pagos = bilhetesPagos;
+            sorteioPlano.cotasDisponiveis = Number(sorteioRegras[0]?.valor - bilhetesReservadosPagos)
 
             return res.status(200).json(sorteioPlano);
         } else {
