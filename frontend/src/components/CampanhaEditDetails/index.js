@@ -23,7 +23,7 @@ export default ({ id }) => {
             setCampanha(data);
         }
         setLoaded(true);
-    }    
+    }
 
     const getStatusProps = (status) => {
         switch (status) {
@@ -51,17 +51,29 @@ export default ({ id }) => {
     }
 
     const getImage = () => {
-        if(campanha?.imagens?.length <= 0){
+        if (campanha?.imagens?.length <= 0) {
             return `../placeholder-image.png`;
         }
-        const image =  campanha?.imagens?.filter(i => {
+        const image = campanha?.imagens?.filter(i => {
             return i.tipo == "BANNER";
         })[0]?.id;
-        if(image){
+        if (image) {
             return `${Environment.API_BASE}/sorteios/imagem/${image}`;
-        }else{
+        } else {
             return `../placeholder-image.png`;
         }
+    }
+    
+    const getValorAtual = (percentage) => {
+        let totalArrecadado = Number(campanha?.pagos * campanha?.valor_por_bilhete);
+        let valor = (totalArrecadado * percentage) / 100;
+        return valor;
+    }
+
+    const getValorEstimado = (percentage) => {
+        let totalArrecadado = Number(campanha?.regra?.valor) * campanha?.valor_por_bilhete || 0;
+        let valor = (totalArrecadado * percentage) / 100;
+        return valor;
     }
 
     return (
@@ -77,7 +89,7 @@ export default ({ id }) => {
                         <SpaceBox space={10} />
                         <div>
                             <div style={{ fontSize: '14px', color: 'var(--text-opacity)' }}>Status:</div>
-                            <div style={{background: 'rgba(35, 45, 60, 0.08)', borderRadius: '8px', padding: '5px 20px'}}>
+                            <div style={{ background: 'rgba(35, 45, 60, 0.08)', borderRadius: '8px', padding: '5px 20px' }}>
                                 <span className={`status-bubble-p ${getStatusProps(campanha?.status)?.className}`}></span>&nbsp;{getStatusProps(campanha?.status)?.title}
                             </div>
                         </div>
@@ -86,7 +98,7 @@ export default ({ id }) => {
                 <SpaceBox space={15} />
                 <Hr elevation={1} />
                 <SpaceBox space={15} />
-                <div style={{display: loaded ? 'block' : 'none'}}>
+                <div style={{ display: loaded ? 'block' : 'none' }}>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: '1fr 1fr',
@@ -123,7 +135,7 @@ export default ({ id }) => {
             </Card>
             <SpaceBox space={20} />
             <Card title={"Métricas"} icon={<ion-icon name="analytics-outline"></ion-icon>} style={{ maxWidth: '1000px' }}>
-                <div style={{display: loaded ? 'block' : 'none'}}>
+                <div style={{ display: loaded ? 'block' : 'none' }}>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: '1fr 1fr',
@@ -149,6 +161,68 @@ export default ({ id }) => {
                     </div>
                 </div>
             </Card>
+            {campanha?.socios?.length > 0 ? (
+                <>
+                    <SpaceBox space={20} />
+                    <Card title={"Participações"} icon={<ion-icon name="people-outline"></ion-icon>} style={{ maxWidth: '1000px' }}>
+                        <div style={{ display: loaded ? 'block' : 'none' }}>
+                            <div className='table-container-p' style={{ maxHeight: '500px', scrollY: 'auto', marginTop: '0px' }}>
+                                <table className='sales-table-p'>
+                                    <thead>
+                                        <tr style={{ position: 'sticky', top: '0px' }}>
+                                            <th style={{ fontSize: '12px', textAlign: 'left' }}>
+                                                Nome
+                                            </th>
+                                            <th style={{ fontSize: '12px' }}>
+                                                Ganhos Atuais
+                                            </th>
+                                            <th style={{ fontSize: '12px' }}>
+                                                Ganhos Estimados
+                                            </th>
+                                            <th style={{ fontSize: '12px' }}>
+                                                Valor
+                                            </th>
+                                            <th style={{ fontSize: '12px', textAlign: 'right' }}>
+                                                Tag
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {campanha?.socios?.map(t => (
+                                            <tr>
+                                                <td style={{ fontSize: '12px', textAlign: 'left' }}>
+                                                    {t?.nome}
+                                                </td>
+                                                <td style={{ fontSize: '12px' }}>
+                                                    {t?.tipo == "PORCENTAGEM" ? (
+                                                        <>
+                                                           {Utils.convertNumberToBRL(getValorAtual(t?.valor))}
+                                                        </>
+                                                    ) : (<>{Utils.convertNumberToBRL(t?.valor)}</>)}
+                                                </td>
+                                                <td style={{ fontSize: '12px' }}>
+                                                    {t?.tipo == "PORCENTAGEM" ? (
+                                                        <>
+                                                           {Utils.convertNumberToBRL(getValorEstimado(t?.valor))}
+                                                        </>
+                                                    ) : (<>{Utils.convertNumberToBRL(t?.valor)}</>)}
+                                                </td>
+                                                <td style={{ fontSize: '12px' }}>
+                                                    {t?.tipo == "PORCENTAGEM" ? (<>{t?.valor}%</>) : (<>{Utils.convertNumberToBRL(t?.valor)}</>)}
+                                                </td>
+                                                <td style={{ fontSize: '12px', textAlign: 'right' }}>
+                                                    {t?.tag}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </Card>
+                </>
+            ) : (null)}
+
         </>
     )
 }

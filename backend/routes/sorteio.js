@@ -20,6 +20,7 @@ const { validateToken } = require('../middlewares/AuthMiddleware');
 const PagamentoOperadora = require('../models/pagamento_operadoras');
 const BilhetePremiado = require('../models/bilhete_premiado');
 const Socio = require('../models/socios');
+const SorteioSocioPartes = require('../models/sorteio_socio_partes');
 const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
@@ -562,6 +563,12 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
             col: 'user_id'
         });
 
+        const socios = await SorteioSocioPartes.findAll({
+            where: {
+                sorteio_id: sorteio?.id
+            }
+        })
+
         if (sorteioInformacoes) {
             const sorteioPlano = sorteio.toJSON();
             sorteioPlano.info = sorteioInformacoes;
@@ -573,6 +580,7 @@ router.get('/campanha/:campanha_id/get-details', validateToken, async (req, res)
             sorteioPlano.reservas = Number(bilhetesReservados);
             sorteioPlano.nFaturas = Number(faturas);
             sorteioPlano.usuarios = Number(usuarios);
+            sorteioPlano.socios = socios;
 
             return res.status(200).json(sorteioPlano);
         } else {
