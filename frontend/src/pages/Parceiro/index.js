@@ -108,7 +108,7 @@ export default () => {
                                                     Utils.notify("error", "Erro ao copiar para o clipboard.");
                                                 });
                                             }}>
-                                                <ion-icon name="copy-outline"></ion-icon> Link
+                                                <ion-icon name="copy-outline"></ion-icon> Copiar&nbsp;link
                                             </div>
                                         </div>
                                     </div>
