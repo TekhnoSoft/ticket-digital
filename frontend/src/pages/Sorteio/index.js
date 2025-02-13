@@ -515,15 +515,13 @@ export default () => {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        const cotasDisponiveis = campanha?.cotasDisponiveis || 0;  // Garante que cotasDisponiveis tenha um valor válido
-                                        const minimoCotaUsuario = campanha?.info?.minimo_cota_usuario || 0;  // Garante que minimo_cota_usuario tenha um valor válido
+                                        const cotasDisponiveis = campanha?.cotasDisponiveis || 0;
+                                        const minimoCotaUsuario = campanha?.info?.minimo_cota_usuario || 0;
 
-                                        if (qtd > cotasDisponiveis) {
-                                            setQtd(cotasDisponiveis);
-                                        } else if (qtd < minimoCotaUsuario && cotasDisponiveis >= minimoCotaUsuario) {
-                                            setQtd(minimoCotaUsuario);
-                                        }else if (cotasDisponiveis > 0){
-                                            setQtd(minimoCotaUsuario);
+                                        if (cotasDisponiveis < minimoCotaUsuario) {
+                                        setQtd(cotasDisponiveis);
+                                        } else {
+                                        setQtd(minimoCotaUsuario);
                                         }
                                     }}
                                     style={{
