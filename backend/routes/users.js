@@ -239,9 +239,9 @@ router.post('/pre-register', validateOrigin, async (req, res) => {
             return res.status(400).json({ message: "Email inválido.", data: null });
         }
 
-        if (!Utils.validateCPF(cpf)) {
+        /*if (!Utils.validateCPF(cpf)) {
             return res.status(400).json({ message: "CPF inválido.", data: null });
-        }
+        }*/
 
         const userPhone = await User.findOne({
             where: {
