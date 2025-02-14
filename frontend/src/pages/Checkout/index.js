@@ -85,11 +85,11 @@ export default () => {
                     return;
                 }
 
-                if (!Utils.validateCpf(cpf)) {
+                /*if (!Utils.validateCpf(cpf)) {
                     Utils.notify("error", "CPF inválido!");
                     setShowButtonLoader(false);
                     return;
-                }
+                }*/
 
                 let registerOk = await handlePreRegister();
 
