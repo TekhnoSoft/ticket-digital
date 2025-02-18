@@ -8,10 +8,10 @@ const payPixMercadoPago = async ({valor, description, email, operadoraAccessToke
         }
     });
     
-    const payment = new Payment(client);    
+    const payment = new Payment(client);   
 
     const body = {
-        transaction_amount: valor,
+        transaction_amount: parseFloat(valor.toFixed(2)),
         description: description,
         payment_method_id: "pix",
         payer: {
