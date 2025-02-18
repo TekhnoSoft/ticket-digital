@@ -5,6 +5,13 @@ const API_BASE = Environment.API_BASE;
 
 const Api = {
     geral: {
+        getConexaoCount: async () => {
+            return await axios.get(`${API_BASE}/conexao/count`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
         getEbooks: async ({}) => {
             return await axios.get(`${API_BASE}/ebookviewer/all`).then(async (response) => {
                 return await response;

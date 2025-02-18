@@ -17,11 +17,13 @@ const usersRoute = require('./routes/users');
 const sorteiosRoute = require('./routes/sorteio');
 const paymentRoute = require('./routes/payment');
 const ebookviewerRoute = require('./routes/ebookviewer');
+const conexaoRoute = require('./routes/conexao');
 
 app.use('/users', usersRoute);
 app.use('/sorteios', sorteiosRoute);
 app.use('/payment', paymentRoute);
 app.use('/ebookviewer', ebookviewerRoute);
+app.use('/conexao', conexaoRoute);
 
 /*(async () => {
     try {

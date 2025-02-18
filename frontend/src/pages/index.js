@@ -16,3 +16,4 @@ export { default as Forgot } from './Forgot';
 export { default as PoliticaPrivacidade } from './PoliticaPrivacidade';
 export { default as TermosUso } from './TermosUso';
 export { default as PageNotFound } from './PageNotFound';
+export { default as StatusApi } from './StatusApi';

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { MainContext } from "./helpers/MainContext";
-import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroPagamentos, ParceiroVisual, ParceiroPerfil, Forgot, ParceiroAddCampanha, ParceiroEditCampanha, FaturaCampanha, PoliticaPrivacidade, TermosUso } from "./pages";
+import { Sorteio, Checkout, Market, Fatura, PageNotFound, Parceiro, Login, Register, ParceiroPedidos, ParceiroPagamentos, ParceiroVisual, ParceiroPerfil, Forgot, ParceiroAddCampanha, ParceiroEditCampanha, FaturaCampanha, PoliticaPrivacidade, TermosUso, StatusApi } from "./pages";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
@@ -60,6 +60,7 @@ function App() {
           <Route path="/forgot-password" element={<Forgot />} />
           <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
           <Route path="/termos-uso" element={<TermosUso />} />
+          <Route path="/status-api" element={<StatusApi />} />
           <Route path="*" element={<PageNotFound />} />
           {/*==================PRIVATE-ROUTES===================*/}
           <Route path="/parceiro" element={userParceiro ? <Parceiro /> : <Login />} />

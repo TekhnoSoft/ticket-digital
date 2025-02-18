@@ -7,7 +7,7 @@ const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, 
     port: process.env.SQL_PORT,
     logging: false, // Desativa logs de queries (opcional)
     pool: {
-        max: 75, // Número máximo de conexões simultâneas
+        max: 100, // Número máximo de conexões simultâneas
         min: 0, // Número mínimo de conexões no pool
         acquire: 30000, // Tempo máximo de espera para adquirir conexão (30s)
         idle: 10000 // Tempo máximo que uma conexão pode ficar ociosa antes de ser fechada (10s)
