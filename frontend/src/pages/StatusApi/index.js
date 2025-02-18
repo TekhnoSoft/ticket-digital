@@ -28,10 +28,10 @@ export default () => {
     return (
         <FragmentView headerMode={"USER"}>
             <div className='responsive-margin'>
-                <SpaceBox space={8} />
+                <SpaceBox space={30} />
                 <h2>Status API</h2>
-                <SpaceBox space={15} />
-                <Card title={"Numero de Conexões"} icon={<ion-icon name="git-merge-outline"></ion-icon>}>
+                <SpaceBox space={30} />
+                <Card title={"Numero de conexões no banco"} icon={<ion-icon name="git-merge-outline"></ion-icon>}>
                     <h3>Conexões: {count}</h3>
                 </Card>
                 <SpaceBox space={80} />
