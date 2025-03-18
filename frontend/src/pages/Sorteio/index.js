@@ -101,7 +101,7 @@ export default () => {
     const [showModalCarta, setShowModalCarta] = useState(false);
 
     useEffect(() => {
-        if(idCartaPremiada != "null"){
+        if(localStorage.getItem('id_carta_premiada') != "null"){
             setShowModalCarta(true);
         }
         if(idCartaPremiada != null || idSorteioSocio != null){
