@@ -47,15 +47,15 @@ const Api = {
                 return err;
             });
         },
-        reservarBilheteSelecionado: async ({sorteio_id, numeros, user_id, idSorteioSocio}) => {
-            return await axios.post(`${API_BASE}/sorteios/reservar-bilhete-selecionado`, {sorteio_id, numeros, user_id, idSorteioSocio}).then(async (response) => {
+        reservarBilheteSelecionado: async ({sorteio_id, numeros, user_id, idSorteioSocio, idCartaPremiada}) => {
+            return await axios.post(`${API_BASE}/sorteios/reservar-bilhete-selecionado`, {sorteio_id, numeros, user_id, idSorteioSocio, idCartaPremiada}).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;
             });
         },
-        reservarBilheteQuantidade: async ({sorteio_id, quantidade, user_id, idSorteioSocio}) => {
-            return await axios.post(`${API_BASE}/sorteios/reservar-bilhete-quantidade`, {sorteio_id, quantidade, user_id, idSorteioSocio}).then(async (response) => {
+        reservarBilheteQuantidade: async ({sorteio_id, quantidade, user_id, idSorteioSocio, idCartaPremiada}) => {
+            return await axios.post(`${API_BASE}/sorteios/reservar-bilhete-quantidade`, {sorteio_id, quantidade, user_id, idSorteioSocio, idCartaPremiada}).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;
@@ -147,6 +147,13 @@ const Api = {
         },
         getSorteioPublicacaoTaxas: async ({}) => {
             return await axios.get(`${API_BASE}/sorteios/taxas`).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        checkIfCartaPremiada: async ({codigo}) => {
+            return await axios.get(`${API_BASE}/sorteios/check-carta-premiada/${codigo}`).then(async (response) => {
                 return await response;
             }).catch(err => {
                 return err;

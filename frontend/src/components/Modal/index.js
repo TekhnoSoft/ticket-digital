@@ -3,11 +3,13 @@ import './style.css';
 import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
 
-const Modal = ({ children, show, setShow, onCloseCallback }) => {
+const Modal = ({ children, show, setShow, onCloseCallback, backdropCancelEvents }) => {
 
     const navigate = useNavigate();
 
     const handleBackdropClick = () => {
+        if(backdropCancelEvents == true) return;
+
         setShow(false);
         if(onCloseCallback){
             onCloseCallback();

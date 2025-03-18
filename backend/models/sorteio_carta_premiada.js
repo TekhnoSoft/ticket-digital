@@ -24,9 +24,9 @@ const SorteioCartaPremiada = database.define('tb_sorteio_carta_premiadas', {
         type: Sequelize.INTEGER,
         allowNull: false,
     },
-    bilhete_numero:{
+    fatura_id:{
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
     user_id:{
         type: Sequelize.INTEGER,

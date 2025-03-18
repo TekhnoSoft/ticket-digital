@@ -160,7 +160,7 @@ router.get('/imagem/:id', async (req, res) => {
 
 router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => {
     try {
-        let { sorteio_id, quantidade, user_id, idSorteioSocio } = req.body;
+        let { sorteio_id, quantidade, user_id, idSorteioSocio, idCartaPremiada } = req.body;
 
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } });
         const sorteioRegras = await SorteioRegras.findOne({
@@ -211,6 +211,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
             idSorteioSocio: idSorteioSocio,
+            idCartaPremiada: idCartaPremiada,
         });
 
         return res.status(201).json({
@@ -227,7 +228,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
 
 router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) => {
     try {
-        let { sorteio_id, numeros, user_id, idSorteioSocio } = req.body;
+        let { sorteio_id, numeros, user_id, idSorteioSocio, idCartaPremiada } = req.body;
 
         if (!numeros || !Array.isArray(numeros) || numeros.length === 0) {
             return res.status(400).json({ message: "Nenhum número fornecido." });
@@ -285,6 +286,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
             idSorteioSocio: idSorteioSocio,
+            idCartaPremiada: idCartaPremiada,
         });
 
         return res.status(201).json({
@@ -1272,6 +1274,18 @@ router.put('/campanha/save-campanha-info', validateToken, async (req, res) => {
         )
 
         return res.status(200).json(true);
+    }catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/check-carta-premiada/:codigo', validateOrigin, async (req, res) => {
+    try{
+        let { codigo } = req.params;
+        
+        const carta = await SorteioCartaPremiada.findOne({ where: {codigo: codigo }});
+
+        return res.status(200).json(carta);
     }catch (err) {
         return res.status(500).json(err);
     }

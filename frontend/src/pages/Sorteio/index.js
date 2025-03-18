@@ -78,23 +78,36 @@ export default () => {
 
     const [idCartaPremiada, setIdCartaPremiada] = useState(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const idCartaPremiada = urlParams.get('id_carta_premiada');
-        localStorage.setItem("id_carta_premiada", idCartaPremiada);
+        let idCartaPremiada = urlParams.get('id_carta_premiada');
+        if(!localStorage.getItem('id_carta_premiada')){
+            localStorage.setItem("id_carta_premiada", idCartaPremiada);
+        }else{
+            idCartaPremiada = localStorage.getItem('id_carta_premiada');
+        }
         return idCartaPremiada;
     })
 
     const [idSorteioSocio, setIdSorteioSocio] = useState(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const idSorteioSocio = urlParams.get('id_parceiro_socio');
-        localStorage.setItem("id_parceiro_socio", idSorteioSocio);
+        let idSorteioSocio = urlParams.get('id_parceiro_socio');
+        if(!localStorage.getItem('id_parceiro_socio')){
+            localStorage.setItem("id_parceiro_socio", idSorteioSocio);
+        }else{
+            idSorteioSocio = localStorage.getItem('id_parceiro_socio');
+        }
         return idSorteioSocio;
     })
 
+    const [showModalCarta, setShowModalCarta] = useState(false);
+
     useEffect(() => {
         if(idCartaPremiada != null){
-
+            setShowModalCarta(true);
         }
-    }, [idCartaPremiada])
+        if(idCartaPremiada != null || idSorteioSocio != null){
+            navigate(`/campanha/${keybind}`);
+        }
+    }, [idCartaPremiada, idSorteioSocio])
 
     useEffect(() => {
         localStorage.removeItem("checkout");
@@ -219,6 +232,7 @@ export default () => {
             qtd: viewMode == "USUARIO_ESCOLHE" ? numeros?.length : qtd,
             taxa_cliente: taxaCliente,
             idSorteioSocio: idSorteioSocio,
+            idCartaPremiada: idCartaPremiada,
         }))
         navigate("/checkout");
     }
@@ -240,8 +254,23 @@ export default () => {
         setImagePreview("placeholder-image.png");
     }
 
+    const onCloseModalCartaCallback = () => {
+
+    }
+
     return (
         <FragmentView headerMode={"USER"} modo={campanha?.modo || ""} info={campanha?.info} parceiro={campanha?.parceiro} logo={campanha?.logo?.id}>
+            <Modal onCloseCallback={onCloseModalCartaCallback} show={showModalCarta} setShow={setShowModalCarta}>
+                <div>
+                    <h3>Você encontrou uma carta premiada!</h3>
+                </div>
+                <div>
+                    <img src='../win.png' style={{width: '100%'}} />
+                    <span>Finalize a compra das cotas para descobrir se sua carta é premiada!</span>
+                </div>
+                <SpaceBox space={30}/>
+                <Button onClick={() => {setShowModalCarta(false);}} style={{width: '100%'}}>Continuar</Button>
+            </Modal>
             <Modal onCloseCallback={onCloseModalCampanhasCallback} setShow={setShowModalCampanhas} show={showModalCampanhas}>
                 <BilhetesUserList modo={campanha?.modo || ""} user={user} setUser={setUser} />
             </Modal>

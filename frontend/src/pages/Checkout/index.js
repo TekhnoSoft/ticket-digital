@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './style.css';
-import { Button, Card, FragmentView, Hr, Input, SpaceBox } from '../../components';
+import { Button, Card, FragmentView, Hr, Input, Modal, SpaceBox } from '../../components';
 import QRCode from "react-qr-code";
 import { useNavigate } from 'react-router-dom';
 import Environment from '../../Environment';
@@ -29,6 +29,9 @@ export default () => {
 
     const [qrCode, setQrCode] = useState(null);
     const [barCode, setBarCode] = useState(null);
+
+    const [showWinCartaPremiada, setShowWinCartaPremiada] = useState(false);
+    const [showLoseCartaPremiada, setShowLoseCartaPremiada] = useState(false);
 
     useEffect(() => {
         if (!checkout) {
@@ -138,7 +141,7 @@ export default () => {
     const handleFinish = async () => {
         switch (checkout?.viewMode) {
             case "USUARIO_ESCOLHE":
-                const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio }, true);
+                const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio, idCartaPremiada: checkout?.idCartaPremiada }, true);
                 if (successBilheteSelecionado) {
                     localStorage.setItem("fatura", dataBilheteSelecionado?.id_remessa);
                     checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, null);
@@ -148,7 +151,7 @@ export default () => {
                 }
                 break;
             case "SISTEMA_ESCOLHE":
-                const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio }, true);
+                const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio, idCartaPremiada: checkout?.idCartaPremiada }, true);
                 if (successBilheteQuantidade) {
                     localStorage.setItem("fatura", dataBilheteQuantidade?.id_remessa);
                     checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, null);
@@ -173,6 +176,7 @@ export default () => {
                     if (interval) {
                         clearInterval(interval);
                     }
+                    await checkIfCartaPremiada();
                     break;
                 case "CANCELADO":
                     setPaymentStatus("CANCELADO");
@@ -192,8 +196,69 @@ export default () => {
             .catch(err => Utils.notify("error", "Erro ao copiar"));
     };
 
+    const checkIfCartaPremiada = async () => {
+        if (!Utils.stringIsNullOrEmpty(checkout?.idCartaPremiada)) {
+            const { success, data } = await Utils.processRequest(Api.geral.checkIfCartaPremiada, { codigo: checkout?.idCartaPremiada }, true);
+            if(success){
+                console.log(data);
+                if(data?.flg_premiada == true){
+                    setShowWinCartaPremiada(true);
+                }else{
+                    setShowLoseCartaPremiada(true);
+                }
+                localStorage.removeItem("id_carta_premiada");
+            }
+        }
+    }
+
     return (
         <FragmentView headerMode={"PAYMENT"} headerPaymentStep={step}>
+            <Modal setShow={setShowLoseCartaPremiada} show={showLoseCartaPremiada}>
+                <div className='carta-content'>
+                    <center>
+                        <h2 style={{ textAlign: 'center' }}>
+                            😕 Foi por pouco, essa não é a carta premiada.
+                        </h2>
+                        <div style={{ marginTop: '80px', transform: 'rotateZ(-25deg)' }}>
+                            <span style={{ background: 'gray', padding: '10px 20px', borderRadius: '8px' }}>
+                                <b style={{ color: 'white' }}>Continue procurando...</b>
+                            </span>
+                        </div>
+                        <img src='../bad.png' style={{ width: '300px', maxWidth: '500px', marginTop: '-60px' }} />
+                    </center>
+                </div>
+            </Modal>
+            <Modal backdropCancelEvents={true} setShow={setShowWinCartaPremiada} show={showWinCartaPremiada}>
+                <div className='carta-content'>
+                    <div className="confetti-container">
+                        <div className="confetti">
+                            {Utils.getConffetis().map((item, index) => (
+                                <i
+                                    key={index}
+                                    style={{
+                                        '--speed': item.speed,
+                                        '--bg': item.bg,
+                                    }}
+                                    className={item.shape}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <center>
+                            <h2 style={{ textAlign: 'center' }}>
+                                🎉 Parabéns, você achou a carta premiada!
+                            </h2>
+                            <div style={{ marginTop: '50px', transform: 'rotateZ(-25deg)' }}>
+                                <span style={{ background: 'var(--primary-color)', padding: '10px 20px', borderRadius: '8px' }}>
+                                    <b style={{ color: 'white' }}>R$ 250,00</b>
+                                </span>
+                            </div>
+                            <img src='../win.png' style={{ width: '100%', maxWidth: '500px', marginTop: '-50px' }} />
+                        </center>
+                    </div>
+                </div>
+            </Modal>
             <div style={{ marginLeft: '10px', marginRight: '10px' }}>
                 <div className='checkout-all'>
                     <div className='checkout-left' style={{ width: '100%' }}>

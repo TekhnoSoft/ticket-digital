@@ -11,6 +11,7 @@ const asaasUri = process.env.ASAAS_API_URI;
 const apiKey = process.env.ASAAS_API_KEY;
 const User = require('../models/users');
 const SorteioSocioPartes = require('../models/sorteio_socio_partes');
+const SorteioCartaPremiada = require('../models/sorteio_carta_premiada');
 
 const getCustomer = async (cpf) => {
     try {
@@ -89,7 +90,7 @@ const payPix = async ({ customer, fatura, description }) => {
     }
 }
 
-const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BILHETE", idSorteioSocio }) => {
+const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BILHETE", idSorteioSocio, idCartaPremiada }) => {
     try {
         const agora = Utils.getDateNow();
 
@@ -97,12 +98,11 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BI
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } })
         const sorteioSocioPartes = await SorteioSocioPartes.findOne({ where: { id: idSorteioSocio }})
+        const sorteioCartaPremiada = await SorteioCartaPremiada.findOne({ where: {codigo: idCartaPremiada }})
 
         let bilhetesCount = null;
 
         let sorteioSocioPartesNome = await sorteioSocioPartes?.nome;
-
-        console.log(sorteioSocioPartesNome);
 
         switch(tipo){
             case "BILHETE":
@@ -181,6 +181,22 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BI
                     where: { id: novaFatura?.id }
                 },
             );
+
+            if (sorteioCartaPremiada != null) {
+                if (sorteioCartaPremiada?.flg_premiada == true && sorteioCartaPremiada?.flg_achada == false) {
+                    await SorteioCartaPremiada.update(
+                        {
+                            user_id: user_id,
+                            flg_achada: true,
+                            fatura_id: novaFatura?.id
+                        },
+                        {
+                            where: { codigo: idCartaPremiada }
+                        }
+                    );
+                }
+            }
+
         }
 
         return novaFatura;
