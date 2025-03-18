@@ -114,6 +114,7 @@ export default () => {
                                     <th>Subtotal</th>
                                     <th>Desconto</th>
                                     <th>Taxa Afiliado</th>
+                                    <th>Referência</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,6 +131,7 @@ export default () => {
                                         <td>{Utils.convertNumberToBRL(item.subtotal)}</td>
                                         <td>{Utils.convertNumberToBRL(item.desconto)}</td>
                                         <td>{Utils.convertNumberToBRL(item.taxa_afiliado)}</td>
+                                        <td>{item.observacao || "Plataforma"}</td>
                                     </tr>
                                 ))}
                             </tbody>
