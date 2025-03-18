@@ -138,7 +138,7 @@ export default () => {
     const handleFinish = async () => {
         switch (checkout?.viewMode) {
             case "USUARIO_ESCOLHE":
-                const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id }, true);
+                const { success: successBilheteSelecionado, data: dataBilheteSelecionado } = await Utils.processRequest(Api.geral.reservarBilheteSelecionado, { sorteio_id: checkout?.campanha?.id, numeros: checkout?.numeros, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio }, true);
                 if (successBilheteSelecionado) {
                     localStorage.setItem("fatura", dataBilheteSelecionado?.id_remessa);
                     checkFaturaIsPayed(dataBilheteSelecionado?.id_remessa, null);
@@ -148,7 +148,7 @@ export default () => {
                 }
                 break;
             case "SISTEMA_ESCOLHE":
-                const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id }, true);
+                const { success: successBilheteQuantidade, data: dataBilheteQuantidade } = await Utils.processRequest(Api.geral.reservarBilheteQuantidade, { sorteio_id: checkout?.campanha?.id, quantidade: checkout?.qtd, user_id: user?.id, idSorteioSocio: checkout?.idSorteioSocio }, true);
                 if (successBilheteQuantidade) {
                     localStorage.setItem("fatura", dataBilheteQuantidade?.id_remessa);
                     checkFaturaIsPayed(dataBilheteQuantidade?.id_remessa, null);

@@ -8,6 +8,8 @@ import Api from '../../Api';
 export default () => {
     const [count, setCount] = useState(0);
     const [arrecadacao, setArrecadacao] = useState(0);
+    const [users, setUsers] = useState(0);
+    const [parceiros, setParceiros] = useState(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -22,6 +24,8 @@ export default () => {
         if (success) {
             setCount(data?.conexoes);
             setArrecadacao(data?.arrecadacao);
+            setUsers(data?.users);
+            setParceiros(data?.parceiros);
         } else {
             setCount(0);
         }
@@ -33,7 +37,7 @@ export default () => {
                 <SpaceBox space={30} />
                 <h2>Status API</h2>
                 <SpaceBox space={30} />
-                <Card title={"Numero de conexões no banco"} icon={<ion-icon name="git-merge-outline"></ion-icon>}>
+                <Card title={"Status"} icon={<ion-icon name="git-merge-outline"></ion-icon>}>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <label>Conexões:&nbsp;&nbsp;&nbsp;</label>
                         <h3>{count}</h3>
@@ -41,6 +45,14 @@ export default () => {
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <label>Arrecadação:&nbsp;&nbsp;&nbsp;</label>
                         <h3>{Utils.convertNumberToBRL(arrecadacao || 0)}</h3>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <label>Nº Usuários:&nbsp;&nbsp;&nbsp;</label>
+                        <h3>{users || 0}</h3>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <label>Nº Parceiros:&nbsp;&nbsp;&nbsp;</label>
+                        <h3>{parceiros || 0}</h3>
                     </div>
                 </Card>
                 <SpaceBox space={80} />

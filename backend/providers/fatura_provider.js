@@ -10,6 +10,7 @@ require('dotenv').config();
 const asaasUri = process.env.ASAAS_API_URI;
 const apiKey = process.env.ASAAS_API_KEY;
 const User = require('../models/users');
+const SorteioSocioPartes = require('../models/sorteio_socio_partes');
 
 const getCustomer = async (cpf) => {
     try {
@@ -88,15 +89,20 @@ const payPix = async ({ customer, fatura, description }) => {
     }
 }
 
-const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BILHETE" }) => {
+const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BILHETE", idSorteioSocio }) => {
     try {
         const agora = Utils.getDateNow();
 
         const user = await User.findOne({ where: { id: user_id } })
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } })
         const sorteioParceiro = await SorteioParceiro.findOne({ where: { user_id: sorteio?.user_id } })
+        const sorteioSocioPartes = await SorteioSocioPartes.findOne({ where: { id: idSorteioSocio }})
 
         let bilhetesCount = null;
+
+        let sorteioSocioPartesNome = await sorteioSocioPartes?.nome;
+
+        console.log(sorteioSocioPartesNome);
 
         switch(tipo){
             case "BILHETE":
@@ -129,6 +135,7 @@ const createFatura = async ({ user_id, sorteio_id, id_remessa, valor, tipo = "BI
             quantidade: bilhetesCount,
             taxa_afiliado: 0,
             tipo: tipo,
+            observacao: sorteioSocioPartesNome || "Plataforma",
         }
 
         const novaFatura = await Fatura.create(faturaObject);

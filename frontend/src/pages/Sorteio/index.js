@@ -76,6 +76,26 @@ export default () => {
     const [showModalImagePreview, setShowModalImagePreview] = useState(false);
     const [imagePreview, setImagePreview] = useState("../placeholder-image.png");
 
+    const [idCartaPremiada, setIdCartaPremiada] = useState(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idCartaPremiada = urlParams.get('id_carta_premiada');
+        localStorage.setItem("id_carta_premiada", idCartaPremiada);
+        return idCartaPremiada;
+    })
+
+    const [idSorteioSocio, setIdSorteioSocio] = useState(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idSorteioSocio = urlParams.get('id_parceiro_socio');
+        localStorage.setItem("id_parceiro_socio", idSorteioSocio);
+        return idSorteioSocio;
+    })
+
+    useEffect(() => {
+        if(idCartaPremiada != null){
+
+        }
+    }, [idCartaPremiada])
+
     useEffect(() => {
         localStorage.removeItem("checkout");
         load();
@@ -198,6 +218,7 @@ export default () => {
             numeros: numeros,
             qtd: viewMode == "USUARIO_ESCOLHE" ? numeros?.length : qtd,
             taxa_cliente: taxaCliente,
+            idSorteioSocio: idSorteioSocio,
         }))
         navigate("/checkout");
     }

@@ -87,6 +87,10 @@ const Fatura = database.define('tb_faturas', {
         type: Sequelize.FLOAT,
         allowNull: false
     },
+    observacao:{
+        type: Sequelize.TEXT,
+        allowNull: true,
+    }
 });
 
 module.exports = Fatura;

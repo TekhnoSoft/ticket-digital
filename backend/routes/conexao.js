@@ -17,6 +17,14 @@ router.get('/count', async (req, res) => {
             AND quantidade > 0
         `;
 
+        const queryUsuarios = `
+            SELECT COUNT(*) as users FROM ticketdigital.tb_users WHERE role='user' AND name not like '%teste%' and password_hash is null;
+        `;
+
+        const queryParceiros = `
+            SELECT COUNT(*) as parceiros FROM ticketdigital.tb_users WHERE role='parceiro' AND name not like '%teste%';
+        `;
+
         const resultadosConexao = await database.query(queryConexao, {
             type: Sequelize.QueryTypes.SELECT,
         });
@@ -25,11 +33,21 @@ router.get('/count', async (req, res) => {
             type: Sequelize.QueryTypes.SELECT,
         });
 
+        const resultadosUsers = await database.query(queryUsuarios, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        const resultadosParceiro = await database.query(queryParceiros, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
         const arrecadacaoTotal = resultadosArrecadacao?.[0]?.total || 0;
 
         const obj = {
             conexoes: resultadosConexao?.length || 0,
-            arrecadacao: arrecadacaoTotal
+            arrecadacao: arrecadacaoTotal,
+            users: resultadosUsers[0]?.users,
+            parceiros: resultadosParceiro[0]?.parceiros
         };
 
         return res.status(200).json(obj);

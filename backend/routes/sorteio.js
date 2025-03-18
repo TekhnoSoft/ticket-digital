@@ -21,6 +21,7 @@ const PagamentoOperadora = require('../models/pagamento_operadoras');
 const BilhetePremiado = require('../models/bilhete_premiado');
 const Socio = require('../models/socios');
 const SorteioSocioPartes = require('../models/sorteio_socio_partes');
+const SorteioCartaPremiada = require('../models/sorteio_carta_premiada');
 const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
@@ -159,7 +160,7 @@ router.get('/imagem/:id', async (req, res) => {
 
 router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => {
     try {
-        let { sorteio_id, quantidade, user_id } = req.body;
+        let { sorteio_id, quantidade, user_id, idSorteioSocio } = req.body;
 
         const sorteio = await Sorteio.findOne({ where: { id: sorteio_id } });
         const sorteioRegras = await SorteioRegras.findOne({
@@ -209,6 +210,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
             sorteio_id: sorteio_id,
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
+            idSorteioSocio: idSorteioSocio,
         });
 
         return res.status(201).json({
@@ -225,7 +227,7 @@ router.post('/reservar-bilhete-quantidade', validateOrigin, async (req, res) => 
 
 router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) => {
     try {
-        let { sorteio_id, numeros, user_id } = req.body;
+        let { sorteio_id, numeros, user_id, idSorteioSocio } = req.body;
 
         if (!numeros || !Array.isArray(numeros) || numeros.length === 0) {
             return res.status(400).json({ message: "Nenhum número fornecido." });
@@ -282,6 +284,7 @@ router.post('/reservar-bilhete-selecionado', validateOrigin, async (req, res) =>
             sorteio_id: sorteio_id,
             id_remessa: id_remessa,
             valor: numeros.length * valorUnitarioCota,
+            idSorteioSocio: idSorteioSocio,
         });
 
         return res.status(201).json({
