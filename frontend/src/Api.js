@@ -423,6 +423,20 @@ const Api = {
             }).catch(err => {
                 return err;
             });
+        },
+        getContemplado: async ({ campanha_id, numero }) => {
+            return await axios.get(`${API_BASE}/sorteios/campanha/${campanha_id}/get-contemplado/${numero}`, Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
+        },
+        confirmaContemplado: async ({ campanha_id, bilhete_id, user_id }) => {
+            return await axios.put(`${API_BASE}/sorteios/campanha/contemplar`, { campanha_id, bilhete_id, user_id },Environment.HEADERS).then(async (response) => {
+                return await response;
+            }).catch(err => {
+                return err;
+            });
         }
     }
 }

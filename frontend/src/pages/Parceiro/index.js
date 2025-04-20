@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import FragmentView from '../../components/FragmentView'
 import Input from '../../components/Input'
 import SpaceBox from '../../components/SpaceBox';
 import Api from '../../Api';
 import Utils from '../../Utils';
 import Button from '../../components/Button';
+import Card from '../../components/Card';
 import './style.css';
-import Hr from '../../components/Hr';
 import Environment from '../../Environment';
 import { useNavigate } from 'react-router-dom';
+import { Modal, ModalConfirm } from '../../components';
 
 export default () => {
 
@@ -18,9 +19,36 @@ export default () => {
     const [search, setSearch] = useState("");
     const [campanhas, setCampanhas] = useState([]);
 
+    const [showModalContemplar, setShowModalContemplar] = useState(false);
+    const [showModalContemplarConfirm, setShowModalContemplarConfirm] = useState(false);
+    const [numeroSorteado, setNumeroSorteado] = useState("");
+
+    const [campanhaSelected, setCampanhaSelected] = useState(null);
+    const [campanhaContemplado, setCampanhaContemplado] = useState(null);
+
+    const timeoutRef = useRef(null);
+
     useEffect(() => {
         load();
     }, [])
+
+    useEffect(() => {
+        if (numeroSorteado) {
+            clearTimeout(timeoutRef.current);
+
+            timeoutRef.current = setTimeout(() => {
+                getContemplado(numeroSorteado);
+            }, 1000);
+        }
+        return () => clearTimeout(timeoutRef.current);
+    }, [numeroSorteado]);
+
+    const getContemplado = async (numero) => {
+        const { success, data} = await Utils.processRequest(Api.parceiro.getContemplado, { campanha_id: campanhaSelected?.id, numero: numero });
+        if(success){
+            setCampanhaContemplado(data);
+        }
+    }
 
     const load = async () => {
         setLoaded(false);
@@ -60,8 +88,120 @@ export default () => {
         campanha?.name.toLowerCase().includes(search.toLowerCase())
     );
 
+    const handleContemplar = (campanha) => {
+        setShowModalContemplar(true);
+        setCampanhaSelected(campanha)
+    }
+
+    const onCancelContemplar = () => {
+        setShowModalContemplar(false);
+        setNumeroSorteado("");
+    }
+
+    const onCancelContemplarConfirm = () => {
+        onCancelContemplar();
+        setShowModalContemplarConfirm(false);
+    }
+
+    const onConfirmContemplar = async () => {
+        onCancelContemplar();
+        setShowModalContemplarConfirm(true);
+        const { success, data } = await Utils.processRequest(Api.parceiro.confirmaContemplado, { campanha_id: campanhaSelected?.id, bilhete_id: campanhaContemplado?.bilhete?.id, user_id: campanhaContemplado?.usuario?.id });
+        if (success) {}
+    }
+
+    const onConfirmContemplarConfirm = async () => {}
+
     return (
         <FragmentView headerMode={"PARCEIRO"}>
+            <ModalConfirm show={showModalContemplar} setShow={setShowModalContemplar} onCancel={onCancelContemplar} onConfirm={onConfirmContemplar}>
+                <div className="card-header">
+                    <div className="icon-circle">
+                        <ion-icon name="ticket-outline"></ion-icon>
+                    </div>
+                    <b>Qual é o número do bilhete sorteado?</b>
+                </div>
+                <SpaceBox space={8} />
+                <Input type={"number"} label={"Número do bilhete"} setValue={setNumeroSorteado} value={numeroSorteado} />
+                <SpaceBox space={8} />
+                {campanhaContemplado ? (
+                    <Card>
+                        {/*<div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div>
+                                <b>Bilhete:</b>
+                            </div>
+                            <div>
+                                <label>{campanhaContemplado?.bilhete?.numero}</label>
+                            </div>
+                        </div>*/}
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div>
+                                <b>Nome:</b>
+                            </div>
+                            <div>
+                                <label>{campanhaContemplado?.usuario?.name}</label>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div>
+                                <b>Email:</b>
+                            </div>
+                            <div>
+                                <label>{campanhaContemplado?.usuario?.email}</label>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div>
+                                <b>Celular:</b>
+                            </div>
+                            <div>
+                                <label>{campanhaContemplado?.usuario?.phone}</label>
+                            </div>
+                        </div>
+                    </Card>
+                ) : (null)}
+                <SpaceBox space={8} />
+            </ModalConfirm>
+            <Modal show={showModalContemplarConfirm} setShow={setShowModalContemplarConfirm} onCancel={onCancelContemplarConfirm} onConfirm={onConfirmContemplarConfirm}>
+                <div className="confetti-container">
+                    <div className="confetti">
+                        {Utils.getConffetis().map((item, index) => (
+                            <i
+                                key={index}
+                                style={{
+                                    '--speed': item.speed,
+                                    '--bg': item.bg,
+                                }}
+                                className={item.shape}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div className="card-header">
+                    <div className="icon-circle">
+                        <ion-icon name="trophy-outline"></ion-icon>
+                    </div>
+                    <b>Confirmação de prêmio</b>
+                </div>
+                <SpaceBox space={8} />
+                <div className='trofeu' style={{ margin: '35px auto' }}>
+                    <ion-icon name="trophy-outline"></ion-icon>
+                </div>
+                <div style={{textAlign: 'center'}}>
+                    <h2>Parabéns 🥳!</h2>
+                </div>
+                <SpaceBox space={8} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', background: '#f0f0f5', border: 'solid 1px rgb(213 213 213)', padding: '2px 8px', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px' }}>
+                        <ion-icon name="trophy-outline"></ion-icon>&nbsp;
+                        <label>{campanhaContemplado?.bilhete?.numero}</label>
+                    </label>
+                    <label style={{ background: '#f0f0f5', borderBottom: 'solid 1px rgb(213 213 213)', borderRight: 'solid 1px rgb(213 213 213)', borderTop: 'solid 1px rgb(213 213 213)', padding: '2px 8px', display: 'flex', alignItems: 'center', borderTopRightRadius: '8px', borderBottomRightRadius: '8px' }}>
+                        <label>{campanhaContemplado?.usuario?.name}</label>
+                    </label>
+                </div>
+                <SpaceBox space={30} />
+            </Modal>
             <SpaceBox space={8} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <h2>Campanhas</h2>
@@ -118,8 +258,8 @@ export default () => {
                                         <SpaceBox space={5} />
                                         <label style={{ fontSize: '12px', color: 'var(--text-opacity)' }}>Progresso:</label>
                                         <div className="progress-c">
-                                            <div className="progress-bar-c" style={{ width: `${campanha?.progresso || 0}%` }}>
-                                                <span className="progress-text-c">{campanha?.progresso || 0}%</span>
+                                            <div className="progress-bar-c" style={{ width: `${campanha?.progresso?.toFixed(2) || 0}%` }}>
+                                                <span className="progress-text-c">{campanha?.progresso?.toFixed(2) || 0}%</span>
                                             </div>
                                         </div>
                                     </>
@@ -148,7 +288,7 @@ export default () => {
                                             </div>
                                             <Button onClick={(event) => {
                                                 event.stopPropagation();
-                                                //contemplar
+                                                handleContemplar(campanha);
                                             }}>Informar contemplado</Button>
                                         </div>
                                     </>

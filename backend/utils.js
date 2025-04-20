@@ -159,6 +159,24 @@ class Utils {
             currency: 'BRL',
         });
     }
+    static sortearMaisProximo (arr, numero) {
+        if (arr.includes(numero)) {
+            return numero;
+        }
+      
+        let maisProximo = arr[0];
+        let menorDiferenca = Math.abs(numero - arr[0]);
+      
+        for (let i = 1; i < arr.length; i++) {
+            const diferencaAtual = Math.abs(numero - arr[i]);
+            if (diferencaAtual < menorDiferenca) {
+                menorDiferenca = diferencaAtual;
+                maisProximo = arr[i];
+            }
+        }
+      
+        return maisProximo;
+    }
 }
 
 module.exports = Utils;

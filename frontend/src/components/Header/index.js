@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Utils from '../../Utils';
 import Environment from '../../Environment';
 
-export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parceiro, logo }) => {
+export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parceiro, logo, hideHeaderButtons }) => {
 
     const navigate = useNavigate();
 
@@ -78,12 +78,12 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
                             <></>
                         ) : (
                             <>
-                                <div className='button-group'>
+                                <div className='button-group' style={{display: hideHeaderButtons ? 'none' : undefined}}>
                                     <Button onClick={() => { setShowModalCampanhas(true) }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;Meus pedidos</Button>
                                     <Button><ion-icon name="list-outline"></ion-icon>&nbsp;Campanhas</Button>
                                     <Button style={{ color: 'white', padding: '8px', cursor: 'pointer' }} onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }}><ion-icon size={"large"} name="logo-whatsapp"></ion-icon></Button>
                                 </div>
-                                <div className='menu-toggle' onClick={handleToggle}>
+                                <div className='menu-toggle' style={{display: hideHeaderButtons ? 'none' : undefined}} onClick={handleToggle}>
                                     <ion-icon className="menu-toggle-icon" name={`${open ? 'close-outline' : 'menu-outline'}`} size={"large"}></ion-icon>
                                 </div>
                             </>
@@ -91,7 +91,7 @@ export default ({ headerMode, headerPaymentStep, user, setUser, modo, info, parc
                     </div>
                     {open ? (
                         <div className='hader-mobile-menu'>
-                            <div className='button-group-mobile'>
+                            <div className='button-group-mobile' style={{display: hideHeaderButtons ? 'none' : undefined}}>
                                 <Button onClick={() => { setShowModalCampanhas(true) }} style={{ width: '100%' }}><ion-icon name="ticket-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Meus pedidos</Button>
                                 <Button style={{ width: '100%' }}><ion-icon name="list-outline"></ion-icon>&nbsp;&nbsp;&nbsp;Campanhas</Button>
                                 <Button onClick={() => { window.open(`https://wa.me/${info?.telefone_contato}`, 'blank') }} style={{ width: '100%' }}><ion-icon name="logo-whatsapp"></ion-icon>&nbsp;&nbsp;&nbsp;Contato</Button>

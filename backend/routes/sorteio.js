@@ -22,6 +22,7 @@ const BilhetePremiado = require('../models/bilhete_premiado');
 const Socio = require('../models/socios');
 const SorteioSocioPartes = require('../models/sorteio_socio_partes');
 const SorteioCartaPremiada = require('../models/sorteio_carta_premiada');
+const Users = require('../models/users');
 const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
@@ -1287,6 +1288,53 @@ router.get('/check-carta-premiada/:codigo', validateOrigin, async (req, res) => 
 
         return res.status(200).json(carta);
     }catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+router.get('/campanha/:campanha_id/get-contemplado/:numero', validateToken, async (req, res) => {
+    try{
+        let { campanha_id, numero } = req.params;
+
+        const bilhetesBySorteio = await Bilhete.findAll({ where: { sorteio_id: campanha_id, status: "PAGO" } });
+
+        const numeros = bilhetesBySorteio.map(b => b.numero);
+
+        let numeroOuMaisProximo = Utils.sortearMaisProximo(numeros, numero);
+
+        let bilhete = bilhetesBySorteio.filter(b => { return Number(b.numero) == numeroOuMaisProximo})[0];
+
+        const usuario = await Users.findOne({ where: {id: bilhete?.user_id}, attributes: ['id', 'name', 'phone', 'email'] });
+
+        return res.status(200).json({
+            bilhete: bilhete,
+            usuario: usuario
+        });
+    }catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
+
+router.put('/campanha/contemplar', validateToken, async (req, res) => {
+    try{
+        let { campanha_id, bilhete_id, user_id } = req.body;
+
+        await SorteioPremio.update(
+            {
+                bilhete_id: bilhete_id,
+                ganhador_id: user_id
+            },
+            {
+                where: {
+                    sorteio_id: campanha_id
+                }
+            }
+        )
+
+        return res.status(200).json(true);
+    }catch (err) {
+        console.log(err);
         return res.status(500).json(err);
     }
 })
